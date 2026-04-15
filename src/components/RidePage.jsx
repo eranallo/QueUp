@@ -1,14 +1,16 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { RESORTS } from '../data'
 import { useApp } from '../App'
-import { getRideLiveData, getRideImage, STATUS_CONFIG } from '../services/liveStatus'
+import { useLiveData } from '../context/LiveDataContext'
+import { RideStatusBadge } from './RideStatus'
 
 const THRILL_LABEL = ['', '😌 Gentle', '🌊 Mild Thrill', '🌀 Moderate Thrill', '🔥 Thrilling', '💀 Intense']
 
 export default function RidePage() {
   const { rideId } = useParams()
   const navigate = useNavigate()
-  const { checkedRides, toggleRide, manualDown, toggleDown, liveStatus, parkImages } = useApp()
+  const { checkedRides, toggleRide, manualDown, toggleManualDown } = useApp()
+  const { getRideLive, getRideImage } = useLiveData()
 
   let found = null, foundPark = null, foundLand = null
   for (const resort of RESORTS) {
@@ -22,23 +24,17 @@ export default function RidePage() {
 
   if (!found) return (
     <div className="ride-detail">
-      <button className="ride-detail-back" onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>← Back</button>
+      <Link to="/" className="ride-detail-back">← Home</Link>
       <p style={{ color: 'var(--text-secondary)' }}>Ride not found.</p>
     </div>
   )
 
   const isChecked = checkedRides.has(found.id)
-  const manualKey = `${foundPark.id}::${found.name}`
-  const isManualDown = manualDown.has(manualKey)
-
-  // Live status
-  const live = getRideLiveData(found.name, foundPark.id, liveStatus)
-  const effectiveStatus = isManualDown ? 'MANUAL_DOWN' : (live?.status || null)
-  const statusCfg = effectiveStatus ? STATUS_CONFIG[effectiveStatus] : null
-
-  // Image: API image > hardcoded imageUrl > null
-  const apiImage = getRideImage(found.name, foundPark.id, parkImages)
-  const imageSrc = apiImage || found.imageUrl || null
+  const isDown = manualDown.has(found.id)
+  const live = getRideLive(found.name)
+  // Use: API image > hardcoded imageUrl in data > null (show placeholder)
+  const apiImage = getRideImage(found.name)
+  const displayImage = found.imageUrl || apiImage || null
 
   return (
     <div className="ride-detail fade-in">
@@ -46,58 +42,43 @@ export default function RidePage() {
         ← Back
       </button>
 
-      {/* Live status banner */}
-      {statusCfg && effectiveStatus !== 'OPERATING' && (
-        <div style={{
-          padding: '12px 20px', borderRadius: 'var(--radius-md)', marginBottom: 20,
-          background: statusCfg.bg, border: `1px solid ${statusCfg.color}44`,
-          display: 'flex', alignItems: 'center', gap: 10,
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>{statusCfg.icon}</span>
-          <div>
-            <div style={{ color: statusCfg.color, fontWeight: 800, fontSize: '0.95rem' }}>{statusCfg.label}</div>
-            {live?.waitTime != null && effectiveStatus === 'OPERATING' && (
-              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Current wait: {live.waitTime} minutes</div>
-            )}
-            {isManualDown && <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Manually reported — tap below to clear</div>}
-          </div>
-        </div>
-      )}
-
-      {/* Wait time if operating */}
-      {live?.status === 'OPERATING' && live?.waitTime != null && !isManualDown && (
-        <div style={{
-          padding: '12px 20px', borderRadius: 'var(--radius-md)', marginBottom: 20,
-          background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.3)',
-          display: 'flex', alignItems: 'center', gap: 10,
-        }}>
-          <span style={{ fontSize: '1.2rem' }}>✅</span>
-          <div>
-            <div style={{ color: '#10b981', fontWeight: 800 }}>Operating — {live.waitTime} min wait</div>
-            {live.singleRider != null && <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Single rider: {live.singleRider} min</div>}
-          </div>
-        </div>
-      )}
-
       {/* Image */}
-      {imageSrc ? (
+      {displayImage ? (
         <img
-          src={imageSrc}
+          src={displayImage}
           alt={found.name}
           className="ride-detail-image"
-          onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+          onError={e => { e.target.style.display = 'none'; document.getElementById(`placeholder-${found.id}`).style.display = 'flex' }}
         />
       ) : null}
       <div
+        id={`placeholder-${found.id}`}
         className="ride-detail-image-placeholder"
         style={{
           background: `linear-gradient(135deg, ${foundPark.gradientFrom || '#1a1a2e'}, var(--bg-deepest))`,
-          display: imageSrc ? 'none' : 'flex',
+          display: displayImage ? 'none' : 'flex',
           borderColor: foundPark.accentColor + '44',
         }}
       >
         {foundPark.emoji}
       </div>
+
+      {/* Live status bar */}
+      {(live || isDown) && (
+        <div className={`live-status-bar ${isDown || live?.status === 'DOWN' ? 'bar-down' : live?.status === 'CLOSED' ? 'bar-closed' : live?.status === 'REFURBISHMENT' ? 'bar-refurb' : 'bar-open'}`}>
+          <RideStatusBadge live={live} manualDown={isDown} />
+          {live?.waitTime != null && live.status === 'OPERATING' && !isDown && (
+            <span style={{ marginLeft: 12, fontWeight: 800, fontSize: '0.9rem' }}>
+              ⏱ {live.waitTime} minute wait
+            </span>
+          )}
+          {live?.lastUpdated && (
+            <span style={{ marginLeft: 'auto', fontSize: '0.75rem', opacity: 0.6 }}>
+              Updated {new Date(live.lastUpdated).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Header */}
       <div className="ride-detail-header">
@@ -116,31 +97,20 @@ export default function RidePage() {
           {found.openingYear && <span className="ride-badge">📅 Since {found.openingYear}</span>}
         </div>
 
+        {/* Action buttons */}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <button
-            className={`checked-btn ${isChecked ? 'is-checked' : 'unchecked'}`}
-            onClick={() => toggleRide(found.id)}
-          >
+          <button className={`checked-btn ${isChecked ? 'is-checked' : 'unchecked'}`} onClick={() => toggleRide(found.id)}>
             {isChecked ? '✓ Ridden!' : 'Mark as Ridden'}
           </button>
           <button
-            onClick={() => toggleDown(manualKey)}
-            style={{
-              padding: '12px 20px', borderRadius: 'var(--radius-md)',
-              border: `1px solid ${isManualDown ? 'rgba(249,115,22,0.6)' : 'rgba(255,255,255,0.1)'}`,
-              background: isManualDown ? 'rgba(249,115,22,0.15)' : 'rgba(255,255,255,0.05)',
-              color: isManualDown ? '#f97316' : 'var(--text-secondary)',
-              fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
-              fontFamily: 'Nunito, sans-serif', transition: 'all 0.2s',
-              display: 'flex', alignItems: 'center', gap: 6,
-            }}
+            className={`checked-btn ${isDown ? 'is-down-btn' : 'unchecked'}`}
+            onClick={() => toggleManualDown(found.id)}
           >
-            {isManualDown ? '⚠️ Clear Down Report' : '⚠️ Report as Down'}
+            {isDown ? '🔴 Marked Down — Tap to clear' : '🔘 Mark as Down'}
           </button>
         </div>
       </div>
 
-      {/* Description */}
       <div className="detail-section">
         <div className="detail-section-title">Overview</div>
         <p>{found.description}</p>
@@ -179,9 +149,7 @@ export default function RidePage() {
       {found.tags?.length > 0 && (
         <div className="detail-section">
           <div className="ride-meta">
-            {found.tags.map(t => (
-              <span key={t} className="ride-badge" style={{ textTransform: 'capitalize' }}>#{t}</span>
-            ))}
+            {found.tags.map(t => <span key={t} className="ride-badge" style={{ textTransform: 'capitalize' }}>#{t}</span>)}
           </div>
         </div>
       )}

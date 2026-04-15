@@ -773,3 +773,65 @@ button { cursor: pointer; font-family: 'Nunito', sans-serif; }
 .star-1 { top: 15%; left: 10%; animation-delay: 0s; }
 .star-2 { top: 25%; right: 15%; animation-delay: 1s; }
 .star-3 { top: 8%; right: 30%; animation-delay: 2s; }
+
+/* ── LIVE STATUS BADGES ── */
+.ride-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.ride-status-badge.compact { padding: 2px 7px; font-size: 0.7rem; }
+.status-open    { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-down    { background: rgba(239, 68, 68, 0.15);  color: #ef4444; }
+.status-closed  { background: rgba(100, 116, 139, 0.15); color: #64748b; }
+.status-refurb  { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+.status-unknown { display: none; }
+.wait-time { margin-left: 4px; opacity: 0.85; }
+
+/* ── LIVE STATUS BAR (top of ride detail) ── */
+.live-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.bar-open   { background: rgba(16, 185, 129, 0.1);  border: 1px solid rgba(16, 185, 129, 0.3); }
+.bar-down   { background: rgba(239, 68, 68, 0.1);   border: 1px solid rgba(239, 68, 68, 0.3); }
+.bar-closed { background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.2); }
+.bar-refurb { background: rgba(251, 191, 36, 0.1);  border: 1px solid rgba(251, 191, 36, 0.3); }
+
+/* ── MANUAL DOWN BUTTON (on ride cards) ── */
+.manual-down-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.manual-down-btn:hover { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.05); }
+.manual-down-btn.is-down { border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.08); border-style: solid; }
+
+/* ── DOWN BUTTON variant for ride detail ── */
+.checked-btn.is-down-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+.checked-btn.is-down-btn:hover { background: rgba(239, 68, 68, 0.25); }
