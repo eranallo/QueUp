@@ -835,3 +835,228 @@ button { cursor: pointer; font-family: 'Nunito', sans-serif; }
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 .checked-btn.is-down-btn:hover { background: rgba(239, 68, 68, 0.25); }
+
+/* ── PARK SELECTOR SCREEN ── */
+.park-selector-page {
+  min-height: 100vh;
+  padding: 48px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.park-selector-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(91,43,181,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,168,204,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(39,174,96,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+/* Animated stars on selector */
+.selector-star {
+  position: fixed;
+  border-radius: 50%;
+  background: white;
+  pointer-events: none;
+  animation: sparkle 3s ease-in-out infinite;
+}
+.s1 { width: 2px; height: 2px; top: 8%;  left: 12%; animation-delay: 0s; }
+.s2 { width: 3px; height: 3px; top: 15%; right: 18%; animation-delay: 0.7s; }
+.s3 { width: 2px; height: 2px; top: 5%;  right: 35%; animation-delay: 1.4s; }
+.s4 { width: 2px; height: 2px; top: 22%; left: 40%;  animation-delay: 2s; }
+.s5 { width: 3px; height: 3px; top: 10%; left: 65%;  animation-delay: 1s; }
+
+.selector-header {
+  text-align: center;
+  margin-bottom: 48px;
+  position: relative;
+  z-index: 1;
+}
+.selector-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2.8rem, 8vw, 5rem);
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 60px rgba(240,180,41,0.4);
+  margin-bottom: 12px;
+}
+.selector-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.selector-resorts {
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  z-index: 1;
+}
+.selector-resort-block { margin-bottom: 40px; }
+.selector-resort-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 4px;
+}
+
+.selector-parks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.selector-park-card {
+  position: relative;
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 28px 20px 24px;
+  cursor: pointer;
+  text-align: left;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.selector-park-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.selector-park-card:active { transform: scale(0.98); }
+
+.selector-park-glow {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.25;
+  filter: blur(30px);
+  pointer-events: none;
+}
+.selector-park-emoji {
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+}
+.selector-park-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+.selector-park-tagline {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.4;
+}
+.selector-new-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #f0b429;
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* ── PARK HERO BANNER (top of Home when park selected) ── */
+.park-hero-banner {
+  padding: 28px 24px;
+  margin-bottom: 8px;
+}
+.park-hero-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.park-hero-emoji { font-size: 3.5rem; flex-shrink: 0; }
+.park-hero-info { flex: 1; min-width: 200px; }
+.park-hero-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+.park-hero-name { font-family: 'Cinzel', serif; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; margin-bottom: 10px; }
+.park-hero-progress { margin-top: 6px; }
+.park-hero-cta {
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  border: 2px solid;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.park-hero-cta:hover { background: rgba(255,255,255,0.08); }
+
+/* ── ACTIVE PARK CARD BADGE ── */
+.park-card-active { box-shadow: 0 0 0 2px var(--gold); }
+.park-card-active-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 10px;
+  color: #fff;
+}
+
+/* ── THEMED NAV ACCENTS ── */
+.nav-active-park {
+  font-size: 0.65rem;
+  color: var(--gold);
+  opacity: 0.7;
+  letter-spacing: 0.06em;
+  display: block;
+  line-height: 1;
+}
+.nav-logo-text-group { display: flex; flex-direction: column; gap: 1px; }
+.switch-park-btn {
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.switch-park-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+@media (max-width: 768px) {
+  .switch-park-btn { display: none; }
+  .park-hero-cta { width: 100%; text-align: center; }
+  .selector-parks-grid { grid-template-columns: repeat(2, 1fr); }
+}
