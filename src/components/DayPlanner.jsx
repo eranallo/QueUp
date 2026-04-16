@@ -1,165 +1,92 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
+  DndContext, closestCenter,
+  KeyboardSensor, PointerSensor,
+  useSensor, useSensors,
 } from '@dnd-kit/core'
 import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
+  SortableContext, sortableKeyboardCoordinates,
+  useSortable, verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 import {
   loadTrip, saveTrip, makeDay, makeItem,
   getParkById, getAllParks, formatDate,
-  arrayMove, ITEM_TYPE_CONFIG,
+  arrayMove, ITEM_TYPE_CONFIG, DURATION_OPTIONS,
 } from '../plannerUtils'
 import { useApp } from '../App'
+import { useLiveData } from '../context/LiveDataContext'
 
 // ── Sortable Item ────────────────────────────────────────────
 function SortableItem({ item, onUpdate, onDelete, accentColor }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: item.id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 999 : 'auto',
-  }
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1, zIndex: isDragging ? 999 : 'auto' }
 
   const [expanded, setExpanded] = useState(false)
-  const cfg = ITEM_TYPE_CONFIG[item.type] || ITEM_TYPE_CONFIG.custom
+  const cfg = ITEM_TYPE_CONFIG[item.type] || ITEM_TYPE_CONFIG.event
+  const dur = DURATION_OPTIONS.find(d => d.value === item.duration)
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`planner-item-card${item.done ? ' done' : ''}${isDragging ? ' dragging' : ''}`}
-    >
+    <div ref={setNodeRef} style={style} className={`planner-item-card${item.done ? ' done' : ''}${isDragging ? ' dragging' : ''}`}>
       <div className="pic-row">
-        {/* Drag handle */}
-        <div className="pic-drag" {...attributes} {...listeners} title="Drag to reorder">
-          ⠿
-        </div>
-
-        {/* Type icon */}
-        <span className="pic-type-icon" style={{ color: cfg.color }}>{cfg.emoji}</span>
-
-        {/* Time */}
-        <input
-          className="pic-time"
-          type="time"
-          value={item.time}
-          onChange={e => onUpdate({ time: e.target.value })}
-          title="Planned time"
-        />
-
-        {/* Name */}
+        <div className="pic-drag" {...attributes} {...listeners}>⠿</div>
+        <span className="pic-type-icon" style={{ color: 'var(--accent)' }}>{cfg.emoji}</span>
+        <input className="pic-time" type="time" value={item.time} onChange={e => onUpdate({ time: e.target.value })} title="Planned time" />
         <div className="pic-name-wrap">
           <span className="pic-name">{item.name}</span>
-          {item.hasLL && (
-            <span className="pic-ll-badge">
-              ⚡ {item.llTime || 'LL'}
-            </span>
-          )}
+          {item.hasLL && <span className="pic-ll-badge">⚡ {item.llTime || 'LL'}</span>}
+          {dur && <span className="pic-dur-label">{dur.label}</span>}
         </div>
-
-        {/* Done toggle */}
-        <button
-          className={`pic-done-btn${item.done ? ' is-done' : ''}`}
-          onClick={() => onUpdate({ done: !item.done })}
-          title={item.done ? 'Mark undone' : 'Mark done'}
-        >
-          {item.done ? '✓' : '○'}
-        </button>
-
-        {/* Expand */}
-        <button
-          className="pic-expand-btn"
-          onClick={() => setExpanded(v => !v)}
-          title="Details"
-        >
-          {expanded ? '▲' : '▼'}
-        </button>
-
-        {/* Delete */}
-        <button
-          className="pic-delete-btn"
-          onClick={() => { if (window.confirm(`Remove "${item.name}"?`)) onDelete() }}
-          title="Remove"
-        >
-          ✕
-        </button>
+        <button className={`pic-done-btn${item.done ? ' is-done' : ''}`} onClick={() => onUpdate({ done: !item.done })}>{item.done ? '✓' : '○'}</button>
+        <button className="pic-expand-btn" onClick={() => setExpanded(v => !v)}>{expanded ? '▲' : '▼'}</button>
+        <button className="pic-delete-btn" onClick={() => { if (window.confirm(`Remove "${item.name}"?`)) onDelete() }}>✕</button>
       </div>
 
-      {/* Expanded detail */}
       {expanded && (
         <div className="pic-detail">
+          {/* Duration */}
           <div className="pic-detail-row">
-            <label className="pic-label">Duration</label>
+            <label className="pic-label">Est. Time</label>
             <div className="pic-duration-row">
-              {[15, 30, 45, 60, 90, 120].map(m => (
-                <button
-                  key={m}
-                  className={`pic-dur-btn${item.duration === m ? ' active' : ''}`}
-                  onClick={() => onUpdate({ duration: m })}
-                >
-                  {m < 60 ? `${m}m` : `${m / 60}h`}
+              {DURATION_OPTIONS.map(d => (
+                <button key={d.value} className={`pic-dur-btn${item.duration === d.value ? ' active' : ''}`}
+                  onClick={() => onUpdate({ duration: d.value })}>
+                  {d.label}
                 </button>
               ))}
             </div>
           </div>
 
+          {/* LL for rides */}
           {item.type === 'ride' && (
             <div className="pic-detail-row">
               <label className="pic-label">Lightning Lane</label>
               <div className="pic-ll-row">
-                <button
-                  className={`pic-toggle${item.hasLL ? ' on' : ''}`}
-                  onClick={() => onUpdate({ hasLL: !item.hasLL })}
-                >
+                <button className={`pic-toggle${item.hasLL ? ' on' : ''}`} onClick={() => onUpdate({ hasLL: !item.hasLL })}>
                   {item.hasLL ? '⚡ LL Active' : '⬤ No LL'}
                 </button>
                 {item.hasLL && (
-                  <input
-                    className="pic-ll-time"
-                    type="time"
-                    value={item.llTime}
-                    onChange={e => onUpdate({ llTime: e.target.value })}
-                    placeholder="LL time"
-                  />
+                  <input className="pic-ll-time" type="time" value={item.llTime}
+                    onChange={e => onUpdate({ llTime: e.target.value })} placeholder="LL return time" />
                 )}
               </div>
             </div>
           )}
 
+          {/* Notes */}
           <div className="pic-detail-row">
             <label className="pic-label">Notes</label>
-            <textarea
-              className="pic-notes"
-              value={item.notes}
+            <textarea className="pic-notes" rows={2} value={item.notes}
               onChange={e => onUpdate({ notes: e.target.value })}
-              placeholder="Add a note…"
-              rows={2}
-            />
+              placeholder="Notes, reminders…" />
           </div>
 
           {item.rideId && (
             <div className="pic-detail-row">
-              <Link
-                to={`/ride/${item.rideId}`}
-                className="pic-ride-link"
-              >
-                View ride info & trivia →
-              </Link>
+              <Link to={`/ride/${item.rideId}`} className="pic-ride-link">View ride info & trivia →</Link>
             </div>
           )}
         </div>
@@ -169,13 +96,14 @@ function SortableItem({ item, onUpdate, onDelete, accentColor }) {
 }
 
 // ── Add Ride Modal ───────────────────────────────────────────
-function AddRideModal({ park, onAdd, onClose }) {
+function AddRideModal({ parkIds, onAdd, onClose }) {
   const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('all') // all | mustdo | ll
+  const [activePark, setActivePark] = useState(parkIds[0] || '')
+  const [filter, setFilter] = useState('all')
+  const { getRideLive } = useLiveData()
 
-  if (!park) return null
-
-  const allRides = park.lands.flatMap(l => l.rides)
+  const park = getParkById(activePark)
+  const allRides = park ? park.lands.flatMap(l => l.rides) : []
   const visible = allRides.filter(r => {
     if (search && !r.name.toLowerCase().includes(search.toLowerCase())) return false
     if (filter === 'mustdo' && !r.mustDo) return false
@@ -183,62 +111,95 @@ function AddRideModal({ park, onAdd, onClose }) {
     return true
   })
 
+  // Autocomplete suggestions
+  const suggestions = search.length >= 1 ? allRides.filter(r => r.name.toLowerCase().includes(search.toLowerCase())) : []
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-panel" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="modal-title">Add Ride — {park.name}</div>
+          <div className="modal-title">Add Ride</div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
-        <div className="modal-search-row">
-          <input
-            className="modal-search"
-            placeholder="Search rides…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            autoFocus
-          />
+        {/* Park tabs if multiple parks */}
+        {parkIds.length > 1 && (
+          <div style={{ display: 'flex', gap: 4, padding: '8px 16px', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
+            {parkIds.map(id => {
+              const p = getParkById(id)
+              return p ? (
+                <button key={id} className={`filter-pill${activePark === id ? ' on' : ''}`} onClick={() => setActivePark(id)}>
+                  {p.emoji} {p.name.split(' ')[0]}
+                </button>
+              ) : null
+            })}
+          </div>
+        )}
+
+        <div className="modal-search-row" style={{ position: 'relative' }}>
+          <input className="modal-search" placeholder="Search rides…" value={search}
+            onChange={e => setSearch(e.target.value)} autoFocus />
+          {/* Dropdown suggestions */}
+          {suggestions.length > 0 && search.length > 0 && (
+            <div className="search-dropdown" style={{ top: '100%', margin: '4px 0 0' }}>
+              {suggestions.map(ride => {
+                const live = getRideLive(ride.name)
+                return (
+                  <div key={ride.id} className="search-dropdown-item"
+                    onMouseDown={() => {
+                      onAdd(makeItem('ride', { rideId: ride.id, name: ride.name, hasLL: ride.lightningLane, duration: 60 }))
+                      onClose()
+                    }}>
+                    <div className="sddi-name">{ride.name}</div>
+                    <div className="sddi-badges">
+                      {live?.status === 'OPERATING' && live?.waitTime != null && (
+                        <span className="badge" style={{ color: 'var(--success)' }}>⏱ {live.waitTime}m</span>
+                      )}
+                      {live?.status === 'DOWN' && <span className="badge" style={{ color: 'var(--danger)' }}>🔴 Down</span>}
+                      {ride.mustDo && <span className="badge badge-mustdo">⭐</span>}
+                      {ride.lightningLane && <span className="badge badge-ll">⚡</span>}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
 
         <div className="modal-filters">
-          <button className={`filter-pill${filter === 'all' ? ' on' : ''}`} onClick={() => setFilter('all')}>All</button>
-          <button className={`filter-pill${filter === 'mustdo' ? ' on' : ''}`} onClick={() => setFilter('mustdo')}>⭐ Must-Do</button>
-          <button className={`filter-pill${filter === 'll' ? ' on' : ''}`} onClick={() => setFilter('ll')}>⚡ Lightning Lane</button>
+          <button className={`filter-pill${filter==='all'?'  on':''}`} onClick={() => setFilter('all')}>All</button>
+          <button className={`filter-pill${filter==='mustdo'?' on':''}`} onClick={() => setFilter('mustdo')}>⭐ Must-Do</button>
+          <button className={`filter-pill${filter==='ll'?' on':''}`} onClick={() => setFilter('ll')}>⚡ LL</button>
         </div>
 
         <div className="modal-ride-list">
-          {park.lands.map(land => {
+          {park?.lands.map(land => {
             const rides = land.rides.filter(r => visible.includes(r))
             if (!rides.length) return null
             return (
               <div key={land.id}>
                 <div className="modal-land-label">{land.name}</div>
-                {rides.map(ride => (
-                  <div
-                    key={ride.id}
-                    className="modal-ride-row"
-                    onClick={() => {
-                      onAdd(makeItem('ride', {
-                        rideId: ride.id,
-                        name: ride.name,
-                        hasLL: ride.lightningLane,
-                        duration: ride.duration ? parseInt(ride.duration) || 60 : 60,
-                      }))
-                      onClose()
-                    }}
-                  >
-                    <div className="modal-ride-info">
-                      <span className="modal-ride-name">{ride.name}</span>
-                      <div className="modal-ride-badges">
-                        {ride.mustDo && <span className="badge badge-mustdo">⭐</span>}
-                        {ride.lightningLane && <span className="badge badge-ll">⚡ LL</span>}
-                        {ride.heightRequirement && <span className="badge">📏 {ride.heightRequirement}"</span>}
+                {rides.map(ride => {
+                  const live = getRideLive(ride.name)
+                  return (
+                    <div key={ride.id} className="modal-ride-row"
+                      onClick={() => { onAdd(makeItem('ride', { rideId: ride.id, name: ride.name, hasLL: ride.lightningLane, duration: 60 })); onClose() }}>
+                      <div className="modal-ride-info">
+                        <span className="modal-ride-name">{ride.name}</span>
+                        <div className="modal-ride-badges">
+                          {live?.status === 'OPERATING' && live?.waitTime != null && (
+                            <span className="badge" style={{ color: live.waitTime < 30 ? 'var(--success)' : live.waitTime < 60 ? 'var(--warning)' : 'var(--danger)' }}>⏱ {live.waitTime}m</span>
+                          )}
+                          {live?.status === 'DOWN' && <span className="badge" style={{ color: 'var(--danger)' }}>🔴 Down</span>}
+                          {ride.mustDo && <span className="badge badge-mustdo">⭐</span>}
+                          {ride.lightningLane && <span className="badge badge-ll">⚡ LL</span>}
+                          {ride.heightRequirement && <span className="badge">📏 {ride.heightRequirement}"</span>}
+                        </div>
                       </div>
+                      <span className="modal-add-icon">+</span>
                     </div>
-                    <span className="modal-add-icon">+</span>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )
           })}
@@ -254,62 +215,68 @@ function AddRideModal({ park, onAdd, onClose }) {
   )
 }
 
-// ── Custom Item Modal ────────────────────────────────────────
-function CustomItemModal({ onAdd, onClose }) {
-  const [name, setName] = useState('')
-  const [type, setType] = useState('food')
-  const [time, setTime] = useState('')
+// ── Add Custom Modal ─────────────────────────────────────────
+function AddCustomModal({ onAdd, onClose }) {
+  const [type, setType]   = useState('food')
+  const [name, setName]   = useState('')
+  const [time, setTime]   = useState('')
+  const [focused, setFocused] = useState(false)
+
+  const cfg = ITEM_TYPE_CONFIG[type] || ITEM_TYPE_CONFIG.event
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-panel small" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="modal-title">Add Custom Item</div>
+          <div className="modal-title">Add {cfg.label}</div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
-        <div style={{ padding: '20px 20px 0' }}>
-          <div className="modal-filters" style={{ marginBottom: 16 }}>
-            {Object.entries(ITEM_TYPE_CONFIG).filter(([k]) => k !== 'ride').map(([key, cfg]) => (
-              <button
-                key={key}
-                className={`filter-pill${type === key ? ' on' : ''}`}
-                onClick={() => setType(key)}
-              >
-                {cfg.emoji} {cfg.label}
+        {/* Type selector */}
+        <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Type</div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {Object.entries(ITEM_TYPE_CONFIG).filter(([k]) => k !== 'ride').map(([key, c]) => (
+              <button key={key} className={`filter-pill${type === key ? ' on' : ''}`} onClick={() => setType(key)}>
+                {c.emoji} {c.label}
               </button>
             ))}
           </div>
+        </div>
 
-          <input
-            className="modal-search"
-            placeholder="Name (e.g. Lunch at Sci-Fi Dine-In)"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            autoFocus
-            style={{ marginBottom: 12 }}
-          />
-
-          <input
-            className="modal-search"
-            type="time"
-            value={time}
-            onChange={e => setTime(e.target.value)}
-            style={{ width: 'auto', marginBottom: 20 }}
-          />
+        <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* Name — no auto-focus, tap to activate */}
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>
+              Name / Description
+            </div>
+            <input
+              className="modal-search"
+              placeholder={`e.g. ${type === 'food' ? 'Lunch at Sci-Fi Dine-In' : type === 'show' ? 'Festival of the Lion King' : type === 'break' ? 'Pool break at hotel' : type === 'event' ? 'Fireworks at 9pm' : 'Hotel check-in'}`}
+              value={name}
+              onChange={e => setName(e.target.value)}
+              onFocus={() => setFocused(true)}
+            />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>
+              Time (optional)
+            </div>
+            <input className="modal-search" type="time" value={time} onChange={e => setTime(e.target.value)} style={{ width: 'auto' }} />
+          </div>
         </div>
 
         <div style={{ padding: '0 20px 20px', display: 'flex', gap: 10 }}>
           <button
             className="btn-primary ridden-state"
-            style={{ flex: 1 }}
+            style={{ flex: 1, border: 'none' }}
             onClick={() => {
               if (!name.trim()) return
               onAdd(makeItem(type, { name: name.trim(), time }))
               onClose()
             }}
           >
-            Add to Day
+            Add {cfg.emoji} {cfg.label}
           </button>
           <button className="btn-primary btn-ghost" onClick={onClose}>Cancel</button>
         </div>
@@ -320,138 +287,116 @@ function CustomItemModal({ onAdd, onClose }) {
 
 // ── Day View ─────────────────────────────────────────────────
 function DayView({ day, dayIndex, onUpdateDay, accentColor }) {
-  const [showRidePicker, setShowRidePicker] = useState(false)
-  const [showCustomModal, setShowCustomModal] = useState(false)
+  const [showRidePicker,   setShowRidePicker]   = useState(false)
+  const [showCustomModal,  setShowCustomModal]  = useState(false)
+  const { getRideLive } = useLiveData()
 
-  const park = getParkById(day.parkId)
-  const allParks = getAllParks()
+  const allParks  = getAllParks()
+  const parks     = (day.parkIds || (day.parkId ? [day.parkId] : [])).map(getParkById).filter(Boolean)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   )
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event
+  const handleDragEnd = ({ active, over }) => {
     if (!over || active.id === over.id) return
-    const oldIndex = day.items.findIndex(i => i.id === active.id)
-    const newIndex = day.items.findIndex(i => i.id === over.id)
-    onUpdateDay({ items: arrayMove(day.items, oldIndex, newIndex) })
+    const from = day.items.findIndex(i => i.id === active.id)
+    const to   = day.items.findIndex(i => i.id === over.id)
+    onUpdateDay({ items: arrayMove(day.items, from, to) })
   }
 
-  const updateItem = (itemId, patch) => {
-    onUpdateDay({
-      items: day.items.map(i => i.id === itemId ? { ...i, ...patch } : i)
-    })
-  }
+  const updateItem = (itemId, patch) =>
+    onUpdateDay({ items: day.items.map(i => i.id === itemId ? { ...i, ...patch } : i) })
 
-  const deleteItem = (itemId) => {
+  const deleteItem = (itemId) =>
     onUpdateDay({ items: day.items.filter(i => i.id !== itemId) })
-  }
 
-  const addItem = (item) => {
+  const addItem = (item) =>
     onUpdateDay({ items: [...day.items, item] })
+
+  const togglePark = (parkId) => {
+    const current = day.parkIds || (day.parkId ? [day.parkId] : [])
+    const next = current.includes(parkId) ? current.filter(p => p !== parkId) : [...current, parkId]
+    onUpdateDay({ parkIds: next, parkId: next[0] || '' })
   }
 
-  const totalTime = day.items.reduce((acc, i) => acc + (i.duration || 60), 0)
+  const totalTime = day.items.reduce((a, i) => a + (i.duration || 60), 0)
   const doneCount = day.items.filter(i => i.done).length
   const llCount   = day.items.filter(i => i.hasLL).length
+  const primaryPark = parks[0]
 
   return (
     <div className="day-view animate-fade-in">
       {/* Day header */}
-      <div className="day-header" style={{ borderLeftColor: park?.accentColor || accentColor }}>
+      <div className="day-header" style={{ borderLeftColor: primaryPark?.accentColor || accentColor }}>
         <div className="day-header-top">
           <div>
             <div className="day-header-label">Day {dayIndex + 1}</div>
-            <div className="day-header-date">{formatDate(day.date)}</div>
+            <div className="day-header-date">{formatDate(day.date) || 'Date not set'}</div>
           </div>
           <div className="day-header-stats">
-            <span className="day-stat">{day.items.length} activities</span>
+            <span className="day-stat">{day.items.length} items</span>
             {llCount > 0 && <span className="day-stat" style={{ color: '#a78bfa' }}>⚡ {llCount} LL</span>}
-            <span className="day-stat">{Math.round(totalTime / 60)}h planned</span>
-            {day.items.length > 0 && (
-              <span className="day-stat" style={{ color: 'var(--success)' }}>
-                ✓ {doneCount}/{day.items.length}
-              </span>
-            )}
+            <span className="day-stat">{totalTime >= 60 ? `${(totalTime/60).toFixed(1)}h` : `${totalTime}m`} planned</span>
+            {day.items.length > 0 && <span className="day-stat" style={{ color: 'var(--success)' }}>✓ {doneCount}/{day.items.length}</span>}
           </div>
-        </div>
-
-        {/* Park selector */}
-        <div className="day-header-row">
-          <span className="pic-label">Park</span>
-          <select
-            className="day-park-select"
-            value={day.parkId}
-            onChange={e => onUpdateDay({ parkId: e.target.value })}
-          >
-            <option value="">— Select Park —</option>
-            {allParks.map(p => (
-              <option key={p.id} value={p.id}>{p.emoji} {p.name}</option>
-            ))}
-          </select>
         </div>
 
         {/* Date */}
         <div className="day-header-row">
           <span className="pic-label">Date</span>
-          <input
-            className="day-date-input"
-            type="date"
-            value={day.date}
-            onChange={e => onUpdateDay({ date: e.target.value })}
-          />
+          <input className="day-date-input" type="date" value={day.date} onChange={e => onUpdateDay({ date: e.target.value })} />
         </div>
 
-        {/* Notes */}
+        {/* Multi-park selector */}
+        <div>
+          <div className="pic-label" style={{ marginBottom: 8 }}>Parks (select one or more)</div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            {allParks.map(p => {
+              const selected = (day.parkIds || (day.parkId ? [day.parkId] : [])).includes(p.id)
+              return (
+                <button
+                  key={p.id}
+                  className={`filter-pill${selected ? ' on' : ''}`}
+                  style={selected ? { borderColor: p.accentColor, color: p.accentColor, background: `${p.accentColor}18` } : {}}
+                  onClick={() => togglePark(p.id)}
+                >
+                  {p.emoji} {p.name.split(' ').slice(-1)[0]}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Day notes */}
         <div className="day-header-row" style={{ alignItems: 'flex-start' }}>
-          <span className="pic-label" style={{ paddingTop: 4 }}>Notes</span>
-          <textarea
-            className="day-notes"
-            value={day.notes}
+          <span className="pic-label" style={{ paddingTop: 6 }}>Notes</span>
+          <textarea className="day-notes" rows={2} value={day.notes}
             onChange={e => onUpdateDay({ notes: e.target.value })}
-            placeholder="Day notes, tips, reminders…"
-            rows={2}
-          />
+            placeholder="ADR times, special events, reminders…" />
         </div>
 
-        {/* Progress bar */}
         {day.items.length > 0 && (
-          <div className="progress-track" style={{ marginTop: 12 }}>
-            <div
-              className="progress-fill"
-              style={{ width: `${(doneCount / day.items.length) * 100}%`, background: park?.accentColor || accentColor }}
-            />
+          <div className="progress-track" style={{ marginTop: 8 }}>
+            <div className="progress-fill" style={{ width: `${(doneCount/day.items.length)*100}%`, background: primaryPark?.accentColor || accentColor }} />
           </div>
         )}
       </div>
 
-      {/* Items list */}
+      {/* Items */}
       {day.items.length === 0 ? (
         <div className="day-empty">
-          <div style={{ fontSize: '2.5rem', marginBottom: 10 }}>📋</div>
-          <div style={{ color: 'var(--text-secondary)', marginBottom: 4 }}>No activities planned yet</div>
-          <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-            Add rides, meals, shows, and breaks below
-          </div>
+          <div style={{ fontSize: '2.5rem', marginBottom: 8 }}>📋</div>
+          <div>No activities planned yet</div>
+          <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: 4 }}>Add rides, meals, shows, and breaks below</div>
         </div>
       ) : (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={day.items.map(i => i.id)}
-            strategy={verticalListSortingStrategy}
-          >
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={day.items.map(i => i.id)} strategy={verticalListSortingStrategy}>
             <div className="items-list">
               {day.items.map(item => (
-                <SortableItem
-                  key={item.id}
-                  item={item}
-                  accentColor={park?.accentColor || accentColor}
+                <SortableItem key={item.id} item={item} accentColor={primaryPark?.accentColor || accentColor}
                   onUpdate={patch => updateItem(item.id, patch)}
                   onDelete={() => deleteItem(item.id)}
                 />
@@ -466,101 +411,115 @@ function DayView({ day, dayIndex, onUpdateDay, accentColor }) {
         <button
           className="day-add-btn ride"
           onClick={() => setShowRidePicker(true)}
-          disabled={!day.parkId}
-          title={!day.parkId ? 'Select a park first' : 'Add a ride'}
+          disabled={!parks.length}
+          title={!parks.length ? 'Select a park first' : 'Add a ride'}
         >
           🎢 Add Ride
         </button>
         <button className="day-add-btn custom" onClick={() => setShowCustomModal(true)}>
-          ＋ Food / Show / Break
+          ＋ Add Food / Show / Break
         </button>
       </div>
-      {!day.parkId && (
+      {!parks.length && (
         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: 4, paddingLeft: 4 }}>
-          Select a park above to browse rides
+          Select at least one park above to browse rides
         </div>
       )}
 
-      {/* Modals */}
-      {showRidePicker && park && (
+      {showRidePicker && parks.length > 0 && (
         <AddRideModal
-          park={park}
+          parkIds={parks.map(p => p.id)}
           onAdd={addItem}
           onClose={() => setShowRidePicker(false)}
         />
       )}
       {showCustomModal && (
-        <CustomItemModal
-          onAdd={addItem}
-          onClose={() => setShowCustomModal(false)}
-        />
+        <AddCustomModal onAdd={addItem} onClose={() => setShowCustomModal(false)} />
       )}
     </div>
   )
 }
 
-// ── Trip Setup Panel ─────────────────────────────────────────
-function TripSetup({ trip, onUpdate }) {
-  const [open, setOpen] = useState(!trip.hotel && !trip.checkIn)
+// ── Trip Setup ───────────────────────────────────────────────
+const HOTEL_SUGGESTIONS = {
+  'disney-world':      ['Grand Floridian', 'Polynesian', 'Contemporary', 'Wilderness Lodge', 'Yacht Club', 'Beach Club', 'BoardWalk', 'Pop Century', 'Art of Animation', 'All-Star Movies', 'Saratoga Springs', 'Old Key West', 'Animal Kingdom Lodge', 'Coronado Springs', 'Caribbean Beach'],
+  'universal-orlando': ['Hard Rock Hotel', 'Sapphire Falls', 'Royal Pacific', 'Cabana Bay', 'Aventura Hotel', 'Endless Summer', 'Stella Nova', 'Terra Luna'],
+}
+
+function TripSetup({ trip, onUpdate, activeResortId }) {
+  const [open, setOpen]           = useState(!trip.hotel && !trip.checkIn)
+  const [hotelSugg, setHotelSugg] = useState(false)
+
+  const suggestions = HOTEL_SUGGESTIONS[activeResortId] || []
+  const filtered    = trip.hotel ? suggestions.filter(s => s.toLowerCase().includes(trip.hotel.toLowerCase())) : suggestions
 
   return (
     <div className="trip-setup">
-      <button
-        className="trip-setup-toggle"
-        onClick={() => setOpen(v => !v)}
-      >
+      <button className="trip-setup-toggle" onClick={() => setOpen(v => !v)}>
         <div className="trip-setup-summary">
           <span>🏨</span>
-          <span style={{ fontWeight: 700 }}>
-            {trip.hotel || 'Add hotel & dates'}
-          </span>
+          <span style={{ fontWeight: 700 }}>{trip.hotel || 'Add hotel & dates'}</span>
           {trip.checkIn && trip.checkOut && (
             <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
               · {formatDate(trip.checkIn)} → {formatDate(trip.checkOut)}
             </span>
           )}
         </div>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{open ? '▲' : '▼'}</span>
+        <span style={{ color: 'var(--text-muted)' }}>{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
         <div className="trip-setup-body animate-float-up">
-          <div className="trip-field-row">
-            <label className="trip-label">Hotel / Resort</label>
-            <input
-              className="trip-input"
-              placeholder="e.g. Grand Floridian, Hard Rock Hotel…"
-              value={trip.hotel}
-              onChange={e => onUpdate({ hotel: e.target.value })}
-            />
+
+          {/* Hotel with autocomplete */}
+          <div className="trip-field-row" style={{ position: 'relative' }}>
+            <label className="trip-label">Hotel</label>
+            <div style={{ flex: 1, position: 'relative' }}>
+              <input
+                className="trip-input"
+                placeholder="e.g. Grand Floridian, Hard Rock Hotel…"
+                value={trip.hotel}
+                onChange={e => { onUpdate({ hotel: e.target.value }); setHotelSugg(true) }}
+                onFocus={() => setHotelSugg(true)}
+                onBlur={() => setTimeout(() => setHotelSugg(false), 150)}
+              />
+              {hotelSugg && filtered.length > 0 && (
+                <div className="search-dropdown">
+                  {filtered.slice(0, 6).map(s => (
+                    <div key={s} className="search-dropdown-item" onMouseDown={() => { onUpdate({ hotel: s }); setHotelSugg(false) }}>
+                      <span className="sddi-name">🏨 {s}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
+
+          {/* Check in / Check out — properly formatted */}
           <div className="trip-field-row">
             <label className="trip-label">Check In</label>
-            <input
-              className="trip-input"
-              type="date"
-              value={trip.checkIn}
-              onChange={e => onUpdate({ checkIn: e.target.value })}
-            />
+            <input className="trip-input" type="date" value={trip.checkIn}
+              onChange={e => onUpdate({ checkIn: e.target.value })} style={{ maxWidth: 200 }} />
           </div>
           <div className="trip-field-row">
             <label className="trip-label">Check Out</label>
-            <input
-              className="trip-input"
-              type="date"
-              value={trip.checkOut}
-              onChange={e => onUpdate({ checkOut: e.target.value })}
-            />
+            <input className="trip-input" type="date" value={trip.checkOut}
+              onChange={e => onUpdate({ checkOut: e.target.value })} style={{ maxWidth: 200 }} />
           </div>
+          {trip.checkIn && trip.checkOut && (
+            <div style={{ paddingLeft: 92, fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
+              {(() => {
+                const d = Math.round((new Date(trip.checkOut) - new Date(trip.checkIn)) / 86400000)
+                return d > 0 ? `${d} night${d !== 1 ? 's' : ''}` : ''
+              })()}
+            </div>
+          )}
+
           <div className="trip-field-row" style={{ alignItems: 'flex-start' }}>
-            <label className="trip-label" style={{ paddingTop: 6 }}>Trip Notes</label>
-            <textarea
-              className="trip-input"
-              placeholder="Reservations, important reminders, packing list…"
-              value={trip.notes}
+            <label className="trip-label" style={{ paddingTop: 6 }}>Notes</label>
+            <textarea className="trip-input" rows={3} value={trip.notes}
               onChange={e => onUpdate({ notes: e.target.value })}
-              rows={3}
-            />
+              placeholder="ADRs, special events, packing list…" />
           </div>
         </div>
       )}
@@ -568,23 +527,17 @@ function TripSetup({ trip, onUpdate }) {
   )
 }
 
-// ── Main DayPlanner ──────────────────────────────────────────
+// ── Main ─────────────────────────────────────────────────────
 export default function DayPlanner() {
-  const { activeResort, isDisney } = useApp()
-  const [trip, setTrip] = useState(loadTrip)
+  const { activeResort, isDisney, activeResortId } = useApp()
+  const [trip,      setTrip]      = useState(loadTrip)
   const [activeDay, setActiveDay] = useState(0)
 
-  // Persist on every change
   useEffect(() => { saveTrip(trip) }, [trip])
 
   const updateTrip = useCallback((patch) => setTrip(t => ({ ...t, ...patch })), [])
-
-  const updateDay = useCallback((dayId, patch) => {
-    setTrip(t => ({
-      ...t,
-      days: t.days.map(d => d.id === dayId ? { ...d, ...patch } : d)
-    }))
-  }, [])
+  const updateDay  = useCallback((dayId, patch) =>
+    setTrip(t => ({ ...t, days: t.days.map(d => d.id === dayId ? { ...d, ...patch } : d) })), [])
 
   const addDay = () => {
     const newDay = makeDay()
@@ -605,57 +558,44 @@ export default function DayPlanner() {
     <div className="planner-page animate-fade-in">
       <div className="planner-page-header">
         <h1 className="page-title">📋 Trip Planner</h1>
-        <p className="page-subtitle">
-          Plan your complete itinerary — rides, meals, Lightning Lanes, and more.
-          Drag items to reorder. Everything saves automatically.
-        </p>
+        <p className="page-subtitle">Plan your complete itinerary. Drag items to reorder. Saves automatically.</p>
       </div>
 
-      {/* Trip setup */}
-      <TripSetup trip={trip} onUpdate={updateTrip} />
+      <TripSetup trip={trip} onUpdate={updateTrip} activeResortId={activeResortId} />
 
       {/* Day tabs */}
       <div className="day-tabs-bar">
         <div className="day-tabs-scroll">
           {trip.days.map((d, i) => {
-            const park = getParkById(d.parkId)
+            const parks = (d.parkIds || (d.parkId ? [d.parkId] : [])).map(getParkById).filter(Boolean)
             return (
               <button
                 key={d.id}
                 className={`day-tab${activeDay === i ? ' active' : ''}`}
-                style={activeDay === i ? { borderBottomColor: park?.accentColor || accentColor } : {}}
+                style={activeDay === i && parks[0] ? { borderBottomColor: parks[0].accentColor } : {}}
                 onClick={() => setActiveDay(i)}
               >
                 <span className="day-tab-num">Day {i + 1}</span>
-                {park && <span className="day-tab-park">{park.emoji} {park.name.split(' ')[0]}</span>}
+                <span className="day-tab-park">
+                  {parks.map(p => p.emoji).join('')} {parks.length === 1 ? parks[0].name.split(' ')[0] : parks.length > 1 ? `${parks.length} parks` : ''}
+                </span>
                 {d.date && <span className="day-tab-date">{formatDate(d.date).split(',')[0]}</span>}
-                <button
-                  className="day-tab-delete"
-                  onClick={e => { e.stopPropagation(); deleteDay(i) }}
-                  title="Remove day"
-                >×</button>
+                <button className="day-tab-delete" onClick={e => { e.stopPropagation(); deleteDay(i) }}>×</button>
               </button>
             )
           })}
-          <button className="day-tab-add" onClick={addDay}>
-            + Add Day
-          </button>
+          <button className="day-tab-add" onClick={addDay}>+ Add Day</button>
         </div>
       </div>
 
-      {/* Day content */}
       {trip.days.length === 0 ? (
         <div className="planner-empty">
           <div style={{ fontSize: '3rem', marginBottom: 16 }}>🗺️</div>
           <h2 style={{ fontFamily: 'Cormorant Garamond, serif', marginBottom: 8 }}>No days planned yet</h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: 24, maxWidth: 360 }}>
-            Add your first day to start building your itinerary — rides, meals, shows, and Lightning Lane slots all in one place.
+            Start building your perfect itinerary — rides, meals, Lightning Lanes, and more.
           </p>
-          <button
-            className="btn-primary ridden-state"
-            style={{ background: accentColor, border: 'none' }}
-            onClick={addDay}
-          >
+          <button className="btn-primary ridden-state" style={{ background: accentColor, border: 'none' }} onClick={addDay}>
             + Add Your First Day
           </button>
         </div>

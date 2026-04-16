@@ -1,37 +1,20 @@
-// ============================================================
-// TRIP PLANNER UTILITIES
-// ============================================================
 import { RESORTS } from './data'
 
 const STORAGE_KEY = 'pp_trip_v3'
 
 export function loadTrip() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return defaultTrip()
-    return JSON.parse(raw)
-  } catch { return defaultTrip() }
+  try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : defaultTrip() }
+  catch { return defaultTrip() }
 }
+export function saveTrip(trip) { localStorage.setItem(STORAGE_KEY, JSON.stringify(trip)) }
 
-export function saveTrip(trip) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(trip))
-}
+export function defaultTrip() { return { hotel: '', checkIn: '', checkOut: '', notes: '', days: [] } }
 
-export function defaultTrip() {
+export function makeDay(date = '', parkIds = []) {
   return {
-    hotel: '',
-    checkIn: '',
-    checkOut: '',
-    notes: '',
-    days: [],
-  }
-}
-
-export function makeDay(date = '', parkId = '') {
-  return {
-    id: `day-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    id: `day-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
     date,
-    parkId,
+    parkIds,        // ← now an ARRAY to support multiple parks
     notes: '',
     items: [],
   }
@@ -39,16 +22,12 @@ export function makeDay(date = '', parkId = '') {
 
 export function makeItem(type = 'ride', overrides = {}) {
   return {
-    id: `item-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-    type,          // 'ride' | 'food' | 'show' | 'break' | 'custom'
-    rideId: '',
-    name: '',
-    time: '',
-    duration: 60,
-    hasLL: false,
-    llTime: '',
-    notes: '',
-    done: false,
+    id: `item-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
+    type,
+    rideId: '', name: '',
+    time: '', duration: 60,
+    hasLL: false, llTime: '',
+    notes: '', done: false,
     ...overrides,
   }
 }
@@ -60,33 +39,33 @@ export function getParkById(parkId) {
   return null
 }
 
-export function getAllParks() {
-  return RESORTS.flatMap(r => r.parks)
-}
+export function getAllParks() { return RESORTS.flatMap(r => r.parks) }
 
 export function formatDate(iso) {
   if (!iso) return ''
-  const d = new Date(iso + 'T12:00:00')
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-}
-
-export function daysBetween(checkIn, checkOut) {
-  if (!checkIn || !checkOut) return 0
-  const a = new Date(checkIn), b = new Date(checkOut)
-  return Math.max(0, Math.round((b - a) / 86400000))
+  return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
 export function arrayMove(arr, from, to) {
-  const out = [...arr]
-  const [item] = out.splice(from, 1)
-  out.splice(to, 0, item)
-  return out
+  const out = [...arr]; const [item] = out.splice(from, 1); out.splice(to, 0, item); return out
 }
 
 export const ITEM_TYPE_CONFIG = {
-  ride:   { emoji: '🎢', label: 'Ride',          color: '#60a5fa' },
-  food:   { emoji: '🍽️', label: 'Food / Drink',  color: '#34d399' },
-  show:   { emoji: '🎭', label: 'Show',           color: '#c4b5fd' },
-  break:  { emoji: '☀️', label: 'Break / Rest',   color: '#fcd34d' },
-  custom: { emoji: '📌', label: 'Custom',         color: '#f87171' },
+  ride:   { emoji: '🎢', label: 'Ride' },
+  food:   { emoji: '🍽️', label: 'Food / Drink' },
+  show:   { emoji: '🎭', label: 'Show / Entertainment' },
+  break:  { emoji: '☀️', label: 'Break / Rest' },
+  event:  { emoji: '🎉', label: 'Event' },
+  resort: { emoji: '🏨', label: 'Hotel / Resort' },
 }
+
+export const DURATION_OPTIONS = [
+  { value: 15,  label: '15 min' },
+  { value: 30,  label: '30 min' },
+  { value: 45,  label: '45 min' },
+  { value: 60,  label: '1 hour' },
+  { value: 90,  label: '1.5 hrs' },
+  { value: 120, label: '2 hours' },
+  { value: 180, label: '3 hours' },
+  { value: 240, label: '4 hours' },
+]

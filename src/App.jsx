@@ -21,16 +21,16 @@ function saveSet(key, set) {
 }
 
 export default function App() {
-  const [checkedRides,   setCheckedRides]   = useState(() => loadSet('pp_checked_rides'))
-  const [foundMickeys,   setFoundMickeys]   = useState(() => loadSet('pp_found_mickeys'))
-  const [triedFood,      setTriedFood]      = useState(() => loadSet('pp_tried_food'))
-  const [triedDrinks,    setTriedDrinks]    = useState(() => loadSet('pp_tried_drinks'))
-  const [manualDown,     setManualDown]     = useState(() => loadSet('pp_manual_down'))
-  const [activeResortId, setActiveResortId] = useState(() => localStorage.getItem('pp_active_resort') || null)
+  const [checkedRides,    setCheckedRides]    = useState(() => loadSet('pp_checked_rides'))
+  const [foundMickeys,    setFoundMickeys]    = useState(() => loadSet('pp_found_mickeys'))
+  const [triedFood,       setTriedFood]       = useState(() => loadSet('pp_tried_food'))
+  const [triedDrinks,     setTriedDrinks]     = useState(() => loadSet('pp_tried_drinks'))
+  const [manualDown,      setManualDown]      = useState(() => loadSet('pp_manual_down'))
+  const [personalMustRide,setPersonalMustRide]= useState(() => loadSet('pp_personal_must'))
+  const [activeResortId,  setActiveResortId]  = useState(() => localStorage.getItem('pp_active_resort') || null)
 
   const activeResort = activeResortId ? RESORTS.find(r => r.id === activeResortId) : null
 
-  // Apply theme class to body
   useEffect(() => {
     document.body.className = activeResortId === 'disney-world'
       ? 'app-disney'
@@ -39,14 +39,8 @@ export default function App() {
       : ''
   }, [activeResortId])
 
-  const setActiveResort = (id) => {
-    setActiveResortId(id)
-    localStorage.setItem('pp_active_resort', id)
-  }
-  const clearActiveResort = () => {
-    setActiveResortId(null)
-    localStorage.removeItem('pp_active_resort')
-  }
+  const setActiveResort = (id) => { setActiveResortId(id); localStorage.setItem('pp_active_resort', id) }
+  const clearActiveResort = () => { setActiveResortId(null); localStorage.removeItem('pp_active_resort') }
 
   const toggleRide = (id) => setCheckedRides(prev => {
     const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
@@ -68,6 +62,10 @@ export default function App() {
     const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
     saveSet('pp_manual_down', next); return next
   })
+  const togglePersonalMust = (id) => setPersonalMustRide(prev => {
+    const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
+    saveSet('pp_personal_must', next); return next
+  })
 
   return (
     <AppContext.Provider value={{
@@ -76,6 +74,7 @@ export default function App() {
       triedFood,    toggleFood,
       triedDrinks,  toggleDrink,
       manualDown,   toggleManualDown,
+      personalMustRide, togglePersonalMust,
       activeResort, activeResortId,
       setActiveResort, clearActiveResort,
       isDisney:    activeResortId === 'disney-world',
