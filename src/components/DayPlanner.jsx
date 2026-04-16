@@ -16,6 +16,7 @@ import {
   getParkById, getAllParks, formatDate,
   arrayMove, ITEM_TYPE_CONFIG, DURATION_OPTIONS,
 } from '../plannerUtils'
+import { FOOD_DRINKS } from '../data'
 import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 
@@ -215,71 +216,199 @@ function AddRideModal({ parkIds, onAdd, onClose }) {
   )
 }
 
+// Map park IDs → food categories in the data
+const PARK_FOOD_CATEGORIES = {
+  'magic-kingdom':             ['Magic Kingdom'],
+  'epcot':                     ['EPCOT'],
+  'hollywood-studios':         ['Hollywood Studios'],
+  'animal-kingdom':            ['Animal Kingdom'],
+  'universal-studios-florida': ['Wizarding World', 'Springfield'],
+  'islands-of-adventure':      ['Wizarding World'],
+  'epic-universe':             ['Epic Universe'],
+}
+
 // ── Add Custom Modal ─────────────────────────────────────────
-function AddCustomModal({ onAdd, onClose }) {
-  const [type, setType]   = useState('food')
-  const [name, setName]   = useState('')
-  const [time, setTime]   = useState('')
-  const [focused, setFocused] = useState(false)
+function AddCustomModal({ onAdd, onClose, parkIds = [] }) {
+  const [type,   setType]   = useState('food')
+  const [name,   setName]   = useState('')
+  const [time,   setTime]   = useState('')
+  const [search, setSearch] = useState('')
 
   const cfg = ITEM_TYPE_CONFIG[type] || ITEM_TYPE_CONFIG.event
 
+  // Build food list for selected parks
+  const relevantCategories = [...new Set(
+    parkIds.flatMap(id => PARK_FOOD_CATEGORIES[id] || [])
+  )]
+  const allFoodItems = [
+    ...(FOOD_DRINKS.disneyWorldFood || []),
+    ...(FOOD_DRINKS.universalFood   || []),
+  ].filter(f => relevantCategories.length === 0 || relevantCategories.includes(f.category))
+
+  const filteredFood = search.trim()
+    ? allFoodItems.filter(f =>
+        f.name.toLowerCase().includes(search.toLowerCase()) ||
+        f.location.toLowerCase().includes(search.toLowerCase())
+      )
+    : allFoodItems
+
+  const isFood = type === 'food'
+
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-panel small" onClick={e => e.stopPropagation()}>
+      <div className="modal-panel" style={{ maxHeight: '88vh' }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title">Add {cfg.label}</div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
         {/* Type selector */}
-        <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Type</div>
+        <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {Object.entries(ITEM_TYPE_CONFIG).filter(([k]) => k !== 'ride').map(([key, c]) => (
-              <button key={key} className={`filter-pill${type === key ? ' on' : ''}`} onClick={() => setType(key)}>
+              <button
+                key={key}
+                className={`filter-pill${type === key ? ' on' : ''}`}
+                onClick={() => { setType(key); setSearch(''); setName('') }}
+              >
                 {c.emoji} {c.label}
               </button>
             ))}
           </div>
         </div>
 
-        <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {/* Name — no auto-focus, tap to activate */}
-          <div>
-            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>
-              Name / Description
+        {/* Food picker — shown when type is food */}
+        {isFood && (
+          <>
+            <div className="modal-search-row" style={{ flexShrink: 0 }}>
+              <input
+                className="modal-search"
+                placeholder="Search food & drinks…"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
             </div>
-            <input
-              className="modal-search"
-              placeholder={`e.g. ${type === 'food' ? 'Lunch at Sci-Fi Dine-In' : type === 'show' ? 'Festival of the Lion King' : type === 'break' ? 'Pool break at hotel' : type === 'event' ? 'Fireworks at 9pm' : 'Hotel check-in'}`}
-              value={name}
-              onChange={e => setName(e.target.value)}
-              onFocus={() => setFocused(true)}
-            />
-          </div>
-          <div>
-            <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 6 }}>
-              Time (optional)
-            </div>
-            <input className="modal-search" type="time" value={time} onChange={e => setTime(e.target.value)} style={{ width: 'auto' }} />
-          </div>
-        </div>
 
-        <div style={{ padding: '0 20px 20px', display: 'flex', gap: 10 }}>
-          <button
-            className="btn-primary ridden-state"
-            style={{ flex: 1, border: 'none' }}
-            onClick={() => {
-              if (!name.trim()) return
-              onAdd(makeItem(type, { name: name.trim(), time }))
-              onClose()
-            }}
-          >
-            Add {cfg.emoji} {cfg.label}
-          </button>
-          <button className="btn-primary btn-ghost" onClick={onClose}>Cancel</button>
-        </div>
+            <div className="modal-ride-list" style={{ flex: 1, minHeight: 0 }}>
+              {/* Grouped by park/category */}
+              {(search.trim() ? ['Search Results'] : relevantCategories.length > 0 ? relevantCategories : ['All Items']).map(cat => {
+                const items = search.trim()
+                  ? filteredFood
+                  : allFoodItems.filter(f => f.category === cat)
+                if (!items.length) return null
+                return (
+                  <div key={cat}>
+                    {!search.trim() && <div className="modal-land-label">{cat}</div>}
+                    {items.map(food => (
+                      <div
+                        key={food.id}
+                        className="modal-ride-row"
+                        onClick={() => {
+                          onAdd(makeItem('food', { name: food.name, duration: 45, notes: food.location }))
+                          onClose()
+                        }}
+                      >
+                        <div className="modal-ride-info">
+                          <span className="modal-ride-name">{food.name}</span>
+                          <div className="modal-ride-badges">
+                            <span className="badge" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{food.location}</span>
+                            {food.mustTry && <span className="badge badge-mustdo">⭐ Must Try</span>}
+                            <span className="badge" style={{ color: 'var(--accent)' }}>{food.price}</span>
+                          </div>
+                        </div>
+                        <span className="modal-add-icon">+</span>
+                      </div>
+                    ))}
+                  </div>
+                )
+              })}
+
+              {filteredFood.length === 0 && (
+                <div className="empty-state" style={{ padding: 24 }}>
+                  <div className="empty-icon">🍽️</div>
+                  <div className="empty-text">No food items found</div>
+                </div>
+              )}
+
+              {/* Custom entry option always at bottom */}
+              <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)', flexShrink: 0 }}>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Or enter a custom food / drink:
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <input
+                    className="modal-search"
+                    placeholder="e.g. Lunch at Sci-Fi Dine-In…"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    className="btn-primary ridden-state"
+                    style={{ border: 'none', whiteSpace: 'nowrap', padding: '10px 16px', borderRadius: 'var(--r-md)' }}
+                    onClick={() => {
+                      if (!name.trim()) return
+                      onAdd(makeItem('food', { name: name.trim(), time, duration: 45 }))
+                      onClose()
+                    }}
+                    disabled={!name.trim()}
+                  >
+                    Add ＋
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Non-food types — simple entry */}
+        {!isFood && (
+          <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+                Name / Description
+              </div>
+              <input
+                className="modal-search"
+                placeholder={
+                  type === 'show'   ? 'e.g. Festival of the Lion King' :
+                  type === 'break'  ? 'e.g. Pool break, lunch break' :
+                  type === 'event'  ? 'e.g. Fireworks at 9pm' :
+                  'e.g. Hotel check-in'
+                }
+                value={name}
+                onChange={e => setName(e.target.value)}
+              />
+            </div>
+            <div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
+                Time (optional)
+              </div>
+              <input
+                className="modal-search"
+                type="time"
+                value={time}
+                onChange={e => setTime(e.target.value)}
+                style={{ width: 'auto' }}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                className="btn-primary ridden-state"
+                style={{ flex: 1, border: 'none' }}
+                onClick={() => {
+                  if (!name.trim()) return
+                  onAdd(makeItem(type, { name: name.trim(), time }))
+                  onClose()
+                }}
+                disabled={!name.trim()}
+              >
+                Add {cfg.emoji} {cfg.label}
+              </button>
+              <button className="btn-primary btn-ghost" onClick={onClose}>Cancel</button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -434,7 +563,11 @@ function DayView({ day, dayIndex, onUpdateDay, accentColor }) {
         />
       )}
       {showCustomModal && (
-        <AddCustomModal onAdd={addItem} onClose={() => setShowCustomModal(false)} />
+        <AddCustomModal
+          onAdd={addItem}
+          onClose={() => setShowCustomModal(false)}
+          parkIds={parks.map(p => p.id)}
+        />
       )}
     </div>
   )
