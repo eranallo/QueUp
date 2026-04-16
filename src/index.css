@@ -1780,16 +1780,23 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   border-radius: var(--r-xl) var(--r-xl) 0 0;
   width: 100%;
   max-width: 560px;
-  max-height: 85vh;
+  height: 85vh;
   display: flex;
   flex-direction: column;
   animation: floatUp 0.25s var(--ease-spring);
   overflow: hidden;
 }
-@media (min-width: 600px) {
-  .modal-panel { border-radius: var(--r-xl); max-height: 80vh; }
+.modal-scroll-region {
+  flex: 1;
+  min-height: 0;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
-.modal-panel.small { max-height: 70vh; }
+@media (min-width: 600px) {
+  .modal-panel { border-radius: var(--r-xl); height: 80vh; }
+}
+.modal-panel.small { height: 55vh; }
 .modal-header {
   display: flex;
   align-items: center;
@@ -1824,7 +1831,7 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
 }
 .modal-search:focus { border-color: var(--accent); }
 .modal-filters { padding: 10px 20px; display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; border-bottom: 1px solid var(--border); }
-.modal-ride-list { overflow-y: auto; flex: 1; padding: 8px 0 16px; }
+.modal-ride-list { overflow-y: scroll; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; flex: 1; min-height: 0; padding: 8px 0 16px; }
 .modal-land-label {
   padding: 8px 20px 4px;
   font-size: 0.65rem;

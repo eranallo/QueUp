@@ -139,7 +139,9 @@ function AddRideModal({ parkIds, onAdd, onClose }) {
 
         <div className="modal-search-row" style={{ position: 'relative' }}>
           <input className="modal-search" placeholder="Search rides…" value={search}
-            onChange={e => setSearch(e.target.value)} autoFocus />
+            onChange={e => setSearch(e.target.value)}
+            tabIndex={-1}
+            onFocus={e => e.target.removeAttribute('tabindex')} />
           {/* Dropdown suggestions */}
           {suggestions.length > 0 && search.length > 0 && (
             <div className="search-dropdown" style={{ top: '100%', margin: '4px 0 0' }}>
@@ -173,7 +175,7 @@ function AddRideModal({ parkIds, onAdd, onClose }) {
           <button className={`filter-pill${filter==='ll'?' on':''}`} onClick={() => setFilter('ll')}>⚡ LL</button>
         </div>
 
-        <div className="modal-ride-list">
+        <div className="modal-scroll-region" style={{ paddingBottom: 8 }}>
           {park?.lands.map(land => {
             const rides = land.rides.filter(r => visible.includes(r))
             if (!rides.length) return null
@@ -227,6 +229,17 @@ const PARK_FOOD_CATEGORIES = {
   'epic-universe':             ['Epic Universe'],
 }
 
+// Known shows per park
+const PARK_SHOWS = {
+  'magic-kingdom':             ["Mickey's Royal Friendship Faire", "Happily Ever After (Fireworks)", "Main Street Electrical Parade", "Mickey's PhilharMagic", "Move It! Shake It! MousekeDance It!"],
+  'epcot':                     ["EPCOT Forever (Fireworks)", "Harmonious", "Candlelight Processional (seasonal)", "The American Adventure", "Turtle Talk with Crush"],
+  'hollywood-studios':         ["Fantasmic!", "Star Wars: A Galactic Spectacular", "Indiana Jones Epic Stunt Spectacular", "Beauty and the Beast Live on Stage", "Disney Junior Play & Dance"],
+  'animal-kingdom':            ["Festival of the Lion King", "Finding Nemo: The Big Blue...and Beyond!", "UP! A Great Bird Adventure", "Rivers of Light"],
+  'universal-studios-florida': ["The Bourne Stuntacular", "Universal's Horror Make-Up Show"],
+  'islands-of-adventure':      ["Poseidon's Fury"],
+  'epic-universe':             ["How to Train Your Dragon Live Show", "Universal Monsters Live"],
+}
+
 // ── Add Custom Modal ─────────────────────────────────────────
 function AddCustomModal({ onAdd, onClose, parkIds = [] }) {
   const [type,   setType]   = useState('food')
@@ -236,179 +249,229 @@ function AddCustomModal({ onAdd, onClose, parkIds = [] }) {
 
   const cfg = ITEM_TYPE_CONFIG[type] || ITEM_TYPE_CONFIG.event
 
-  // Build food list for selected parks
-  const relevantCategories = [...new Set(
-    parkIds.flatMap(id => PARK_FOOD_CATEGORIES[id] || [])
-  )]
+  // ── Food data ──
+  const relevantFoodCats = [...new Set(parkIds.flatMap(id => PARK_FOOD_CATEGORIES[id] || []))]
   const allFoodItems = [
     ...(FOOD_DRINKS.disneyWorldFood || []),
     ...(FOOD_DRINKS.universalFood   || []),
-  ].filter(f => relevantCategories.length === 0 || relevantCategories.includes(f.category))
+  ].filter(f => relevantFoodCats.length === 0 || relevantFoodCats.includes(f.category))
 
   const filteredFood = search.trim()
     ? allFoodItems.filter(f =>
         f.name.toLowerCase().includes(search.toLowerCase()) ||
-        f.location.toLowerCase().includes(search.toLowerCase())
-      )
+        f.location.toLowerCase().includes(search.toLowerCase()))
     : allFoodItems
 
-  const isFood = type === 'food'
+  // ── Show data ──
+  const allShows = [...new Set(parkIds.flatMap(id => PARK_SHOWS[id] || []))]
+  const filteredShows = search.trim()
+    ? allShows.filter(s => s.toLowerCase().includes(search.toLowerCase()))
+    : allShows
+
+  const hasList = type === 'food' || type === 'show'
+
+  // Helper: build the list rows for food or show
+  const ListSection = () => {
+    if (type === 'food') {
+      // If searching, show flat filtered list
+      // If parks selected, group by their categories
+      // If no parks, show ALL items grouped by their actual category
+      const groupCategories = relevantFoodCats.length > 0
+        ? relevantFoodCats
+        : [...new Set(allFoodItems.map(f => f.category))]
+
+      if (search.trim()) {
+        return (
+          <>
+            {filteredFood.length === 0
+              ? <div className="empty-state" style={{ padding: 24 }}><div className="empty-icon">🍽️</div><div className="empty-text">No food items found</div></div>
+              : filteredFood.map(food => (
+                  <div key={food.id} className="modal-ride-row"
+                    onClick={() => { onAdd(makeItem('food', { name: food.name, duration: 45, notes: food.location })); onClose() }}>
+                    <div className="modal-ride-info">
+                      <span className="modal-ride-name">{food.name}</span>
+                      <div className="modal-ride-badges">
+                        <span className="badge" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{food.location}</span>
+                        {food.mustTry && <span className="badge badge-mustdo">⭐ Must Try</span>}
+                        <span className="badge" style={{ color: 'var(--accent)' }}>{food.price}</span>
+                      </div>
+                    </div>
+                    <span className="modal-add-icon">+</span>
+                  </div>
+                ))
+            }
+          </>
+        )
+      }
+
+      return (
+        <>
+          {groupCategories.map(cat => {
+            const items = allFoodItems.filter(f => f.category === cat)
+            if (!items.length) return null
+            return (
+              <div key={cat}>
+                <div className="modal-land-label">{cat}</div>
+                {items.map(food => (
+                  <div key={food.id} className="modal-ride-row"
+                    onClick={() => { onAdd(makeItem('food', { name: food.name, duration: 45, notes: food.location })); onClose() }}>
+                    <div className="modal-ride-info">
+                      <span className="modal-ride-name">{food.name}</span>
+                      <div className="modal-ride-badges">
+                        <span className="badge" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{food.location}</span>
+                        {food.mustTry && <span className="badge badge-mustdo">⭐ Must Try</span>}
+                        <span className="badge" style={{ color: 'var(--accent)' }}>{food.price}</span>
+                      </div>
+                    </div>
+                    <span className="modal-add-icon">+</span>
+                  </div>
+                ))}
+              </div>
+            )
+          })}
+          {allFoodItems.length === 0 && (
+            <div className="empty-state" style={{ padding: 24 }}>
+              <div className="empty-icon">🍽️</div>
+              <div className="empty-text">No food items available</div>
+            </div>
+          )}
+        </>
+      )
+    }
+
+    if (type === 'show') {
+      return (
+        <>
+          {filteredShows.length > 0
+            ? filteredShows.map(show => (
+                <div key={show} className="modal-ride-row"
+                  onClick={() => { onAdd(makeItem('show', { name: show, duration: 45 })); onClose() }}>
+                  <div className="modal-ride-info">
+                    <span className="modal-ride-name">🎭 {show}</span>
+                  </div>
+                  <span className="modal-add-icon">+</span>
+                </div>
+              ))
+            : <div className="empty-state" style={{ padding: 24 }}>
+                <div className="empty-icon">🎭</div>
+                <div className="empty-text">No shows found for selected parks</div>
+              </div>
+          }
+        </>
+      )
+    }
+
+    return null
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-panel" style={{ maxHeight: '88vh' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+      {/* Fixed-height flex column so the list scrolls independently */}
+      <div
+        className="modal-panel"
+        style={{ display: 'flex', flexDirection: 'column' }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* ── Header (fixed) ── */}
+        <div className="modal-header" style={{ flexShrink: 0 }}>
           <div className="modal-title">Add {cfg.label}</div>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
-        {/* Type selector */}
+        {/* ── Type selector (fixed) ── */}
         <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
             {Object.entries(ITEM_TYPE_CONFIG).filter(([k]) => k !== 'ride').map(([key, c]) => (
-              <button
-                key={key}
-                className={`filter-pill${type === key ? ' on' : ''}`}
-                onClick={() => { setType(key); setSearch(''); setName('') }}
-              >
+              <button key={key} className={`filter-pill${type === key ? ' on' : ''}`}
+                onClick={() => { setType(key); setSearch(''); setName('') }}>
                 {c.emoji} {c.label}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Food picker — shown when type is food */}
-        {isFood && (
-          <>
-            <div className="modal-search-row" style={{ flexShrink: 0 }}>
-              <input
-                className="modal-search"
-                placeholder="Search food & drinks…"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </div>
-
-            <div className="modal-ride-list" style={{ flex: 1, minHeight: 0 }}>
-              {/* Grouped by park/category */}
-              {(search.trim() ? ['Search Results'] : relevantCategories.length > 0 ? relevantCategories : ['All Items']).map(cat => {
-                const items = search.trim()
-                  ? filteredFood
-                  : allFoodItems.filter(f => f.category === cat)
-                if (!items.length) return null
-                return (
-                  <div key={cat}>
-                    {!search.trim() && <div className="modal-land-label">{cat}</div>}
-                    {items.map(food => (
-                      <div
-                        key={food.id}
-                        className="modal-ride-row"
-                        onClick={() => {
-                          onAdd(makeItem('food', { name: food.name, duration: 45, notes: food.location }))
-                          onClose()
-                        }}
-                      >
-                        <div className="modal-ride-info">
-                          <span className="modal-ride-name">{food.name}</span>
-                          <div className="modal-ride-badges">
-                            <span className="badge" style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{food.location}</span>
-                            {food.mustTry && <span className="badge badge-mustdo">⭐ Must Try</span>}
-                            <span className="badge" style={{ color: 'var(--accent)' }}>{food.price}</span>
-                          </div>
-                        </div>
-                        <span className="modal-add-icon">+</span>
-                      </div>
-                    ))}
-                  </div>
-                )
-              })}
-
-              {filteredFood.length === 0 && (
-                <div className="empty-state" style={{ padding: 24 }}>
-                  <div className="empty-icon">🍽️</div>
-                  <div className="empty-text">No food items found</div>
-                </div>
-              )}
-
-              {/* Custom entry option always at bottom */}
-              <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)', flexShrink: 0 }}>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Or enter a custom food / drink:
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <input
-                    className="modal-search"
-                    placeholder="e.g. Lunch at Sci-Fi Dine-In…"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    style={{ flex: 1 }}
-                  />
-                  <button
-                    className="btn-primary ridden-state"
-                    style={{ border: 'none', whiteSpace: 'nowrap', padding: '10px 16px', borderRadius: 'var(--r-md)' }}
-                    onClick={() => {
-                      if (!name.trim()) return
-                      onAdd(makeItem('food', { name: name.trim(), time, duration: 45 }))
-                      onClose()
-                    }}
-                    disabled={!name.trim()}
-                  >
-                    Add ＋
-                  </button>
-                </div>
-              </div>
-            </div>
-          </>
+        {/* ── Search row (fixed, only for list types) ── */}
+        {hasList && (
+          <div className="modal-search-row" style={{ flexShrink: 0 }}>
+            <input
+              className="modal-search"
+              placeholder={type === 'food' ? 'Search food & drinks…' : 'Search shows…'}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
         )}
 
-        {/* Non-food types — simple entry */}
-        {!isFood && (
-          <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
-                Name / Description
-              </div>
-              <input
-                className="modal-search"
-                placeholder={
-                  type === 'show'   ? 'e.g. Festival of the Lion King' :
-                  type === 'break'  ? 'e.g. Pool break, lunch break' :
-                  type === 'event'  ? 'e.g. Fireworks at 9pm' :
-                  'e.g. Hotel check-in'
-                }
-                value={name}
-                onChange={e => setName(e.target.value)}
-              />
+        {/* ── Scrollable list (flex: 1 = takes remaining space) ── */}
+        {hasList && (
+          <div className="modal-scroll-region">
+            <ListSection />
+          </div>
+        )}
+
+        {/* ── Custom / manual entry (fixed at bottom) ── */}
+        <div style={{
+          flexShrink: 0,
+          padding: '14px 16px',
+          borderTop: '1px solid var(--border)',
+          background: 'var(--bg-dark)',
+        }}>
+          {hasList && (
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              Or enter a custom {cfg.label.toLowerCase()}:
             </div>
-            <div>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>
-                Time (optional)
-              </div>
+          )}
+          {!hasList && (
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+              {cfg.emoji} {cfg.label} Details
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: 8, marginBottom: hasList ? 0 : 12 }}>
+            <input
+              className="modal-search"
+              placeholder={
+                type === 'food'   ? 'e.g. Lunch at Sci-Fi Dine-In…'     :
+                type === 'show'   ? 'e.g. Festival of the Lion King'      :
+                type === 'break'  ? 'e.g. Pool break, rest at hotel'      :
+                type === 'event'  ? 'e.g. Fireworks at 9pm, MNSSHP'       :
+                                    'e.g. Hotel check-in, resort activity'
+              }
+              value={name}
+              onChange={e => setName(e.target.value)}
+              style={{ flex: 1 }}
+            />
+            {!hasList && (
               <input
                 className="modal-search"
                 type="time"
                 value={time}
                 onChange={e => setTime(e.target.value)}
-                style={{ width: 'auto' }}
+                style={{ width: 110, flexShrink: 0 }}
               />
-            </div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                className="btn-primary ridden-state"
-                style={{ flex: 1, border: 'none' }}
-                onClick={() => {
-                  if (!name.trim()) return
-                  onAdd(makeItem(type, { name: name.trim(), time }))
-                  onClose()
-                }}
-                disabled={!name.trim()}
-              >
-                Add {cfg.emoji} {cfg.label}
-              </button>
-              <button className="btn-primary btn-ghost" onClick={onClose}>Cancel</button>
-            </div>
+            )}
+            <button
+              className="btn-primary ridden-state"
+              style={{ border: 'none', whiteSpace: 'nowrap', padding: '10px 16px', borderRadius: 'var(--r-md)', opacity: name.trim() ? 1 : 0.4 }}
+              onClick={() => {
+                if (!name.trim()) return
+                onAdd(makeItem(type, { name: name.trim(), time, duration: type === 'break' ? 30 : 60 }))
+                onClose()
+              }}
+              disabled={!name.trim()}
+            >
+              Add ＋
+            </button>
           </div>
-        )}
+
+          {/* Time picker for list types */}
+          {hasList && name.trim() && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>Time:</span>
+              <input className="modal-search" type="time" value={time} onChange={e => setTime(e.target.value)} style={{ width: 110 }} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
