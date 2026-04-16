@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import {
   DndContext, closestCenter,
   KeyboardSensor, PointerSensor,
@@ -11,12 +10,14 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
+import { Link } from 'react-router-dom'
 import {
   loadTrip, saveTrip, makeDay, makeItem,
   getParkById, getAllParks, formatDate,
   arrayMove, ITEM_TYPE_CONFIG, DURATION_OPTIONS,
 } from '../plannerUtils'
 import { FOOD_DRINKS } from '../data'
+import { HOTELS, getHotelsByResort } from '../hotelsData'
 import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 
@@ -477,142 +478,201 @@ function AddCustomModal({ onAdd, onClose, parkIds = [] }) {
   )
 }
 
-// ── Hotel Entry (per-day) ────────────────────────────────────
-const HOTEL_TYPE_LABELS = {
-  'check-in':  { label: 'Check In',  emoji: '🔑', color: '#34d399' },
-  'staying':   { label: 'Staying',   emoji: '🏨', color: 'var(--accent)' },
-  'check-out': { label: 'Check Out', emoji: '🧳', color: '#f87171' },
-}
-
+// ── Hotel Section (per-day, pick hotel → set times) ─────────
 function HotelSection({ day, onUpdateDay, activeResortId }) {
-  const [adding,    setAdding]    = useState(false)
-  const [newName,   setNewName]   = useState('')
-  const [newType,   setNewType]   = useState('staying')
-  const [showSugg,  setShowSugg]  = useState(false)
+  const [picking,     setPicking]     = useState(false)
+  const [search,      setSearch]      = useState('')
+  const [editingId,   setEditingId]   = useState(null)
 
-  const hotels  = day.hotels || []
-  const suggestions = HOTEL_SUGGESTIONS[activeResortId] || []
-  const filtered    = newName
-    ? suggestions.filter(s => s.toLowerCase().includes(newName.toLowerCase()))
-    : suggestions
+  const hotels      = day.hotels || []
+  const allHotels   = getHotelsByResort(activeResortId)
+  const otherHotels = activeResortId
+    ? allHotels
+    : HOTELS
 
-  const addHotel = () => {
-    if (!newName.trim()) return
+  const filtered = search.trim()
+    ? otherHotels.filter(h => h.name.toLowerCase().includes(search.toLowerCase()) || h.shortName.toLowerCase().includes(search.toLowerCase()))
+    : otherHotels
+
+  // Group by tier for display
+  const tiers = [...new Set(otherHotels.map(h => h.tier))]
+
+  const addHotel = (hotel) => {
     const entry = {
-      id:   `h-${Date.now()}`,
-      name: newName.trim(),
-      type: newType,
+      id:           `h-${Date.now()}`,
+      hotelId:      hotel.id,
+      name:         hotel.shortName,
+      emoji:        hotel.emoji,
+      checkInTime:  '',
+      checkOutTime: '',
     }
     onUpdateDay({ hotels: [...hotels, entry] })
-    setNewName(''); setNewType('staying'); setAdding(false)
+    setPicking(false)
+    setSearch('')
+    setEditingId(entry.id)  // auto-open time editor
   }
 
-  const removeHotel = (id) => onUpdateDay({ hotels: hotels.filter(h => h.id !== id) })
+  const removeHotel = (id) => {
+    onUpdateDay({ hotels: hotels.filter(h => h.id !== id) })
+    if (editingId === id) setEditingId(null)
+  }
 
-  const cycleType = (id) => {
-    const types = ['check-in', 'staying', 'check-out']
-    onUpdateDay({
-      hotels: hotels.map(h => {
-        if (h.id !== id) return h
-        const next = types[(types.indexOf(h.type) + 1) % types.length]
-        return { ...h, type: next }
-      })
-    })
+  const updateHotelTimes = (id, patch) => {
+    onUpdateDay({ hotels: hotels.map(h => h.id === id ? { ...h, ...patch } : h) })
   }
 
   return (
-    <div style={{ marginTop: 4 }}>
+    <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-        <span className="pic-label">Hotel / Accommodation</span>
-        <button
-          className="day-add-btn custom"
-          style={{ flex: 'none', padding: '5px 12px', fontSize: '0.78rem', marginBottom: 0 }}
-          onClick={() => setAdding(v => !v)}
-        >
-          {adding ? '✕ Cancel' : '+ Add Hotel'}
-        </button>
+        <span className="pic-label">Hotel / Resort</span>
+        {!picking && (
+          <button
+            className="hotel-add-trigger"
+            onClick={() => { setPicking(true); setEditingId(null) }}
+          >
+            + Add Hotel
+          </button>
+        )}
+        {picking && (
+          <button className="hotel-add-trigger" style={{ color: 'var(--danger)' }} onClick={() => { setPicking(false); setSearch('') }}>
+            ✕ Cancel
+          </button>
+        )}
       </div>
 
       {/* Existing hotel entries */}
-      {hotels.length > 0 && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: adding ? 10 : 0 }}>
-          {hotels.map(h => {
-            const cfg = HOTEL_TYPE_LABELS[h.type] || HOTEL_TYPE_LABELS.staying
-            return (
-              <div key={h.id} className="hotel-entry">
-                <button
-                  className="hotel-type-badge"
-                  style={{ color: cfg.color, borderColor: cfg.color, background: `${cfg.color}18` }}
-                  onClick={() => cycleType(h.id)}
-                  title="Tap to change type"
-                >
-                  {cfg.emoji} {cfg.label}
-                </button>
-                <span className="hotel-name">{h.name}</span>
-                <button className="hotel-remove" onClick={() => removeHotel(h.id)}>✕</button>
+      {hotels.map(entry => (
+        <div key={entry.id} className="hotel-entry-v2">
+          <div className="hotel-entry-main" onClick={() => setEditingId(editingId === entry.id ? null : entry.id)}>
+            <span className="hotel-entry-emoji">{entry.emoji}</span>
+            <div className="hotel-entry-info">
+              <div className="hotel-entry-name">{entry.name}</div>
+              <div className="hotel-entry-times">
+                {entry.checkInTime  && <span className="hotel-time-chip check-in">🔑 In {entry.checkInTime}</span>}
+                {entry.checkOutTime && <span className="hotel-time-chip check-out">🧳 Out {entry.checkOutTime}</span>}
+                {!entry.checkInTime && !entry.checkOutTime && (
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Tap to set times</span>
+                )}
               </div>
-            )
-          })}
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+              {entry.hotelId && (
+                <Link
+                  to={`/hotel/${entry.hotelId}`}
+                  className="hotel-info-link"
+                  onClick={e => e.stopPropagation()}
+                  title="View hotel details"
+                >
+                  ℹ️
+                </Link>
+              )}
+              <button className="hotel-remove" onClick={e => { e.stopPropagation(); removeHotel(entry.id) }}>✕</button>
+            </div>
+          </div>
+
+          {/* Time editor — shown when tapped */}
+          {editingId === entry.id && (
+            <div className="hotel-time-editor animate-float-up">
+              <div className="hotel-time-row">
+                <label className="pic-label">Check-in Time</label>
+                <input
+                  className="pic-time"
+                  type="time"
+                  value={entry.checkInTime}
+                  onChange={e => updateHotelTimes(entry.id, { checkInTime: e.target.value })}
+                  style={{ width: 110 }}
+                />
+                {entry.checkInTime && (
+                  <button onClick={() => updateHotelTimes(entry.id, { checkInTime: '' })}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.8rem' }}>✕</button>
+                )}
+              </div>
+              <div className="hotel-time-row">
+                <label className="pic-label">Check-out Time</label>
+                <input
+                  className="pic-time"
+                  type="time"
+                  value={entry.checkOutTime}
+                  onChange={e => updateHotelTimes(entry.id, { checkOutTime: e.target.value })}
+                  style={{ width: 110 }}
+                />
+                {entry.checkOutTime && (
+                  <button onClick={() => updateHotelTimes(entry.id, { checkOutTime: '' })}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.8rem' }}>✕</button>
+                )}
+              </div>
+              {entry.hotelId && (
+                <Link to={`/hotel/${entry.hotelId}`} className="pic-ride-link" style={{ display: 'block', marginTop: 6 }}>
+                  View {entry.name} details & trivia →
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
+      ))}
+
+      {hotels.length === 0 && !picking && (
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic', paddingLeft: 2 }}>
+          No hotel set — tap "+ Add Hotel" to track where you're staying
         </div>
       )}
 
-      {/* Add hotel form */}
-      {adding && (
-        <div className="hotel-add-form animate-float-up">
-          {/* Type selector */}
-          <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
-            {Object.entries(HOTEL_TYPE_LABELS).map(([key, cfg]) => (
-              <button
-                key={key}
-                className={`filter-pill${newType === key ? ' on' : ''}`}
-                style={newType === key ? { borderColor: cfg.color, color: cfg.color, background: `${cfg.color}18` } : {}}
-                onClick={() => setNewType(key)}
-              >
-                {cfg.emoji} {cfg.label}
-              </button>
-            ))}
-          </div>
+      {/* Hotel picker */}
+      {picking && (
+        <div className="hotel-picker animate-float-up">
+          <input
+            className="day-notes"
+            style={{ width: '100%', padding: '9px 12px', marginBottom: 8, borderRadius: 'var(--r-md)', boxSizing: 'border-box' }}
+            placeholder="Search hotels…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            tabIndex={-1}
+            onFocus={e => e.target.removeAttribute('tabindex')}
+          />
 
-          {/* Name input with autocomplete */}
-          <div style={{ position: 'relative' }}>
-            <input
-              className="day-notes"
-              style={{ width: '100%', padding: '9px 12px', marginBottom: 0, borderRadius: 'var(--r-md)' }}
-              placeholder="Hotel name… e.g. Grand Floridian"
-              value={newName}
-              onChange={e => { setNewName(e.target.value); setShowSugg(true) }}
-              onFocus={() => setShowSugg(true)}
-              onBlur={() => setTimeout(() => setShowSugg(false), 150)}
-              onKeyDown={e => { if (e.key === 'Enter') addHotel() }}
-            />
-            {showSugg && filtered.length > 0 && (
-              <div className="search-dropdown">
-                {filtered.slice(0, 5).map(s => (
-                  <div key={s} className="search-dropdown-item"
-                    onMouseDown={() => { setNewName(s); setShowSugg(false) }}>
-                    <span className="sddi-name">🏨 {s}</span>
-                  </div>
-                ))}
-              </div>
+          <div className="hotel-picker-list">
+            {search.trim()
+              ? filtered.map(h => (
+                  <HotelPickerRow key={h.id} hotel={h} onSelect={addHotel} />
+                ))
+              : tiers.map(tier => {
+                  const tierHotels = otherHotels.filter(h => h.tier === tier)
+                  return (
+                    <div key={tier}>
+                      <div className="modal-land-label">{tier}</div>
+                      {tierHotels.map(h => (
+                        <HotelPickerRow key={h.id} hotel={h} onSelect={addHotel} />
+                      ))}
+                    </div>
+                  )
+                })
+            }
+            {filtered.length === 0 && (
+              <div style={{ padding: '12px 16px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>No hotels match</div>
             )}
           </div>
-
-          <button
-            className="btn-primary ridden-state"
-            style={{ marginTop: 8, border: 'none', padding: '9px 20px', width: '100%', opacity: newName.trim() ? 1 : 0.4 }}
-            onClick={addHotel}
-            disabled={!newName.trim()}
-          >
-            Add {HOTEL_TYPE_LABELS[newType]?.emoji} {newName.trim() || 'Hotel'}
-          </button>
         </div>
       )}
+    </div>
+  )
+}
 
-      {hotels.length === 0 && !adding && (
-        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-          No hotel set — tap + to add where you're staying
+function HotelPickerRow({ hotel, onSelect }) {
+  const TIER_COLOR = { Deluxe: '#f0b429', Moderate: '#60a5fa', Value: '#34d399', Premier: '#c084fc', Preferred: '#f97316' }
+  const color = TIER_COLOR[hotel.tier] || 'var(--accent)'
+  return (
+    <div className="hotel-picker-row" onClick={() => onSelect(hotel)}>
+      <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{hotel.emoji}</span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-primary)' }}>{hotel.shortName}</div>
+        <div style={{ display: 'flex', gap: 6, marginTop: 3, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 800, color, background: `${color}18`, border: `1px solid ${color}44`, padding: '1px 7px', borderRadius: 20 }}>
+            {hotel.tier}
+          </span>
+          <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', paddingTop: 1 }}>{hotel.priceRange} · {hotel.location}</span>
         </div>
-      )}
+      </div>
+      <span style={{ color: 'var(--accent)', fontWeight: 900, fontSize: '1.1rem', flexShrink: 0 }}>+</span>
     </div>
   )
 }

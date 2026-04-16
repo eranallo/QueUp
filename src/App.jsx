@@ -7,6 +7,7 @@ import RidePage from './components/RidePage'
 import DayPlanner from './components/DayPlanner'
 import HiddenMickeys from './components/HiddenMickeys'
 import FoodDrinks from './components/FoodDrinks'
+import HotelPage from './components/HotelPage'
 import ResortSelector from './components/ResortSelector'
 import { LiveDataProvider } from './context/LiveDataContext'
 import { RESORTS } from './data'
@@ -94,6 +95,7 @@ export default function App() {
                 <Route path="/planner"      element={<DayPlanner />} />
                 <Route path="/mickeys"      element={<HiddenMickeys />} />
                 <Route path="/food"         element={<FoodDrinks />} />
+                <Route path="/hotel/:hotelId" element={<HotelPage />} />
               </Routes>
             )}
           </main>

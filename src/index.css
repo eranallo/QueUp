@@ -2102,42 +2102,60 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   background: rgba(16,185,129,0.15); color: var(--success);
 }
 
-/* ── Hotel Section (per-day) ── */
-.hotel-entry {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+/* ── Hotel Section v2 (pick hotel → set times) ── */
+.hotel-add-trigger {
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  border: 1.5px dashed var(--border-mid);
+  background: none;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+.hotel-add-trigger:hover { background: var(--accent-dim); border-color: var(--accent); }
+
+.hotel-entry-v2 {
   background: var(--bg-deep);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
-  transition: background var(--t-fast);
+  margin-bottom: 6px;
+  overflow: hidden;
+  transition: border-color var(--t-fast);
 }
-.hotel-entry:hover { background: var(--bg-hover); }
+.hotel-entry-v2:hover { border-color: var(--border-mid); }
 
-.hotel-type-badge {
-  display: inline-flex;
+.hotel-entry-main {
+  display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 10px;
-  border-radius: var(--r-full);
-  border: 1.5px solid;
-  font-size: 0.72rem;
-  font-weight: 800;
+  gap: 10px;
+  padding: 10px 12px;
   cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: all var(--t-fast);
-  background: none;
 }
-.hotel-type-badge:hover { filter: brightness(1.2); transform: scale(1.03); }
+.hotel-entry-emoji { font-size: 1.3rem; flex-shrink: 0; }
+.hotel-entry-info  { flex: 1; min-width: 0; }
+.hotel-entry-name  { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+.hotel-entry-times { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
 
-.hotel-name {
-  flex: 1;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-primary);
+.hotel-time-chip {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: var(--r-full);
+  white-space: nowrap;
 }
+.hotel-time-chip.check-in  { background: rgba(52,211,153,0.15); color: var(--success); }
+.hotel-time-chip.check-out { background: rgba(248,113,113,0.12); color: #f87171; }
+
+.hotel-info-link {
+  font-size: 1rem;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity var(--t-fast);
+}
+.hotel-info-link:hover { opacity: 1; }
+
 .hotel-remove {
   background: none;
   border: none;
@@ -2146,18 +2164,48 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   font-size: 0.8rem;
   padding: 3px 6px;
   border-radius: var(--r-sm);
-  flex-shrink: 0;
   transition: color var(--t-fast);
 }
 .hotel-remove:hover { color: var(--danger); }
 
-.hotel-add-form {
-  padding: 12px;
-  background: var(--bg-deep);
+.hotel-time-editor {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hotel-time-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Hotel picker */
+.hotel-picker {
+  margin-top: 6px;
+  background: var(--bg-card);
   border: 1px solid var(--border-mid);
   border-radius: var(--r-lg);
-  margin-top: 6px;
+  overflow: hidden;
 }
+.hotel-picker-list {
+  max-height: 240px;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+.hotel-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background var(--t-fast);
+}
+.hotel-picker-row:last-child { border-bottom: none; }
+.hotel-picker-row:hover { background: var(--bg-hover); }
 
 /* Hotel info in day tab */
 .day-tab-hotel {
