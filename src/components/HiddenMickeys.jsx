@@ -2,96 +2,88 @@ import { useState } from 'react'
 import { HIDDEN_MICKEYS } from '../data'
 import { useApp } from '../App'
 
-const PARKS = ['All Parks', 'Magic Kingdom', 'EPCOT', 'Hollywood Studios', 'Animal Kingdom']
-const DIFFICULTIES = ['All', 'Easy', 'Medium', 'Hard', 'Legendary']
+const PARKS   = ['All', 'Magic Kingdom', 'EPCOT', 'Hollywood Studios', 'Animal Kingdom']
+const DIFFS   = ['All', 'Easy', 'Medium', 'Hard', 'Legendary']
 
 export default function HiddenMickeys() {
   const { foundMickeys, toggleMickey } = useApp()
-  const [activePark, setActivePark] = useState('All Parks')
-  const [activeDiff, setActiveDiff] = useState('All')
-  const [showFound, setShowFound] = useState(true)
+  const [park,    setPark]    = useState('All')
+  const [diff,    setDiff]    = useState('All')
+  const [hideFound, setHideFound] = useState(false)
 
   const filtered = HIDDEN_MICKEYS.filter(m => {
-    if (activePark !== 'All Parks' && m.park !== activePark) return false
-    if (activeDiff !== 'All' && m.difficulty !== activeDiff) return false
-    if (!showFound && foundMickeys.has(m.id)) return false
+    if (park !== 'All' && m.park !== park) return false
+    if (diff !== 'All' && m.difficulty !== diff) return false
+    if (hideFound && foundMickeys.has(m.id)) return false
     return true
   })
 
-  const total = HIDDEN_MICKEYS.length
   const found = foundMickeys.size
-  const pct = total ? Math.round((found / total) * 100) : 0
+  const total = HIDDEN_MICKEYS.length
+  const pct   = Math.round((found / total) * 100)
 
   return (
-    <div className="mickeys-page">
-      <div className="mickeys-header">
-        <h1 className="mickeys-title">🐭 Hidden Mickeys</h1>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: 24 }}>
-          Discover the secret Mickey silhouettes hidden throughout the parks.<br />
-          There are officially "999 happy haunts" — but how many Mickeys can you find?
-        </p>
+    <div className="mickeys-page animate-fade-in">
+      <h1 className="page-title" style={{ textAlign: 'center' }}>🐭 Hidden Mickeys</h1>
+      <p className="page-subtitle" style={{ textAlign: 'center', marginBottom: 28 }}>
+        Discover secret Mickey silhouettes hidden throughout the parks.<br />
+        There's always room for one more haunting.
+      </p>
 
-        {/* Progress */}
-        <div className="planner-progress" style={{ maxWidth: 500, margin: '0 auto 24px' }}>
-          <div className="progress-label">
-            <span>Mickeys Found</span>
-            <span>{found} / {total} ({pct}%)</span>
-          </div>
-          <div className="progress-bar-track">
-            <div className="progress-bar-fill" style={{ width: `${pct}%`, background: 'linear-gradient(to right, var(--gold), #f59e0b)' }} />
-          </div>
+      {/* Progress */}
+      <div className="park-progress animate-float-up stagger-1" style={{ maxWidth: 520, margin: '0 auto 28px' }}>
+        <div className="park-progress-label">
+          <span>Mickeys Found</span>
+          <span>{found} / {total}</span>
+        </div>
+        <div className="progress-track">
+          <div className="progress-fill" style={{ width: `${pct}%`, background: 'linear-gradient(to right, var(--theme), var(--accent))' }} />
         </div>
       </div>
 
-      {/* Park filter */}
-      <div className="tabs">
+      {/* Park tabs */}
+      <div className="tabs animate-float-up stagger-2">
         {PARKS.map(p => (
-          <button key={p} className={`tab-btn${activePark === p ? ' active' : ''}`} onClick={() => setActivePark(p)}>
-            {p === 'All Parks' ? '🗺️ All' : p.split(' ').slice(-1)[0]}
+          <button key={p} className={`tab-btn${park === p ? ' active' : ''}`} onClick={() => setPark(p)}>
+            {p === 'All' ? '🗺️ All' : p.split(' ').pop()}
           </button>
         ))}
       </div>
 
-      {/* Difficulty + show-found filters */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24, alignItems: 'center' }}>
-        {DIFFICULTIES.map(d => (
-          <button key={d} className={`filter-btn${activeDiff === d ? ' active' : ''}`} onClick={() => setActiveDiff(d)}>
-            {d === 'Easy' && '🟢'} {d === 'Medium' && '🟡'} {d === 'Hard' && '🟠'} {d === 'Legendary' && '🔴'} {d}
-          </button>
+      {/* Difficulty + hide-found */}
+      <div className="park-filters animate-float-up stagger-3" style={{ marginBottom: 24 }}>
+        {DIFFS.map(d => (
+          <button key={d} className={`filter-pill${diff === d ? ' on' : ''}`} onClick={() => setDiff(d)}>{d}</button>
         ))}
-        <button className={`filter-btn${!showFound ? ' active' : ''}`} onClick={() => setShowFound(v => !v)} style={{ marginLeft: 'auto' }}>
-          {showFound ? '👁 Hide Found' : '👁 Show Found'}
+        <button className={`filter-pill${hideFound ? ' on' : ''}`} onClick={() => setHideFound(v => !v)} style={{ marginLeft: 'auto' }}>
+          {hideFound ? '👁 Show Found' : '👁 Hide Found'}
         </button>
       </div>
 
-      {/* Mickey list */}
-      {filtered.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">🎉</div>
-          <div className="empty-state-text">You found 'em all in this category!</div>
-        </div>
-      ) : (
-        <div>
-          {filtered.map(mickey => {
-            const isFound = foundMickeys.has(mickey.id)
-            return (
-              <div key={mickey.id} className={`mickey-card${isFound ? ' found' : ''}`} onClick={() => toggleMickey(mickey.id)}>
-                <div className="mickey-icon-circle">
-                  {isFound ? '✓' : '🐭'}
-                </div>
-                <div className="mickey-body">
-                  <div className="mickey-location">{mickey.location}</div>
-                  <div className="mickey-description">{mickey.description}</div>
-                  <div className="mickey-footer">
-                    <span className={`difficulty-badge ${mickey.difficulty}`}>{mickey.difficulty}</span>
-                    <span className="ride-badge" style={{ fontSize: '0.72rem' }}>{mickey.park}</span>
-                  </div>
+      {filtered.length === 0
+        ? <div className="empty-state"><div className="empty-icon">🎉</div><div className="empty-text">All found in this category!</div></div>
+        : filtered.map((m, i) => {
+          const isFound = foundMickeys.has(m.id)
+          return (
+            <div
+              key={m.id}
+              className={`mickey-card${isFound ? ' found' : ''} animate-float-up`}
+              style={{ animationDelay: `${i * 0.04}s` }}
+              onClick={() => toggleMickey(m.id)}
+            >
+              <div className="mickey-icon">{isFound ? '✓' : '🐭'}</div>
+              <div style={{ flex: 1 }}>
+                <div className="mickey-location">{m.location}</div>
+                <div className="mickey-desc">{m.description}</div>
+                <div className="mickey-tags">
+                  <span className={`diff-badge diff-${m.difficulty}`}>{m.difficulty}</span>
+                  <span className="badge">{m.park}</span>
                 </div>
               </div>
-            )
-          })}
-        </div>
-      )}
+            </div>
+          )
+        })
+      }
     </div>
   )
 }
