@@ -1299,3 +1299,58 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   pointer-events: none;
   border-radius: var(--r-xl);
 }
+
+/* ── PARK SEARCH BAR ── */
+.park-search-bar {
+  margin-bottom: 16px;
+}
+.park-search-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.park-search-icon {
+  position: absolute;
+  left: 16px;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+.park-search-input {
+  width: 100%;
+  padding: 14px 48px 14px 46px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--r-lg);
+  color: var(--text-primary);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color var(--t-base), box-shadow var(--t-base);
+}
+.park-search-input::placeholder { color: var(--text-muted); font-weight: 500; }
+.park-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.park-search-clear {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  transition: color var(--t-fast);
+}
+.park-search-clear:hover { color: var(--danger); }
+.park-search-count {
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 700;
+  padding-left: 4px;
+}

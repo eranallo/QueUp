@@ -6,6 +6,35 @@ import { useLiveData } from '../context/LiveDataContext'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild Thrill', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
 
+// Auto-generate resource links for any ride based on park context
+function buildResources(ride, park, isDisney) {
+  const enh = RIDE_ENHANCEMENTS[ride.id]
+  if (enh?.resources?.length) return enh.resources
+
+  const parkPageUrls = {
+    'magic-kingdom':             'https://disneyworld.disney.go.com/attractions/magic-kingdom/',
+    'epcot':                     'https://disneyworld.disney.go.com/attractions/epcot/',
+    'hollywood-studios':         'https://disneyworld.disney.go.com/attractions/hollywood-studios/',
+    'animal-kingdom':            'https://disneyworld.disney.go.com/attractions/animal-kingdom/',
+    'universal-studios-florida': 'https://www.universalorlando.com/web/en/us/things-to-do/rides-attractions/',
+    'islands-of-adventure':      'https://www.universalorlando.com/web/en/us/things-to-do/rides-attractions/',
+    'epic-universe':             'https://www.universalorlando.com/web/en/us/universal-epic-universe',
+  }
+
+  const out = []
+  const emoji = isDisney ? '🏰' : '🎬'
+  const label = isDisney ? `${emoji} ${park.name} — All Attractions` : `${emoji} ${park.name} — Rides & Attractions`
+  out.push({ label, url: parkPageUrls[park.id] || 'https://disneyworld.disney.go.com' })
+
+  if (isDisney && ride.lightningLane) {
+    out.push({ label: '⚡ Lightning Lane — Plan & Purchase', url: 'https://disneyworld.disney.go.com/plan/my-disney-experience/lightning-lane/' })
+  }
+  if (!isDisney) {
+    out.push({ label: '⚡ Universal Express Pass Info', url: 'https://www.universalorlando.com/web/en/us/tickets-packages/express-pass' })
+  }
+  return out
+}
+
 function Section({ title, children, delay = 0 }) {
   return (
     <div className="detail-block animate-float-up" style={{ animationDelay: `${delay}s` }}>
@@ -15,118 +44,24 @@ function Section({ title, children, delay = 0 }) {
   )
 }
 
-function TriviaList({ items }) {
-  return (
-    <ul className="trivia-list">
-      {items.map((t, i) => (
-        <li key={i} className="trivia-item animate-float-up" style={{ animationDelay: `${i * 0.03}s` }}>{t}</li>
-      ))}
-    </ul>
-  )
+const tipStyle = {
+  display: 'flex', gap: 12, padding: '11px 16px',
+  background: 'var(--accent-dim)', border: '1px solid var(--accent-glow)',
+  borderRadius: 'var(--r-md)', fontSize: '0.88rem',
+  color: 'var(--text-secondary)', lineHeight: 1.55,
 }
 
-function ProTipList({ tips }) {
-  return (
-    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {tips.map((tip, i) => (
-        <li
-          key={i}
-          className="animate-float-up"
-          style={{
-            animationDelay: `${i * 0.03}s`,
-            display: 'flex',
-            gap: 12,
-            padding: '11px 16px',
-            background: 'var(--accent-dim)',
-            border: '1px solid var(--accent-glow)',
-            borderRadius: 'var(--r-md)',
-            fontSize: '0.88rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.55,
-          }}
-        >
-          {tip}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function InsiderList({ notes }) {
-  return (
-    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {notes.map((note, i) => (
-        <li
-          key={i}
-          className="animate-float-up"
-          style={{
-            animationDelay: `${i * 0.03}s`,
-            display: 'flex',
-            gap: 12,
-            padding: '11px 16px',
-            background: 'var(--theme-dim)',
-            border: '1px solid var(--theme-glow)',
-            borderRadius: 'var(--r-md)',
-            fontSize: '0.88rem',
-            color: 'var(--text-secondary)',
-            lineHeight: 1.55,
-            alignItems: 'flex-start',
-          }}
-        >
-          <span style={{ color: 'var(--theme)', flexShrink: 0, fontSize: '0.75rem', marginTop: 2 }}>🔍</span>
-          {note}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function ResourceLinks({ links }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {links.map((link, i) => (
-        <a
-          key={i}
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="animate-float-up"
-          style={{
-            animationDelay: `${i * 0.04}s`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '13px 18px',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--r-md)',
-            color: 'var(--text-primary)',
-            fontSize: '0.88rem',
-            fontWeight: 700,
-            textDecoration: 'none',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.borderColor = 'var(--accent)'
-            e.currentTarget.style.background = 'var(--bg-hover)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.borderColor = 'var(--border)'
-            e.currentTarget.style.background = 'var(--bg-card)'
-          }}
-        >
-          <span>{link.label}</span>
-          <span style={{ color: 'var(--accent)', fontSize: '0.8rem' }}>↗</span>
-        </a>
-      ))}
-    </div>
-  )
+const insiderStyle = {
+  display: 'flex', gap: 12, padding: '11px 16px', alignItems: 'flex-start',
+  background: 'var(--theme-dim)', border: '1px solid var(--theme-glow)',
+  borderRadius: 'var(--r-md)', fontSize: '0.88rem',
+  color: 'var(--text-secondary)', lineHeight: 1.55,
 }
 
 export default function RidePage() {
   const { rideId } = useParams()
-  const navigate = useNavigate()
-  const { checkedRides, toggleRide, manualDown, toggleManualDown } = useApp()
+  const navigate   = useNavigate()
+  const { checkedRides, toggleRide, manualDown, toggleManualDown, isDisney } = useApp()
   const { getRideLive, getRideImage } = useLiveData()
 
   let found = null, foundPark = null, foundLand = null
@@ -144,8 +79,9 @@ export default function RidePage() {
     </div>
   )
 
-  const enhancements = RIDE_ENHANCEMENTS[found.id] || {}
-  const allTrivia = [...(found.trivia || []), ...(enhancements.deeperTrivia || [])]
+  const enh       = RIDE_ENHANCEMENTS[found.id] || {}
+  const allTrivia = [...(found.trivia || []), ...(enh.deeperTrivia || [])]
+  const resources = buildResources(found, foundPark, isDisney)
 
   const isRidden = checkedRides.has(found.id)
   const isDown   = manualDown.has(found.id)
@@ -153,7 +89,7 @@ export default function RidePage() {
   const apiImage = getRideImage(found.name)
   const img      = found.imageUrl || apiImage || null
 
-  const liveStatus = isDown ? 'DOWN' : (live?.status || null)
+  const liveStatus   = isDown ? 'DOWN' : (live?.status || null)
   const liveBarClass = { OPERATING: 'open', DOWN: 'down', CLOSED: 'closed', REFURBISHMENT: 'refurb' }[liveStatus] || ''
 
   return (
@@ -205,11 +141,11 @@ export default function RidePage() {
           {THRILL[found.thrillLevel]}
         </span>
         {found.heightRequirement && <span className="badge">📏 {found.heightRequirement}" min</span>}
-        {found.mustDo   && <span className="badge badge-mustdo">⭐ Must-Do</span>}
-        {found.lightningLane && <span className="badge badge-ll">⚡ Lightning Lane</span>}
-        {found.duration && <span className="badge">⏱ {found.duration}</span>}
-        {found.openingYear && <span className="badge">📅 Since {found.openingYear}</span>}
-        {found.type     && <span className="badge">{found.type}</span>}
+        {found.mustDo            && <span className="badge badge-mustdo">⭐ Must-Do</span>}
+        {found.lightningLane     && <span className="badge badge-ll">⚡ Lightning Lane</span>}
+        {found.duration          && <span className="badge">⏱ {found.duration}</span>}
+        {found.openingYear       && <span className="badge">📅 Since {found.openingYear}</span>}
+        {found.type              && <span className="badge">{found.type}</span>}
       </div>
 
       {/* Action buttons */}
@@ -235,25 +171,44 @@ export default function RidePage() {
       )}
 
       {/* Pro Tips */}
-      {enhancements.proTips?.length > 0 && (
-        <Section title="💡 Pro Tips & Insider Strategy" delay={0.11}>
-          <ProTipList tips={enhancements.proTips} />
+      {enh.proTips?.length > 0 && (
+        <Section title="💡 Pro Tips & Strategy" delay={0.11}>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {enh.proTips.map((tip, i) => (
+              <li key={i} className="animate-float-up" style={{ ...tipStyle, animationDelay: `${i * 0.03}s` }}>{tip}</li>
+            ))}
+          </ul>
         </Section>
       )}
 
       {/* Trivia */}
       {allTrivia.length > 0 && (
         <Section title="✦ Did You Know?" delay={0.14}>
-          <TriviaList items={allTrivia} />
+          <ul className="trivia-list">
+            {allTrivia.map((t, i) => (
+              <li key={i} className="trivia-item animate-float-up" style={{ animationDelay: `${i * 0.03}s` }}>{t}</li>
+            ))}
+          </ul>
         </Section>
       )}
 
-      {/* Insider Notes */}
-      {enhancements.insiderNotes?.length > 0 && (
-        <Section title="🔍 Things Most Guests Never Notice" delay={0.17}>
-          <InsiderList notes={enhancements.insiderNotes} />
-        </Section>
-      )}
+      {/* Things Most Guests Never Notice — shown for ALL rides */}
+      <Section title="🔍 Things Most Guests Never Notice" delay={0.17}>
+        {enh.insiderNotes?.length > 0 ? (
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {enh.insiderNotes.map((note, i) => (
+              <li key={i} className="animate-float-up" style={{ ...insiderStyle, animationDelay: `${i * 0.03}s` }}>
+                <span style={{ color: 'var(--accent)', flexShrink: 0, fontSize: '0.75rem', marginTop: 2 }}>🔍</span>
+                {note}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>
+            Cast Members and longtime fans swear by looking at the queue details — Disney and Universal pack every inch with stories most guests walk right past. Slow down in line and look up, down, and sideways.
+          </p>
+        )}
+      </Section>
 
       {/* Specs */}
       {found.specs && Object.keys(found.specs).length > 0 && (
@@ -269,16 +224,38 @@ export default function RidePage() {
         </Section>
       )}
 
-      {/* Resource links */}
-      {enhancements.resources?.length > 0 && (
-        <Section title="🔗 Official Resources & Links" delay={0.23}>
-          <ResourceLinks links={enhancements.resources} />
-        </Section>
-      )}
+      {/* Resources — shown for ALL rides */}
+      <Section title="🔗 Official Resources & Links" delay={0.23}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {resources.map((link, i) => (
+            <a
+              key={i}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="animate-float-up"
+              style={{
+                animationDelay: `${i * 0.04}s`,
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '13px 18px',
+                background: 'var(--bg-card)', border: '1px solid var(--border)',
+                borderRadius: 'var(--r-md)', color: 'var(--text-primary)',
+                fontSize: '0.88rem', fontWeight: 700, textDecoration: 'none',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--bg-hover)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--bg-card)' }}
+            >
+              <span>{link.label}</span>
+              <span style={{ color: 'var(--accent)', fontSize: '0.9rem' }}>↗</span>
+            </a>
+          ))}
+        </div>
+      </Section>
 
       {/* Tags */}
       {found.tags?.length > 0 && (
-        <div className="detail-block" style={{ animationDelay: '0.26s' }}>
+        <div className="detail-block animate-float-up" style={{ animationDelay: '0.26s' }}>
           <div className="tag-row">
             {found.tags.map(t => <span key={t} className="tag">#{t}</span>)}
           </div>
