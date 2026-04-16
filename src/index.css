@@ -2101,3 +2101,68 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   padding: 2px 8px; border-radius: var(--r-full);
   background: rgba(16,185,129,0.15); color: var(--success);
 }
+
+/* ── Hotel Section (per-day) ── */
+.hotel-entry {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  transition: background var(--t-fast);
+}
+.hotel-entry:hover { background: var(--bg-hover); }
+
+.hotel-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--r-full);
+  border: 1.5px solid;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--t-fast);
+  background: none;
+}
+.hotel-type-badge:hover { filter: brightness(1.2); transform: scale(1.03); }
+
+.hotel-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.hotel-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 3px 6px;
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  transition: color var(--t-fast);
+}
+.hotel-remove:hover { color: var(--danger); }
+
+.hotel-add-form {
+  padding: 12px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-lg);
+  margin-top: 6px;
+}
+
+/* Hotel info in day tab */
+.day-tab-hotel {
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-weight: 700;
+  opacity: 0.8;
+}

@@ -15,6 +15,7 @@ export function makeDay(date = '', parkIds = []) {
     id: `day-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
     date,
     parkIds,        // ← now an ARRAY to support multiple parks
+    hotels: [],      // [{ id, name, type: 'check-in'|'staying'|'check-out' }]
     notes: '',
     items: [],
   }

@@ -477,8 +477,148 @@ function AddCustomModal({ onAdd, onClose, parkIds = [] }) {
   )
 }
 
+// ── Hotel Entry (per-day) ────────────────────────────────────
+const HOTEL_TYPE_LABELS = {
+  'check-in':  { label: 'Check In',  emoji: '🔑', color: '#34d399' },
+  'staying':   { label: 'Staying',   emoji: '🏨', color: 'var(--accent)' },
+  'check-out': { label: 'Check Out', emoji: '🧳', color: '#f87171' },
+}
+
+function HotelSection({ day, onUpdateDay, activeResortId }) {
+  const [adding,    setAdding]    = useState(false)
+  const [newName,   setNewName]   = useState('')
+  const [newType,   setNewType]   = useState('staying')
+  const [showSugg,  setShowSugg]  = useState(false)
+
+  const hotels  = day.hotels || []
+  const suggestions = HOTEL_SUGGESTIONS[activeResortId] || []
+  const filtered    = newName
+    ? suggestions.filter(s => s.toLowerCase().includes(newName.toLowerCase()))
+    : suggestions
+
+  const addHotel = () => {
+    if (!newName.trim()) return
+    const entry = {
+      id:   `h-${Date.now()}`,
+      name: newName.trim(),
+      type: newType,
+    }
+    onUpdateDay({ hotels: [...hotels, entry] })
+    setNewName(''); setNewType('staying'); setAdding(false)
+  }
+
+  const removeHotel = (id) => onUpdateDay({ hotels: hotels.filter(h => h.id !== id) })
+
+  const cycleType = (id) => {
+    const types = ['check-in', 'staying', 'check-out']
+    onUpdateDay({
+      hotels: hotels.map(h => {
+        if (h.id !== id) return h
+        const next = types[(types.indexOf(h.type) + 1) % types.length]
+        return { ...h, type: next }
+      })
+    })
+  }
+
+  return (
+    <div style={{ marginTop: 4 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <span className="pic-label">Hotel / Accommodation</span>
+        <button
+          className="day-add-btn custom"
+          style={{ flex: 'none', padding: '5px 12px', fontSize: '0.78rem', marginBottom: 0 }}
+          onClick={() => setAdding(v => !v)}
+        >
+          {adding ? '✕ Cancel' : '+ Add Hotel'}
+        </button>
+      </div>
+
+      {/* Existing hotel entries */}
+      {hotels.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: adding ? 10 : 0 }}>
+          {hotels.map(h => {
+            const cfg = HOTEL_TYPE_LABELS[h.type] || HOTEL_TYPE_LABELS.staying
+            return (
+              <div key={h.id} className="hotel-entry">
+                <button
+                  className="hotel-type-badge"
+                  style={{ color: cfg.color, borderColor: cfg.color, background: `${cfg.color}18` }}
+                  onClick={() => cycleType(h.id)}
+                  title="Tap to change type"
+                >
+                  {cfg.emoji} {cfg.label}
+                </button>
+                <span className="hotel-name">{h.name}</span>
+                <button className="hotel-remove" onClick={() => removeHotel(h.id)}>✕</button>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Add hotel form */}
+      {adding && (
+        <div className="hotel-add-form animate-float-up">
+          {/* Type selector */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+            {Object.entries(HOTEL_TYPE_LABELS).map(([key, cfg]) => (
+              <button
+                key={key}
+                className={`filter-pill${newType === key ? ' on' : ''}`}
+                style={newType === key ? { borderColor: cfg.color, color: cfg.color, background: `${cfg.color}18` } : {}}
+                onClick={() => setNewType(key)}
+              >
+                {cfg.emoji} {cfg.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Name input with autocomplete */}
+          <div style={{ position: 'relative' }}>
+            <input
+              className="day-notes"
+              style={{ width: '100%', padding: '9px 12px', marginBottom: 0, borderRadius: 'var(--r-md)' }}
+              placeholder="Hotel name… e.g. Grand Floridian"
+              value={newName}
+              onChange={e => { setNewName(e.target.value); setShowSugg(true) }}
+              onFocus={() => setShowSugg(true)}
+              onBlur={() => setTimeout(() => setShowSugg(false), 150)}
+              onKeyDown={e => { if (e.key === 'Enter') addHotel() }}
+            />
+            {showSugg && filtered.length > 0 && (
+              <div className="search-dropdown">
+                {filtered.slice(0, 5).map(s => (
+                  <div key={s} className="search-dropdown-item"
+                    onMouseDown={() => { setNewName(s); setShowSugg(false) }}>
+                    <span className="sddi-name">🏨 {s}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button
+            className="btn-primary ridden-state"
+            style={{ marginTop: 8, border: 'none', padding: '9px 20px', width: '100%', opacity: newName.trim() ? 1 : 0.4 }}
+            onClick={addHotel}
+            disabled={!newName.trim()}
+          >
+            Add {HOTEL_TYPE_LABELS[newType]?.emoji} {newName.trim() || 'Hotel'}
+          </button>
+        </div>
+      )}
+
+      {hotels.length === 0 && !adding && (
+        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+          No hotel set — tap + to add where you're staying
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Day View ─────────────────────────────────────────────────
-function DayView({ day, dayIndex, onUpdateDay, accentColor }) {
+function DayView({ day, dayIndex, onUpdateDay, accentColor, activeResortId }) {
   const [showRidePicker,   setShowRidePicker]   = useState(false)
   const [showCustomModal,  setShowCustomModal]  = useState(false)
   const { getRideLive } = useLiveData()
@@ -561,8 +701,11 @@ function DayView({ day, dayIndex, onUpdateDay, accentColor }) {
           </div>
         </div>
 
+        {/* Hotel section */}
+        <HotelSection day={day} onUpdateDay={onUpdateDay} activeResortId={activeResortId} />
+
         {/* Day notes */}
-        <div className="day-header-row" style={{ alignItems: 'flex-start' }}>
+        <div className="day-header-row" style={{ alignItems: 'flex-start', marginTop: 4 }}>
           <span className="pic-label" style={{ paddingTop: 6 }}>Notes</span>
           <textarea className="day-notes" rows={2} value={day.notes}
             onChange={e => onUpdateDay({ notes: e.target.value })}
@@ -642,56 +785,29 @@ const HOTEL_SUGGESTIONS = {
   'universal-orlando': ['Hard Rock Hotel', 'Sapphire Falls', 'Royal Pacific', 'Cabana Bay', 'Aventura Hotel', 'Endless Summer', 'Stella Nova', 'Terra Luna'],
 }
 
-function TripSetup({ trip, onUpdate, activeResortId }) {
-  const [open, setOpen]           = useState(!trip.hotel && !trip.checkIn)
-  const [hotelSugg, setHotelSugg] = useState(false)
-
-  const suggestions = HOTEL_SUGGESTIONS[activeResortId] || []
-  const filtered    = trip.hotel ? suggestions.filter(s => s.toLowerCase().includes(trip.hotel.toLowerCase())) : suggestions
+function TripSetup({ trip, onUpdate }) {
+  const [open, setOpen] = useState(!trip.checkIn)
 
   return (
     <div className="trip-setup">
       <button className="trip-setup-toggle" onClick={() => setOpen(v => !v)}>
         <div className="trip-setup-summary">
-          <span>🏨</span>
-          <span style={{ fontWeight: 700 }}>{trip.hotel || 'Add hotel & dates'}</span>
-          {trip.checkIn && trip.checkOut && (
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-              · {formatDate(trip.checkIn)} → {formatDate(trip.checkOut)}
-            </span>
-          )}
+          <span>📅</span>
+          <span style={{ fontWeight: 700 }}>
+            {trip.checkIn && trip.checkOut
+              ? `${formatDate(trip.checkIn)} → ${formatDate(trip.checkOut)}`
+              : 'Set trip dates & notes'}
+          </span>
+          {trip.checkIn && trip.checkOut && (() => {
+            const d = Math.round((new Date(trip.checkOut) - new Date(trip.checkIn)) / 86400000)
+            return d > 0 ? <span style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>· {d} night{d !== 1 ? 's' : ''}</span> : null
+          })()}
         </div>
         <span style={{ color: 'var(--text-muted)' }}>{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
         <div className="trip-setup-body animate-float-up">
-
-          {/* Hotel with autocomplete */}
-          <div className="trip-field-row" style={{ position: 'relative' }}>
-            <label className="trip-label">Hotel</label>
-            <div style={{ flex: 1, position: 'relative' }}>
-              <input
-                className="trip-input"
-                placeholder="e.g. Grand Floridian, Hard Rock Hotel…"
-                value={trip.hotel}
-                onChange={e => { onUpdate({ hotel: e.target.value }); setHotelSugg(true) }}
-                onFocus={() => setHotelSugg(true)}
-                onBlur={() => setTimeout(() => setHotelSugg(false), 150)}
-              />
-              {hotelSugg && filtered.length > 0 && (
-                <div className="search-dropdown">
-                  {filtered.slice(0, 6).map(s => (
-                    <div key={s} className="search-dropdown-item" onMouseDown={() => { onUpdate({ hotel: s }); setHotelSugg(false) }}>
-                      <span className="sddi-name">🏨 {s}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Check in / Check out — properly formatted */}
           <div className="trip-field-row">
             <label className="trip-label">Check In</label>
             <input className="trip-input" type="date" value={trip.checkIn}
@@ -702,15 +818,6 @@ function TripSetup({ trip, onUpdate, activeResortId }) {
             <input className="trip-input" type="date" value={trip.checkOut}
               onChange={e => onUpdate({ checkOut: e.target.value })} style={{ maxWidth: 200 }} />
           </div>
-          {trip.checkIn && trip.checkOut && (
-            <div style={{ paddingLeft: 92, fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
-              {(() => {
-                const d = Math.round((new Date(trip.checkOut) - new Date(trip.checkIn)) / 86400000)
-                return d > 0 ? `${d} night${d !== 1 ? 's' : ''}` : ''
-              })()}
-            </div>
-          )}
-
           <div className="trip-field-row" style={{ alignItems: 'flex-start' }}>
             <label className="trip-label" style={{ paddingTop: 6 }}>Notes</label>
             <textarea className="trip-input" rows={3} value={trip.notes}
@@ -757,7 +864,7 @@ export default function DayPlanner() {
         <p className="page-subtitle">Plan your complete itinerary. Drag items to reorder. Saves automatically.</p>
       </div>
 
-      <TripSetup trip={trip} onUpdate={updateTrip} activeResortId={activeResortId} />
+      <TripSetup trip={trip} onUpdate={updateTrip} />
 
       {/* Day tabs */}
       <div className="day-tabs-bar">
@@ -775,6 +882,11 @@ export default function DayPlanner() {
                 <span className="day-tab-park">
                   {parks.map(p => p.emoji).join('')} {parks.length === 1 ? parks[0].name.split(' ')[0] : parks.length > 1 ? `${parks.length} parks` : ''}
                 </span>
+                {d.hotels?.length > 0 && (
+                  <span className="day-tab-hotel">
+                    🏨 {d.hotels[0].name.split(' ').slice(0,2).join(' ')}{d.hotels.length > 1 ? ` +${d.hotels.length-1}` : ''}
+                  </span>
+                )}
                 {d.date && <span className="day-tab-date">{formatDate(d.date).split(',')[0]}</span>}
                 <button className="day-tab-delete" onClick={e => { e.stopPropagation(); deleteDay(i) }}>×</button>
               </button>
@@ -802,6 +914,7 @@ export default function DayPlanner() {
           dayIndex={activeDay}
           onUpdateDay={patch => updateDay(day.id, patch)}
           accentColor={accentColor}
+          activeResortId={activeResortId}
         />
       ) : null}
     </div>
