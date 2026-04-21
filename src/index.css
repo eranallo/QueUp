@@ -123,7 +123,7 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
 
 /* ── LAYOUT ──────────────────────────────────────────────── */
 .app-wrapper { min-height: 100vh; display: flex; flex-direction: column; position: relative; }
-.page-content { flex: 1; padding-bottom: 80px; }
+.page-content { flex: 1; padding-bottom: 24px; }
 
 /* Dynamic body background per theme */
 .app-disney  body, .app-disney  { background-image: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(107,53,217,0.15) 0%, transparent 70%); }
@@ -486,39 +486,113 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   transition: all var(--t-base) var(--ease);
 }
 .switch-resort-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-/* Mobile bottom tabs */
-.bottom-tabs {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  z-index: 100;
-  height: 62px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(20px) saturate(200%);
-  border-top: 1px solid var(--border);
+/* ── Hamburger button ── */
+.nav-menu-wrap {
+  position: relative;
+  flex-shrink: 0;
 }
-.bottom-tabs-inner { display: flex; height: 100%; }
-.bottom-tab {
-  flex: 1;
+.nav-hamburger {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  gap: 3px;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.6rem;
-  font-weight: 800;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  padding: 8px;
+  transition: all var(--t-fast);
+}
+.nav-hamburger:hover { border-color: var(--accent); background: var(--accent-dim); }
+.nav-hamburger.open  { border-color: var(--accent); background: var(--accent-dim); }
+.nav-hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--text-secondary);
+  border-radius: 2px;
+  transition: all 0.2s var(--ease);
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Dropdown menu ── */
+.nav-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 260px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-xl);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  z-index: 500;
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+.nav-dropdown-resort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px 10px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: var(--accent);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  transition: color var(--t-fast) var(--ease);
+}
+
+.nav-dropdown-section-label {
+  padding: 6px 18px 2px;
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.nav-dropdown-divider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 6px 0;
+}
+
+.nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 18px;
   background: none;
   border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
+  text-align: left;
+  transition: all var(--t-fast);
+  font-family: 'Nunito', sans-serif;
 }
-.bottom-tab .tab-icon { font-size: 1.25rem; }
-.bottom-tab:hover, .bottom-tab.active { color: var(--accent); }
+.nav-dropdown-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.nav-dropdown-item.danger { color: var(--text-muted); }
+.nav-dropdown-item.danger:hover { color: #f87171; background: rgba(248,113,113,0.08); }
+
+.nav-dd-icon {
+  font-size: 1.1rem;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+
 
 /* ═══════════════════════════════════════════════════════════
    RESORT DASHBOARD
@@ -1260,8 +1334,6 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .nav-links   { display: none; }
-  .bottom-tabs { display: block; }
   .rs-split    { grid-template-columns: 1fr; max-width: 420px; }
   .rs-resort-card { min-height: 280px; }
   .rides-grid  { grid-template-columns: 1fr; }
@@ -1270,7 +1342,6 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   .food-grid   { grid-template-columns: 1fr; }
   .specs-grid  { grid-template-columns: repeat(2, 1fr); }
   .park-header { flex-direction: column; }
-  .switch-resort-btn { display: none; }
 }
 
 /* ── FLOATING PARK PIPS (resort selector cards) ── */
@@ -2786,3 +2857,389 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
 }
 .leaflet-popup-tip { background: #fff !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   MY PLANS — Disney-app style planner
+═══════════════════════════════════════════════════════════ */
+
+/* ── Date pill bar ── */
+.mp-date-bar {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 16px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.mp-date-bar::-webkit-scrollbar { display: none; }
+
+.mp-date-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--r-full);
+  border: 2px solid var(--border-mid);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--t-fast);
+  font-family: 'Nunito', sans-serif;
+}
+.mp-date-pill:hover { border-color: var(--accent); color: var(--text-primary); }
+.mp-date-pill.active { color: #000; font-weight: 900; }
+.mp-date-add { color: var(--accent); border-color: var(--accent); border-style: dashed; }
+.mp-date-add:hover { background: var(--accent-dim); }
+.mp-date-delete {
+  background: none; border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 1rem; cursor: pointer;
+  line-height: 1; padding: 0 0 0 2px;
+  margin-left: 2px;
+}
+.mp-date-pill:not(.active) .mp-date-delete { color: var(--text-muted); }
+.mp-date-delete:hover { color: var(--danger) !important; }
+
+/* ── Park section header ── */
+.park-section-header {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-xl);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.psh-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 18px 18px 10px;
+  gap: 12px;
+}
+.psh-left { flex: 1; min-width: 0; }
+.psh-park-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.psh-hours { font-size: 0.88rem; color: var(--text-secondary); }
+.psh-emoji {
+  font-size: 3rem;
+  flex-shrink: 0;
+  line-height: 1;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+}
+.psh-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+.psh-action-btn {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--t-fast);
+  font-family: 'Nunito', sans-serif;
+}
+.psh-action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.psh-edit-panel {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border-soft);
+  background: var(--bg-deep);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Plan card (Disney-app style activity card) ── */
+.plan-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  transition: all var(--t-fast);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.plan-card:hover { border-color: var(--border-mid); box-shadow: 0 2px 12px rgba(0,0,0,0.2); }
+.plan-card--done { opacity: 0.55; }
+.plan-card--dragging { box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+
+.plan-card-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 14px;
+  cursor: pointer;
+}
+.plan-card-left { flex: 1; min-width: 0; }
+
+.plan-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--r-full);
+  border: 1px solid transparent;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin-bottom: 8px;
+}
+.plan-card-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.plan-card--done .plan-card-name { text-decoration: line-through; }
+
+.plan-card-time-block { margin-bottom: 4px; }
+.plan-card-time-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+.plan-card-time-value {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+.plan-card-dur {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+.plan-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.plan-card-icon {
+  width: 52px; height: 52px;
+  border-radius: var(--r-md);
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+.plan-card-grip {
+  color: var(--border-mid);
+  font-size: 0.9rem;
+  cursor: grab;
+  letter-spacing: -2px;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.plan-card:hover .plan-card-grip { opacity: 1; }
+.plan-card-grip:active { cursor: grabbing; color: var(--accent); }
+
+/* Expanded panel */
+.plan-card-detail {
+  border-top: 1px solid var(--border-soft);
+  padding: 14px 16px;
+  background: var(--bg-deep);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.plan-detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.plan-detail-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  min-width: 64px;
+  flex-shrink: 0;
+}
+.plan-detail-input {
+  padding: 7px 11px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-sm);
+  color: var(--text-primary);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+}
+.plan-detail-input:focus { border-color: var(--accent); }
+
+.plan-action-btn {
+  padding: 8px 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-mid);
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  font-family: 'Nunito', sans-serif;
+}
+.plan-action-btn:hover { background: var(--bg-hover); border-color: var(--accent); color: var(--accent); }
+.plan-action-btn.done  { background: rgba(16,185,129,0.1); border-color: var(--success); color: var(--success); }
+.plan-action-btn.delete:hover { border-color: var(--danger); color: var(--danger); background: rgba(239,68,68,0.08); }
+
+/* ── Floating add button ── */
+.plan-fab-area {
+  position: fixed;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 50;
+}
+.plan-fab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 24px;
+  border-radius: var(--r-full);
+  border: none;
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+  transition: all var(--t-fast);
+  font-family: 'Nunito', sans-serif;
+  letter-spacing: 0.01em;
+}
+.plan-fab:hover   { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.4); }
+.plan-fab:active  { transform: translateY(0); }
+.plan-fab:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.plan-fab-secondary {
+  padding: 9px 18px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--border-mid);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  transition: all var(--t-fast);
+  font-family: 'Nunito', sans-serif;
+}
+.plan-fab-secondary:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-deep); }
+
+/* ── No park prompt ── */
+.no-park-prompt {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-mid);
+  border-radius: var(--r-xl);
+  margin-bottom: 20px;
+  color: var(--text-secondary);
+}
+
+/* ── Change parks / misc ── */
+.plan-change-parks-btn {
+  background: none;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-full);
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+.plan-change-parks-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.plan-section-label {
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COLLAPSIBLE SECTIONS (#3)
+═══════════════════════════════════════════════════════════ */
+.collapsible-section {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.collapsible-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  gap: 12px;
+  transition: background var(--t-fast);
+  text-align: left;
+}
+.collapsible-header:hover { background: var(--bg-hover); }
+
+.collapsible-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.collapsible-chevron {
+  color: var(--text-muted);
+  font-size: 1rem;
+  transition: transform 0.2s var(--ease);
+  flex-shrink: 0;
+}
+.collapsible-chevron.open {
+  transform: rotate(180deg);
+  color: var(--accent);
+}
+
+.collapsible-body {
+  padding: 4px 18px 18px;
+  border-top: 1px solid var(--border-soft);
+}

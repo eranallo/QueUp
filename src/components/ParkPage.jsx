@@ -98,7 +98,7 @@ export default function ParkPage() {
             </span>
             {live?.waitTime != null && live.status === 'OPERATING' && !isDown && (
               <span className="live-wait" style={{ color: live.waitTime < 20 ? 'var(--success)' : live.waitTime < 45 ? 'var(--warning)' : 'var(--danger)' }}>
-                · {live.waitTime}m wait
+                · {live.waitTime} min
               </span>
             )}
           </div>

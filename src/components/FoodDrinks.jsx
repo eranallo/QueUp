@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FOOD_DRINKS } from '../data'
 import { useApp } from '../App'
+import { useResortData } from '../useResortData'
 import PhotoManager from './PhotoManager'
 import RatingStars from './RatingStars'
 
@@ -127,11 +128,13 @@ function FoodDetail({ food, onClose }) {
 
 export default function FoodDrinks() {
   const { triedFood, toggleFood, triedDrinks, toggleDrink, isDisney } = useApp()
+  const { resortFood, disneyFood, universalFood } = useResortData()
   const [tab,    setTab]    = useState(isDisney ? 'datw' : 'universal')
   const [detail, setDetail] = useState(null)  // { type: 'country'|'food', item }
   const [who,    setWhoState] = useState(loadWho)
 
-  const { drinkingAroundTheWorld, disneyWorldFood, universalFood } = FOOD_DRINKS
+  const { drinkingAroundTheWorld } = FOOD_DRINKS
+  const disneyWorldFood = disneyFood
 
   const cwTotal = drinkingAroundTheWorld.countries.length
   const cwDone  = drinkingAroundTheWorld.countries.filter(c => {

@@ -6,7 +6,7 @@ const PARKS   = ['All', 'Magic Kingdom', 'EPCOT', 'Hollywood Studios', 'Animal K
 const DIFFS   = ['All', 'Easy', 'Medium', 'Hard', 'Legendary']
 
 export default function HiddenMickeys() {
-  const { foundMickeys, toggleMickey } = useApp()
+  const { foundMickeys, toggleMickey, isDisney } = useApp()
   const [park,    setPark]    = useState('All')
   const [diff,    setDiff]    = useState('All')
   const [hideFound, setHideFound] = useState(false)
@@ -21,6 +21,17 @@ export default function HiddenMickeys() {
   const found = foundMickeys.size
   const total = HIDDEN_MICKEYS.length
   const pct   = Math.round((found / total) * 100)
+
+  // Hidden Mickeys are a Disney World exclusive feature
+  if (!isDisney) return (
+    <div className="mickeys-page animate-fade-in" style={{ textAlign: 'center', padding: '60px 20px' }}>
+      <div style={{ fontSize: '3rem', marginBottom: 16 }}>🎡</div>
+      <h2 style={{ fontFamily: 'Cormorant Garamond, serif', marginBottom: 8 }}>Disney World Only</h2>
+      <p style={{ color: 'var(--text-secondary)', maxWidth: 320, margin: '0 auto' }}>
+        Hidden Mickeys are a Disney World tradition. Switch to Disney World to hunt for all 31 hidden Mickeys across the parks.
+      </p>
+    </div>
+  )
 
   return (
     <div className="mickeys-page animate-fade-in">

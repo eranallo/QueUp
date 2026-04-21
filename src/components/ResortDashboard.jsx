@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { RESORTS, HIDDEN_MICKEYS, FOOD_DRINKS } from '../data'
+import { RESORTS, FOOD_DRINKS } from '../data'
 import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
-import { getHotelsByResort } from '../hotelsData'
+import { useResortData } from '../useResortData'
 import { ParkHoursCompact } from './ParkHours'
 
 // Shows per park (matches DayPlanner's PARK_SHOWS)
@@ -213,20 +213,17 @@ export default function ResortDashboard() {
   const { checkedRides, foundMickeys, triedDrinks, triedFood,
           personalMustRide, activeResort, activeResortId, isDisney } = useApp()
   const { lastRefresh, apiError } = useLiveData()
-  const [hotelsExpanded, setHotelsExpanded] = useState(false)
-
   if (!activeResort) return null
 
   const allRides    = activeResort.parks.flatMap(p => p.lands.flatMap(l => l.rides))
   const riddenCount = allRides.filter(r => checkedRides.has(r.id)).length
   const pct         = allRides.length ? Math.round((riddenCount / allRides.length) * 100) : 0
 
-  const hotels      = getHotelsByResort(activeResortId)
-  const hotelTiers  = [...new Set(hotels.map(h => h.tier))]
+  const { parks: resortParks, mickeys } = useResortData()
 
   const stats = isDisney ? [
     { icon: '🎢', val: riddenCount,      of: allRides.length,                                        lbl: 'Rides Ridden',    delay: '0.05s' },
-    { icon: '🐭', val: foundMickeys.size, of: HIDDEN_MICKEYS.length,                                  lbl: 'Mickeys Found',   delay: '0.10s' },
+    { icon: '🐭', val: foundMickeys.size, of: mickeys.length,                                  lbl: 'Mickeys Found',   delay: '0.10s' },
     { icon: '🌍', val: triedDrinks.size,  of: FOOD_DRINKS.drinkingAroundTheWorld.countries.length,    lbl: 'Countries Drank', delay: '0.15s' },
     { icon: '🍽️', val: triedFood.size,   of: FOOD_DRINKS.disneyWorldFood.length,                     lbl: 'Disney Eats',     delay: '0.20s' },
   ] : [
@@ -238,7 +235,7 @@ export default function ResortDashboard() {
 
   const quickActions = [
     { to: '/planner', icon: '📋', title: 'Day Planner',    sub: `${riddenCount} of ${allRides.length} conquered` },
-    ...(isDisney ? [{ to: '/mickeys', icon: '🐭', title: 'Hidden Mickeys', sub: `${foundMickeys.size} of ${HIDDEN_MICKEYS.length} found` }] : []),
+    ...(isDisney ? [{ to: '/mickeys', icon: '🐭', title: 'Hidden Mickeys', sub: `${foundMickeys.size} of ${mickeys.length} found` }] : []),
     { to: '/food', icon: isDisney ? '🍹' : '🌭', title: 'Food & Drinks', sub: isDisney ? 'Drink Around the World' : 'Must-eat guide' },
   ]
 
@@ -312,34 +309,7 @@ export default function ResortDashboard() {
           ))}
         </div>
 
-        {/* ── Hotels ── */}
-        {hotels.length > 0 && (
-          <>
-            <div className="rd-section-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span>🏨 Hotels & Resorts</span>
-              <button
-                onClick={() => setHotelsExpanded(v => !v)}
-                style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.78rem', fontWeight: 800, cursor: 'pointer' }}
-              >
-                {hotelsExpanded ? 'Collapse ▲' : `Show all ${hotels.length} ▾`}
-              </button>
-            </div>
 
-            <div className="rd-hotels-list">
-              {(hotelsExpanded ? hotels : hotels.slice(0, 4)).map((hotel, i) => (
-                <HotelCard key={hotel.id} hotel={hotel} index={i} />
-              ))}
-              {!hotelsExpanded && hotels.length > 4 && (
-                <button
-                  className="rd-show-more-btn"
-                  onClick={() => setHotelsExpanded(true)}
-                >
-                  + {hotels.length - 4} more hotels
-                </button>
-              )}
-            </div>
-          </>
-        )}
 
       </div>
     </div>

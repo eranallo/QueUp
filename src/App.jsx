@@ -10,6 +10,7 @@ import HiddenMickeys from './components/HiddenMickeys'
 import FoodDrinks from './components/FoodDrinks'
 import HotelPage from './components/HotelPage'
 import Journal from './components/Journal'
+import HotelsPage from './components/HotelsPage'
 import ParkMap from './components/ParkMap'
 import ResortSelector from './components/ResortSelector'
 import { LiveDataProvider } from './context/LiveDataContext'
@@ -109,6 +110,7 @@ export default function App() {
                 <Route path="/food"         element={<FoodDrinks />} />
                 <Route path="/hotel/:hotelId" element={<HotelPage />} />
                 <Route path="/journal"           element={<Journal />} />
+                <Route path="/hotels"            element={<HotelsPage />} />
                 <Route path="/map/:parkId"       element={<ParkMap />} />
               </Routes>
             )}

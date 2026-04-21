@@ -3,8 +3,8 @@
 // ============================================================
 import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { RESORTS } from '../data'
 import { useApp } from '../App'
+import { useResortData } from '../useResortData'
 import { useLiveData } from '../context/LiveDataContext'
 
 // Leaflet loaded via CDN in index.html — accessed as window.L
@@ -42,7 +42,8 @@ export default function ParkMap() {
   const [mapReady, setMapReady] = useState(false)
 
   // Find park info
-  const park = RESORTS.flatMap(r => r.parks).find(p => p.id === parkId)
+  const { parks: resortParks } = useResortData()
+  const park = resortParks.find(p => p.id === parkId)
   const allRides = park ? park.lands.flatMap(l => l.rides) : []
   const coords   = getParkCoords(parkId)
 

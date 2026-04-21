@@ -42,6 +42,13 @@ export function getParkById(parkId) {
 
 export function getAllParks() { return RESORTS.flatMap(r => r.parks) }
 
+// Resort-filtered version — use this in components that have activeResortId
+export function getResortParks(resortId) {
+  if (!resortId) return getAllParks()
+  const resort = RESORTS.find(r => r.id === resortId)
+  return resort?.parks || []
+}
+
 export function formatDate(iso) {
   if (!iso) return ''
   return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
