@@ -14,6 +14,7 @@ import HotelsPage from './components/HotelsPage'
 import ParkMap from './components/ParkMap'
 import ResortSelector from './components/ResortSelector'
 import { LiveDataProvider } from './context/LiveDataContext'
+import ScrollToTop from './components/ScrollToTop'
 import { RESORTS } from './data'
 
 export const AppContext = createContext(null)
@@ -95,6 +96,7 @@ export default function App() {
       isUniversal: activeResortId === 'universal-orlando',
     }}>
       <LiveDataProvider>
+        <ScrollToTop />
         <div className={`app-wrapper${activeResortId ? ` app-${activeResortId === 'disney-world' ? 'disney' : 'universal'}` : ''}`}>
           {activeResort && <Nav />}
           <main className={activeResort ? 'page-content animate-fade-in' : ''}>
