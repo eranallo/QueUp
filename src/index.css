@@ -2385,3 +2385,404 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   transition: all var(--t-fast);
 }
 .rd-show-more-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════════════
+   PARK HOURS
+═══════════════════════════════════════════════════════════ */
+
+/* ── Compact (resort dashboard card) ── */
+.park-hours-compact-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.park-hours-compact {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.park-hours-compact.loading { color: var(--text-muted); font-style: italic; font-weight: 400; }
+.park-hours-compact.closed  { color: var(--danger); opacity: 0.7; }
+
+/* Compact dots */
+.hours-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--border-mid);
+}
+.hours-dot.open   { background: var(--success); box-shadow: 0 0 5px var(--success); }
+.hours-dot.early  { background: #f59e0b; }
+.hours-dot.after  { background: #6d28d9; }
+.hours-dot.special{ background: #ec4899; }
+.hours-dot.closed { background: var(--danger); }
+
+.hours-type-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  min-width: 64px;
+}
+.hours-time {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* ── Full (park detail page) ── */
+.park-hours-full {
+  margin-top: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.park-hours-full.loading {
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.phf-date {
+  padding: 10px 16px 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-soft);
+}
+.phf-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.phf-row:last-of-type { border-bottom: none; }
+
+.phf-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.phf-dot.open    { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.phf-dot.early   { background: #f59e0b; box-shadow: 0 0 5px #f59e0b88; }
+.phf-dot.after   { background: #7c3aed; }
+.phf-dot.special { background: #ec4899; }
+.phf-dot.closed  { background: var(--danger); }
+
+.phf-info   { flex: 1; min-width: 0; }
+.phf-label  { display: block; font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
+.phf-sublabel { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: 1px; }
+.phf-time {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.phf-source {
+  padding: 8px 16px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-soft);
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   JOURNAL
+═══════════════════════════════════════════════════════════ */
+
+.journal-page { padding-bottom: 48px; }
+.journal-header { margin-bottom: 16px; }
+
+/* Date bar */
+.jn-date-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+  scrollbar-width: none;
+  align-items: center;
+}
+.jn-date-bar::-webkit-scrollbar { display: none; }
+.jn-date-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--t-fast);
+  flex-shrink: 0;
+}
+.jn-date-tab:hover  { border-color: var(--accent); color: var(--accent); }
+.jn-date-tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.jn-date-label { }
+.jn-date-count {
+  background: var(--accent);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 900;
+  border-radius: var(--r-full);
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+.jn-date-input {
+  padding: 6px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  outline: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Day header */
+.jn-day-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.jn-day-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+.jn-day-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.jn-day-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  color: var(--text-secondary);
+}
+
+/* Add entry */
+.jn-add-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-card);
+  border: 1.5px dashed var(--border-mid);
+  border-radius: var(--r-lg);
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all var(--t-fast);
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 0.02em;
+}
+.jn-add-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+
+.jn-add-form {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+/* Timeline */
+.jn-timeline {
+  position: relative;
+  padding-left: 28px;
+}
+.jn-spine-line {
+  position: absolute;
+  left: 11px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent)33, var(--border) 80%);
+  border-radius: 2px;
+}
+
+/* Entry */
+.jn-entry {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+  position: relative;
+}
+.jn-entry.editing .jn-body {
+  border-color: var(--accent);
+  background: var(--bg-deep);
+}
+.jn-spine {
+  position: absolute;
+  left: -28px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+}
+.jn-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-dark);
+  flex-shrink: 0;
+  z-index: 1;
+}
+.jn-body {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 11px 14px;
+  transition: border-color var(--t-fast);
+}
+.jn-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.jn-type-row { display: flex; align-items: center; gap: 7px; flex: 1; flex-wrap: wrap; }
+.jn-emoji    { font-size: 1rem; }
+.jn-title    { font-size: 0.88rem; font-weight: 700; color: var(--text-primary); }
+.jn-stars    { font-size: 0.75rem; color: #f59e0b; letter-spacing: 1px; }
+.jn-note     { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 6px 0 4px; font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+.jn-time     { font-size: 0.68rem; color: var(--text-muted); font-weight: 700; margin-top: 4px; }
+
+.jn-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.jn-action-btn {
+  background: none; border: none;
+  font-size: 0.8rem; cursor: pointer;
+  padding: 3px 6px; border-radius: var(--r-sm);
+  color: var(--text-muted);
+  transition: all var(--t-fast);
+}
+.jn-action-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.jn-action-btn.delete:hover { color: var(--danger); }
+
+.jn-edit-form { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.jn-edit-row  { display: flex; align-items: center; gap: 10px; }
+.jn-edit-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  min-width: 40px;
+}
+.jn-edit-input {
+  padding: 6px 10px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-sm);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  outline: none;
+}
+.jn-edit-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-md);
+  color: var(--text-primary);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+}
+.jn-edit-textarea:focus { border-color: var(--accent); }
+
+.jn-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-secondary);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PARK MAP
+═══════════════════════════════════════════════════════════ */
+
+.map-page { display: flex; flex-direction: column; height: calc(100vh - 120px); padding-bottom: 0; }
+.map-header { flex-shrink: 0; margin-bottom: 8px; }
+.map-controls { flex-shrink: 0; margin-bottom: 8px; }
+.map-filter-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.map-filter-row::-webkit-scrollbar { display: none; }
+
+.map-container {
+  flex: 1;
+  min-height: 0;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.map-loading {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.map-legend {
+  flex-shrink: 0;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 4px 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.map-legend-item { display: flex; align-items: center; gap: 5px; }
+
+.map-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-full);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: all var(--t-fast);
+}
+.map-page-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* Fix Leaflet popup styling in dark theme */
+.leaflet-popup-content-wrapper {
+  background: #fff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+.leaflet-popup-tip { background: #fff !important; }

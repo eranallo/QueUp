@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { addEntry } from './journalUtils'
 import { Routes, Route } from 'react-router-dom'
 import Nav from './components/Nav'
 import ResortDashboard from './components/ResortDashboard'
@@ -8,6 +9,8 @@ import DayPlanner from './components/DayPlanner'
 import HiddenMickeys from './components/HiddenMickeys'
 import FoodDrinks from './components/FoodDrinks'
 import HotelPage from './components/HotelPage'
+import Journal from './components/Journal'
+import ParkMap from './components/ParkMap'
 import ResortSelector from './components/ResortSelector'
 import { LiveDataProvider } from './context/LiveDataContext'
 import { RESORTS } from './data'
@@ -43,16 +46,25 @@ export default function App() {
   const setActiveResort = (id) => { setActiveResortId(id); localStorage.setItem('pp_active_resort', id) }
   const clearActiveResort = () => { setActiveResortId(null); localStorage.removeItem('pp_active_resort') }
 
-  const toggleRide = (id) => setCheckedRides(prev => {
-    const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
+  const toggleRide = (id, name = '') => setCheckedRides(prev => {
+    const next = new Set(prev)
+    const adding = !next.has(id)
+    adding ? next.add(id) : next.delete(id)
+    if (adding && name) addEntry({ type: 'ride', title: name, itemId: id, itemType: 'ride' })
     saveSet('pp_checked_rides', next); return next
   })
-  const toggleMickey = (id) => setFoundMickeys(prev => {
-    const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
+  const toggleMickey = (id, name = '') => setFoundMickeys(prev => {
+    const next = new Set(prev)
+    const adding = !next.has(id)
+    adding ? next.add(id) : next.delete(id)
+    if (adding) addEntry({ type: 'mickey', title: name || 'Hidden Mickey Found', itemId: id })
     saveSet('pp_found_mickeys', next); return next
   })
-  const toggleFood = (id) => setTriedFood(prev => {
-    const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
+  const toggleFood = (id, name = '') => setTriedFood(prev => {
+    const next = new Set(prev)
+    const adding = !next.has(id)
+    adding ? next.add(id) : next.delete(id)
+    if (adding && name) addEntry({ type: 'food', title: name, itemId: id, itemType: 'food' })
     saveSet('pp_tried_food', next); return next
   })
   const toggleDrink = (id) => setTriedDrinks(prev => {
@@ -96,6 +108,8 @@ export default function App() {
                 <Route path="/mickeys"      element={<HiddenMickeys />} />
                 <Route path="/food"         element={<FoodDrinks />} />
                 <Route path="/hotel/:hotelId" element={<HotelPage />} />
+                <Route path="/journal"           element={<Journal />} />
+                <Route path="/map/:parkId"       element={<ParkMap />} />
               </Routes>
             )}
           </main>

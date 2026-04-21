@@ -1,9 +1,10 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useState, useMemo } from 'react'
 import { RESORTS } from '../data'
 import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 import RatingStars from './RatingStars'
+import { ParkHoursFull } from './ParkHours'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
 
@@ -124,7 +125,10 @@ export default function ParkPage() {
 
   return (
     <div className="park-page animate-fade-in">
-      <button className="back-link" onClick={() => navigate('/')}>← Back to Resort</button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 0 }}>
+        <button className="back-link" style={{ marginBottom: 0 }} onClick={() => navigate('/')}>← Back to Resort</button>
+        <Link to={`/map/${park.id}`} className="map-page-btn">🗺️ Map</Link>
+      </div>
 
       {/* Park header */}
       <div className="park-header" style={{ '--park-accent': park.accentColor }}>
@@ -140,6 +144,7 @@ export default function ParkPage() {
             {personalMustRide.size > 0 && <span className="park-chip" style={{ color: '#f87171' }}>❤️ {[...personalMustRide].filter(id => allRides.some(r => r.id === id)).length} My Picks</span>}
             {lastRefresh && !apiError && <span className="park-chip accent">🟢 Live</span>}
           </div>
+          <ParkHoursFull parkId={park.id} accentColor={park.accentColor} />
         </div>
       </div>
 

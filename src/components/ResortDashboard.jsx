@@ -4,6 +4,7 @@ import { RESORTS, HIDDEN_MICKEYS, FOOD_DRINKS } from '../data'
 import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 import { getHotelsByResort } from '../hotelsData'
+import { ParkHoursCompact } from './ParkHours'
 
 // Shows per park (matches DayPlanner's PARK_SHOWS)
 const PARK_SHOWS = {
@@ -79,9 +80,12 @@ function ParkCard({ park, index, checkedRides, personalMustRide }) {
           <div className="progress-fill" style={{ width: `${ppct}%`, background: park.accentColor }} />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 14px 12px', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 14px 8px', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>
           <span>{ridden} ridden</span>
           {left > 0 ? <span>{left} to go · tap to expand</span> : <span style={{ color: '#10b981' }}>✓ Complete!</span>}
+        </div>
+        <div style={{ padding: '0 14px 12px' }} onClick={e => e.stopPropagation()}>
+          <ParkHoursCompact parkId={park.id} accentColor={park.accentColor} />
         </div>
       </div>
 

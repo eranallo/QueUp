@@ -7,6 +7,7 @@ export default function Nav() {
   const links = [
     { to: '/',        label: 'Resort',  icon: '🏠' },
     { to: '/planner', label: 'Planner', icon: '📋' },
+    { to: '/journal', label: 'Journal', icon: '📔' },
     ...(isDisney ? [{ to: '/mickeys', label: 'Mickeys', icon: '🐭' }] : []),
     { to: '/food',    label: 'Food',    icon: '🍹' },
   ]
