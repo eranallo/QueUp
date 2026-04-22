@@ -4,6 +4,7 @@ import { RESORTS } from '../data'
 import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 import { ParkHoursFull } from './ParkHours'
+import { PARK_HISTORY } from '../parkHistory'
 import { getHotelById } from '../hotelsData'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
@@ -166,6 +167,73 @@ function RideCard({ ride, navigate, checkedRides, toggleRide, manualDown, toggle
       >
         {isDown ? '🔴 Marked Down — tap to clear' : '⬤ Mark as Down'}
       </button>
+    </div>
+  )
+}
+
+// ── Park History Body ─────────────────────────────────────────
+function ParkHistoryBody({ parkId }) {
+  const hist = PARK_HISTORY[parkId]
+  if (!hist) return null
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {hist.intro && (
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic' }}>
+          {hist.intro}
+        </p>
+      )}
+
+      {/* Former attractions */}
+      {hist.formerAttractions?.length > 0 && (
+        <div>
+          <div className="rh-building-label" style={{ marginBottom: 10 }}>🔒 Former Attractions</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {hist.formerAttractions.map((att, i) => (
+              <div key={i} className={`ph-att-card${att.type === 'open' ? ' still-open' : ''}`}>
+                <div className="ph-att-header">
+                  <div>
+                    <div className="ph-att-name">{att.name}</div>
+                    <div className="ph-att-meta">
+                      <span className="ph-att-years">{att.years}</span>
+                      <span className="ph-att-land">{att.land}</span>
+                    </div>
+                  </div>
+                  {att.type === 'open'
+                    ? <span className="ph-status-badge open">Still Open</span>
+                    : <span className="ph-status-badge closed">Closed</span>
+                  }
+                </div>
+                <p className="ph-att-desc">{att.description}</p>
+                <div className="ph-att-fate">
+                  <span style={{ fontWeight: 800, color: 'var(--text-muted)', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Fate: </span>
+                  {att.fate}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Abandoned projects */}
+      {hist.abandonedProjects?.length > 0 && (
+        <div>
+          <div className="rh-building-label" style={{ marginBottom: 10 }}>💭 Abandoned & Unrealized Projects</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {hist.abandonedProjects.map((proj, i) => (
+              <div key={i} className="ph-proj-card">
+                <div className="ph-proj-name">{proj.name}</div>
+                <div className="ph-proj-era">{proj.era}</div>
+                <p className="ph-att-desc">{proj.description}</p>
+                <div className="ph-att-fate">
+                  <span style={{ fontWeight: 800, color: 'var(--text-muted)', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Status: </span>
+                  {proj.fate}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -383,6 +451,13 @@ export default function ParkPage() {
                   </div>
                 ))}
               </div>
+            </ParkSection>
+          )}
+
+          {/* ── 🗿 PARK HISTORY ── */}
+          {PARK_HISTORY[park.id] && (
+            <ParkSection title="🗿 Park History & Lost Attractions" accentColor={park.accentColor}>
+              <ParkHistoryBody parkId={park.id} />
             </ParkSection>
           )}
 

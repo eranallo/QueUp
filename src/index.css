@@ -4776,3 +4776,120 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
 .datw-drink-btn:hover { border-color: var(--border-mid); color: var(--text-primary); }
 .datw-drink-btn.active { font-weight: 900; }
 .datw-rec-star { font-size: 0.8rem; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   RIDE HISTORY TIMELINE
+═══════════════════════════════════════════════════════════ */
+
+.rh-wrap { display: flex; flex-direction: column; gap: 16px; }
+
+/* Former attraction callout */
+.rh-former {
+  background: rgba(96,165,250,0.06);
+  border: 1px solid rgba(96,165,250,0.2);
+  border-left: 3px solid #60a5fa;
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.rh-former-label {
+  font-size: 0.65rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: #60a5fa; margin-bottom: 4px;
+}
+.rh-former-name {
+  font-size: 0.95rem; font-weight: 800;
+  color: var(--text-primary); margin-bottom: 2px;
+}
+.rh-former-years { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; margin-bottom: 8px; }
+.rh-former-note  { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; }
+
+/* Building history */
+.rh-building {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.rh-building-label {
+  font-size: 0.65rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-muted); margin-bottom: 8px;
+}
+.rh-building-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; }
+
+/* Timeline events */
+.rh-timeline { display: flex; flex-direction: column; }
+.rh-event    { display: flex; gap: 12px; }
+.rh-event-left {
+  display: flex; flex-direction: column;
+  align-items: center; flex-shrink: 0; width: 36px;
+}
+.rh-event-icon {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+  border: 1.5px solid currentColor;
+}
+.rh-event-line {
+  width: 2px; flex: 1; min-height: 16px;
+  background: var(--border-soft); margin: 4px 0;
+}
+.rh-event-body { flex: 1; padding-bottom: 16px; padding-top: 4px; }
+.rh-event-year {
+  font-family: 'Cinzel', serif; font-size: 0.9rem;
+  font-weight: 700; line-height: 1; margin-bottom: 2px;
+}
+.rh-event-type {
+  font-size: 0.62rem; font-weight: 900;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 5px; opacity: 0.75;
+}
+.rh-event-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; }
+
+/* ═══════════════════════════════════════════════════════════
+   PARK HISTORY SECTION
+═══════════════════════════════════════════════════════════ */
+
+/* Former attraction card */
+.ph-att-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid #ef4444;
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.ph-att-card.still-open { border-left-color: #10b981; }
+
+.ph-att-header {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 10px; margin-bottom: 8px;
+}
+.ph-att-name { font-size: 0.92rem; font-weight: 800; color: var(--text-primary); margin-bottom: 3px; }
+.ph-att-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.ph-att-years { font-size: 0.7rem; font-weight: 700; color: #60a5fa; }
+.ph-att-land  { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
+
+.ph-status-badge {
+  font-size: 0.62rem; font-weight: 900; padding: 2px 8px;
+  border-radius: var(--r-full); white-space: nowrap; flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.ph-status-badge.closed { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.ph-status-badge.open   { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+
+.ph-att-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 8px; }
+.ph-att-fate {
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.55;
+  border-top: 1px solid var(--border-soft); padding-top: 8px; margin-top: 4px;
+}
+
+/* Abandoned project card */
+.ph-proj-card {
+  background: rgba(107,114,128,0.06);
+  border: 1px solid rgba(107,114,128,0.15);
+  border-left: 3px solid #6b7280;
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+}
+.ph-proj-name { font-size: 0.92rem; font-weight: 800; color: var(--text-secondary); margin-bottom: 3px; }
+.ph-proj-era  { font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 8px; }

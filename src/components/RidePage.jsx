@@ -7,6 +7,7 @@ import { useLiveData } from '../context/LiveDataContext'
 import PhotoManager from './PhotoManager'
 import RatingStars from './RatingStars'
 import { DARK_HISTORY } from '../darkHistory'
+import { RIDE_HISTORY } from '../rideHistory'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild Thrill', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
 
@@ -35,6 +36,69 @@ function Section({ title, children, defaultOpen = false }) {
       {open && (
         <div className="collapsible-body animate-float-up">
           {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Ride History Timeline ───────────────────────────────────
+const EVENT_STYLE = {
+  opening:   { color: '#10b981', icon: '🎉', label: 'Grand Opening' },
+  closure:   { color: '#ef4444', icon: '🔒', label: 'Closed'        },
+  refurb:    { color: '#60a5fa', icon: '🔧', label: 'Refurbishment' },
+  rename:    { color: '#f59e0b', icon: '✏️', label: 'Renamed'       },
+  milestone: { color: '#a78bfa', icon: '⭐', label: 'Milestone'     },
+  tragedy:   { color: '#f87171', icon: '⚠️', label: 'Incident'      },
+  replaced:  { color: '#94a3b8', icon: '🔄', label: 'Replaced'      },
+  darkperiod:{ color: '#6b7280', icon: '🌑', label: 'Dark Period'   },
+}
+
+function RideTimeline({ rideId }) {
+  const hist = RIDE_HISTORY[rideId]
+  if (!hist) return null
+
+  return (
+    <div className="rh-wrap">
+      {/* Former attraction callout */}
+      {hist.formerAttraction && (
+        <div className="rh-former">
+          <div className="rh-former-label">🔄 This ride replaced:</div>
+          <div className="rh-former-name">{hist.formerAttraction.name}</div>
+          <div className="rh-former-years">{hist.formerAttraction.years}</div>
+          <p className="rh-former-note">{hist.formerAttraction.note}</p>
+        </div>
+      )}
+
+      {/* Building history */}
+      {hist.buildingHistory && (
+        <div className="rh-building">
+          <div className="rh-building-label">🏗️ Show Building History</div>
+          <p className="rh-building-text">{hist.buildingHistory}</p>
+        </div>
+      )}
+
+      {/* Timeline */}
+      {hist.timeline?.length > 0 && (
+        <div className="rh-timeline">
+          {hist.timeline.map((ev, i) => {
+            const style = EVENT_STYLE[ev.type] || EVENT_STYLE.milestone
+            return (
+              <div key={i} className="rh-event">
+                <div className="rh-event-left">
+                  <div className="rh-event-icon" style={{ background: `${style.color}22`, color: style.color }}>
+                    {style.icon}
+                  </div>
+                  {i < hist.timeline.length - 1 && <div className="rh-event-line" />}
+                </div>
+                <div className="rh-event-body">
+                  <div className="rh-event-year" style={{ color: style.color }}>{ev.year}</div>
+                  <div className="rh-event-type" style={{ color: style.color }}>{style.label}</div>
+                  <p className="rh-event-text">{ev.event}</p>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
@@ -227,6 +291,12 @@ export default function RidePage() {
       {found.history && (
         <Section title="History & Story">
           <p>{found.history}</p>
+        </Section>
+      )}
+
+      {RIDE_HISTORY[found.id] && (
+        <Section title="📅 Attraction History Timeline">
+          <RideTimeline rideId={found.id} />
         </Section>
       )}
 
