@@ -4910,3 +4910,203 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
 /* Nav active resort label update */
 .app-disneyland .nav        { background: rgba(7,15,35,0.9); }
 .app-universal-hollywood .nav { background: rgba(20,8,0,0.9); }
+
+/* ═══════════════════════════════════════════════════════════
+   RESORT SELECTOR — Clean modern redesign
+═══════════════════════════════════════════════════════════ */
+
+.rsnew-page {
+  min-height: 100vh;
+  background: #070711;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Stars */
+.rsnew-stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.rsnew-star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: rsStar var(--dur) var(--delay) ease-in-out infinite alternate;
+}
+@keyframes rsStar {
+  from { opacity: 0.1; transform: scale(0.8); }
+  to   { opacity: 0.9; transform: scale(1.2); }
+}
+
+/* Header */
+.rsnew-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding-top: 64px;
+  margin-bottom: 40px;
+}
+.rsnew-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.rsnew-logo-icon { font-size: 2rem; filter: drop-shadow(0 0 12px rgba(240,180,41,0.6)); }
+.rsnew-logo-text {
+  font-family: 'Cinzel', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #f0b429, #fff 50%, #f0b429);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.rsnew-sub {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+/* Grid — 2 cols on mobile */
+.rsnew-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Card */
+.rsnew-card {
+  position: relative;
+  border: 1.5px solid transparent;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: rsCardIn 0.5s both;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+}
+.rsnew-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 48px var(--glow), 0 0 0 1px var(--accent);
+}
+.rsnew-card:active {
+  transform: scale(0.97);
+}
+@keyframes rsCardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Glow orb inside card */
+.rsnew-orb {
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Inner content */
+.rsnew-card-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 16px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rsnew-emoji {
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+.rsnew-resort-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+.rsnew-resort-sub {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.rsnew-highlight {
+  font-size: 0.7rem;
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+.rsnew-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.rsnew-tag {
+  font-size: 0.58rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 20px;
+  border: 1px solid;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+/* Arrow */
+.rsnew-arrow {
+  position: relative;
+  z-index: 1;
+  text-align: right;
+  padding: 0 14px 14px;
+  font-size: 1.1rem;
+  font-weight: 900;
+  opacity: 0.7;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.rsnew-card:hover .rsnew-arrow {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* Footer */
+.rsnew-footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 28px;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
