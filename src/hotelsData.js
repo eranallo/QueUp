@@ -835,8 +835,8 @@ export const HOTELS = [
       'The hotel connects directly to Downtown Disney and is within a 5-minute walk of both parks',
     ],
     proTips: [
-      '🚪 The private DCA entrance is the Grand Californian's killer feature — skip the main park entrance entirely',
-      '🌅 The lobby is open to all guests — worth visiting even if you're not staying here',
+      '🚪 The private DCA entrance is the Grand Californian — skip the main park entrance entirely',
+      '🌅 The lobby is open to all guests — worth visiting even if not staying here',
       '🍷 Napa Rose requires reservations 60 days in advance — book immediately after reserving the room',
     ],
     specs: { opened: '2001', rooms: '948 rooms', pools: '3 pools', restaurants: '4 dining locations', tier: 'Deluxe Resort' },
@@ -854,7 +854,7 @@ export const HOTELS = [
     priceRange: '$$$$',
     location: 'Downtown Disney Area',
     transportation: ['Walk to Disneyland Park via Downtown Disney', 'Walk to Downtown Disney', 'Monorail access nearby'],
-    description: 'The original Disneyland hotel — open since 1955, the year Disneyland itself opened. Deeply nostalgic, with artifacts from Disneyland's history throughout and the closest hotel connection to the original Magic Kingdom.',
+    description: 'The original Disneyland hotel — open since 1955. Deeply nostalgic, with artifacts from Disneyland history throughout and the closest hotel connection to the original Magic Kingdom.',
     history: 'The Disneyland Hotel opened in 1955 alongside the park itself, operated initially by Jack Wrather under a long-term Disney licensing agreement. Disney acquired it in 1988. The hotel underwent a major renovation completed in 2021, modernizing the rooms while maintaining vintage Disney character.',
     trivia: [
       'The hotel opened the same year as Disneyland — 1955',

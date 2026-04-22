@@ -499,7 +499,7 @@ export const DISNEYLAND_ROUTES = {
   'grand-californian→disney-california-adventure': {
     time: '~2 min',
     options: [
-      { method: 'walk', steps: ['Use the Grand Californian's private gate directly into Disney California Adventure — exclusive to hotel guests'], time: '2 min', tip: '⭐ The private DCA gate is the Grand Californian's biggest perk. Skip the main entrance entirely.' },
+      { method: 'walk', steps: ['Use the Grand Californian private gate directly into Disney California Adventure — exclusive to hotel guests'], time: '2 min', tip: '⭐ The private DCA gate is the Grand Californian biggest perk. Skip the main entrance entirely.' },
     ],
   },
   'disneyland-park→disney-california-adventure': {
@@ -535,7 +535,7 @@ export const UNIVERSAL_HOLLYWOOD_ROUTES = {
   'hilton-universal→universal-studios-hollywood': {
     time: '~5 min',
     options: [
-      { method: 'walk', steps: ['Walk from Hilton directly to CityWalk', 'Enter Universal Studios Hollywood from CityWalk'], time: '5 min', tip: '⭐ The Hilton's direct walkway to CityWalk is its best feature — no shuttle needed.' },
+      { method: 'walk', steps: ['Walk from Hilton directly to CityWalk', 'Enter Universal Studios Hollywood from CityWalk'], time: '5 min', tip: '⭐ The Hilton direct walkway to CityWalk is its best feature — no shuttle needed.' },
     ],
   },
 }
@@ -554,7 +554,7 @@ export const DISNEYLAND_TRANSPORT_GUIDE = [
       { from: 'Disneyland Park', to: 'DCA', note: '5 min via the Esplanade' },
     ],
     tips: [
-      'The Grand Californian's private DCA entrance is the best transit advantage at the resort',
+      'The Grand Californian private DCA entrance is the best transit advantage at the resort',
       'The Esplanade between the two parks makes park hopping easy — 5 minutes between entrances',
       'Downtown Disney is the pedestrian connection point for all three hotels and both parks',
     ],
@@ -602,7 +602,7 @@ export const UNIVERSAL_HOLLYWOOD_TRANSPORT_GUIDE = [
       { from: 'Sheraton Universal', to: 'Park entrance', note: '12 min (uphill) or take free shuttle' },
     ],
     tips: [
-      'The Hilton's CityWalk connection is the most convenient hotel-to-park transit at Universal Hollywood',
+      'The Hilton CityWalk connection is the most convenient hotel-to-park transit at Universal Hollywood',
       'The walk from the parking structure includes escalators — helpful for the hillside park layout',
     ],
   },
