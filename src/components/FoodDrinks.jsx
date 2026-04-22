@@ -5,116 +5,228 @@ import { useResortData } from '../useResortData'
 import PhotoManager from './PhotoManager'
 import RatingStars from './RatingStars'
 
-// DATW — who drank what per country
+// ─────────────────────────────────────────────────────────────
+// DATW DATA LAYER
+// New structure per country: { Lauren: 'Margarita', Evan: null, Makayla: 'Tequila flight' }
+// Backward compatible with old { drink, triedBy } format
+// ─────────────────────────────────────────────────────────────
 const DATW_PEOPLE = ['Lauren', 'Evan', 'Makayla']
-const DATW_KEY    = 'pp_datw_who'
+const DATW_PERSON_COLORS = {
+  Lauren:  { bg: 'rgba(244,114,182,0.15)', color: '#f472b6', border: 'rgba(244,114,182,0.3)' },
+  Evan:    { bg: 'rgba(96,165,250,0.15)',  color: '#60a5fa', border: 'rgba(96,165,250,0.3)'  },
+  Makayla: { bg: 'rgba(52,211,153,0.15)',  color: '#34d399', border: 'rgba(52,211,153,0.3)'  },
+}
+const DATW_KEY = 'pp_datw_v2'
 
-function loadWho() {
+function loadDATW() {
   try { return JSON.parse(localStorage.getItem(DATW_KEY)) || {} } catch { return {} }
 }
-function saveWho(who) {
-  localStorage.setItem(DATW_KEY, JSON.stringify(who))
+function saveDATW(data) { localStorage.setItem(DATW_KEY, JSON.stringify(data)) }
+
+function getCountryEntry(countryId) {
+  const data = loadDATW()
+  return data[countryId] || {}
+}
+function setPersonDrink(countryId, person, drink) {
+  const data = loadDATW()
+  data[countryId] = { ...(data[countryId] || {}), [person]: drink }
+  saveDATW(data)
+}
+function getPersonDrink(countryId, person) {
+  return loadDATW()[countryId]?.[person] || null
+}
+function isCountryDone(countryId) {
+  const entry = loadDATW()[countryId] || {}
+  return DATW_PEOPLE.some(p => !!entry[p])
+}
+function getPersonCount(person) {
+  const data = loadDATW()
+  return Object.values(data).filter(v => !!v[person]).length
 }
 
-function CountryDetail({ c, onClose }) {
-  const [who,     setWhoState] = useState(loadWho)
-  const [drink,   setDrink]    = useState(who[c.id]?.drink || c.recommendedDrink)
-  const [triedBy, setTriedBy]  = useState(who[c.id]?.triedBy || [])
+// ─────────────────────────────────────────────────────────────
+// PASSPORT STAMP — Country card
+// ─────────────────────────────────────────────────────────────
+function PassportCard({ c, index, onOpen }) {
+  const [data, setData] = useState(() => loadDATW()[c.id] || {})
+  const done = DATW_PEOPLE.some(p => !!data[p])
 
-  const save = (updates) => {
-    const next = { ...loadWho(), [c.id]: { drink, triedBy, ...updates } }
-    saveWho(next)
-  }
+  return (
+    <div
+      className={`passport-card${done ? ' stamped' : ''} animate-float-up`}
+      style={{ animationDelay: `${index * 0.03}s` }}
+      onClick={onOpen}
+    >
+      {/* Left: flag + stamp area */}
+      <div className="passport-card-left">
+        <div className="passport-flag">{c.flag}</div>
+        <div className={`passport-stamp${done ? ' done' : ''}`}>
+          {done ? '✓' : '#' + (index + 1)}
+        </div>
+      </div>
 
-  const togglePerson = (person) => {
-    const next = triedBy.includes(person) ? triedBy.filter(p => p !== person) : [...triedBy, person]
-    setTriedBy(next)
-    save({ triedBy: next })
-  }
+      {/* Center: country info */}
+      <div className="passport-card-center">
+        <div className="passport-country">{c.country}</div>
+        <div className="passport-drink">⭐ {c.recommendedDrink}</div>
 
-  const handleDrinkSelect = (d) => {
-    setDrink(d)
-    save({ drink: d })
+        {/* Per-person drink display */}
+        <div className="passport-persons">
+          {DATW_PEOPLE.map(person => {
+            const drink = data[person]
+            const col   = DATW_PERSON_COLORS[person]
+            return drink ? (
+              <div
+                key={person}
+                className="passport-person-chip"
+                style={{ background: col.bg, color: col.color, borderColor: col.border }}
+              >
+                <span style={{ fontWeight: 900, fontSize: '0.65rem' }}>{person.slice(0,1)}</span>
+                <span style={{ fontSize: '0.7rem' }}>{drink.length > 16 ? drink.slice(0, 14) + '…' : drink}</span>
+              </div>
+            ) : (
+              <div
+                key={person}
+                className="passport-person-chip empty"
+              >
+                <span style={{ fontWeight: 900, fontSize: '0.65rem' }}>{person.slice(0,1)}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Right: chevron */}
+      <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', flexShrink: 0 }}>›</div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// COUNTRY DETAIL SHEET
+// ─────────────────────────────────────────────────────────────
+function CountrySheet({ c, onClose }) {
+  const [selections, setSelections] = useState(() => loadDATW()[c.id] || {})
+  const allDrinks = [c.recommendedDrink, ...c.alternatives]
+
+  const selectDrink = (person, drink) => {
+    const isSame   = selections[person] === drink
+    const newDrink = isSame ? null : drink
+    const updated  = { ...selections, [person]: newDrink }
+    if (!newDrink) delete updated[person]
+    setSelections(updated)
+    setPersonDrink(c.id, person, newDrink)
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-panel" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="modal-title">{c.flag} {c.country}</div>
-          <button className="modal-close" onClick={onClose}>✕</button>
+    <div className="jn-sheet-overlay" onClick={onClose}>
+      <div className="jn-sheet animate-float-up" onClick={e => e.stopPropagation()} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+        <div className="jn-sheet-handle" />
+
+        {/* Header */}
+        <div className="jn-sheet-header" style={{ marginBottom: 16 }}>
+          <div style={{ display: 'flex', align: 'center', gap: 10 }}>
+            <span style={{ fontSize: '2rem' }}>{c.flag}</span>
+            <div>
+              <div className="jn-sheet-title">{c.country}</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>World Showcase Pavilion</div>
+            </div>
+          </div>
+          <button className="jn-sheet-close" onClick={onClose}>✕</button>
         </div>
-        <div style={{ overflowY: 'auto', flex: 1, padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-          {/* All drink options */}
-          <div>
-            <div className="detail-block-title">Choose Your Drink</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {[c.recommendedDrink, ...c.alternatives].map((d, i) => (
-                <button
-                  key={d}
-                  className={`datw-drink-option${drink === d ? ' selected' : ''}`}
-                  onClick={() => handleDrinkSelect(d)}
-                >
-                  {i === 0 && <span className="datw-recommended-badge">⭐ Recommended</span>}
-                  {d}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* About */}
+        <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 16 }}>
+          {c.description}
+        </p>
 
-          {/* Who drank it */}
-          <div>
-            <div className="detail-block-title">Who Drank It?</div>
-            <div className="datw-people-row">
-              {DATW_PEOPLE.map(person => (
-                <button
-                  key={person}
-                  className={`datw-person-btn${triedBy.includes(person) ? ' active' : ''}`}
-                  onClick={() => togglePerson(person)}
-                >
-                  {triedBy.includes(person) ? '✓ ' : ''}{person}
-                </button>
-              ))}
-            </div>
-          </div>
+        {/* Pro tip */}
+        <div style={{ padding: '10px 14px', background: 'var(--accent-dim)', borderRadius: 'var(--r-md)', fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: 20 }}>
+          💡 {c.proTip}
+        </div>
 
-          {/* Description */}
-          <div>
-            <div className="detail-block-title">About This Stop</div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65 }}>{c.description}</p>
-          </div>
+        {/* Per-person drink selection */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 20 }}>
+          {DATW_PEOPLE.map(person => {
+            const col      = DATW_PERSON_COLORS[person]
+            const selected = selections[person]
+            return (
+              <div key={person} className="datw-person-section">
+                <div className="datw-person-header" style={{ color: col.color }}>
+                  <span className="datw-person-avatar" style={{ background: col.bg, borderColor: col.border, color: col.color }}>
+                    {person.slice(0,1)}
+                  </span>
+                  <span>{person}</span>
+                  {selected && <span className="datw-person-selected-badge" style={{ background: col.bg, color: col.color, borderColor: col.border }}>✓ {selected}</span>}
+                </div>
+                <div className="datw-drink-grid">
+                  {allDrinks.map((drink, i) => (
+                    <button
+                      key={drink}
+                      className={`datw-drink-btn${selected === drink ? ' active' : ''}`}
+                      style={selected === drink ? { background: col.bg, borderColor: col.color, color: col.color } : {}}
+                      onClick={() => selectDrink(person, drink)}
+                    >
+                      {i === 0 && <span className="datw-rec-star">⭐</span>}
+                      {drink}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
 
-          {/* Pro tip */}
-          <div style={{ padding: '12px 16px', background: 'var(--accent-dim)', borderRadius: 'var(--r-md)', fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-            <strong style={{ color: 'var(--accent)' }}>💡 Tip:</strong> {c.proTip}
-          </div>
-
-          {/* Rating */}
+        {/* Rating + Photos */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <RatingStars itemType="datw" itemId={c.id} />
-
-          {/* Photo */}
-          <PhotoManager itemType="datw" itemId={c.id} itemName={`${c.country} — DATW`} />
+          <PhotoManager itemType="datw" itemId={c.id} itemName={`${c.country} DATW`} />
         </div>
       </div>
     </div>
   )
 }
 
-function FoodDetail({ food, onClose }) {
+// ─────────────────────────────────────────────────────────────
+// FOOD CARD + DETAIL
+// ─────────────────────────────────────────────────────────────
+function FoodCard({ food, tried, onToggle, onDetail }) {
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-panel" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="modal-title">{food.name}</div>
-          <button className="modal-close" onClick={onClose}>✕</button>
+    <div className={`food-card${tried ? ' eaten' : ''}`} onClick={onDetail}>
+      {tried && <div className="food-tried-stamp">✓ Tried!</div>}
+      <div className="food-name">{food.name}</div>
+      <div className="food-loc">📍 {food.location}</div>
+      <div className="food-desc">{food.description}</div>
+      <div className="food-meta">
+        <span className="food-price">{food.price}</span>
+        {food.mustTry && <span className="food-must-tag">⭐ Must Try</span>}
+      </div>
+      <button
+        className={`filter-pill${tried ? ' on' : ''}`}
+        style={{ fontSize: '0.72rem', padding: '5px 12px', marginTop: 10 }}
+        onClick={e => { e.stopPropagation(); onToggle() }}
+      >
+        {tried ? '✓ Tried it!' : 'Mark as Tried'}
+      </button>
+    </div>
+  )
+}
+
+function FoodDetailSheet({ food, onClose }) {
+  return (
+    <div className="jn-sheet-overlay" onClick={onClose}>
+      <div className="jn-sheet animate-float-up" onClick={e => e.stopPropagation()}>
+        <div className="jn-sheet-handle" />
+        <div className="jn-sheet-header">
+          <span className="jn-sheet-title">{food.name}</span>
+          <button className="jn-sheet-close" onClick={onClose}>✕</button>
         </div>
-        <div style={{ overflowY: 'auto', flex: 1, padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 8 }}>
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 6 }}>📍 {food.location}</div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.65 }}>{food.description}</p>
             <div style={{ marginTop: 10, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-              <span style={{ fontWeight: 800, color: 'var(--accent)' }}>{food.price}</span>
+              <span style={{ fontWeight: 800, color: 'var(--accent)', fontSize: '1rem' }}>{food.price}</span>
               {food.mustTry && <span className="badge badge-mustdo">⭐ Must Try</span>}
             </div>
           </div>
@@ -126,152 +238,145 @@ function FoodDetail({ food, onClose }) {
   )
 }
 
+// ─────────────────────────────────────────────────────────────
+// MAIN PAGE
+// ─────────────────────────────────────────────────────────────
 export default function FoodDrinks() {
-  const { triedFood, toggleFood, triedDrinks, toggleDrink, isDisney } = useApp()
+  const { triedFood, toggleFood, isDisney }  = useApp()
   const { resortFood, disneyFood, universalFood } = useResortData()
-  const [tab,    setTab]    = useState(isDisney ? 'datw' : 'universal')
-  const [detail, setDetail] = useState(null)  // { type: 'country'|'food', item }
-  const [who,    setWhoState] = useState(loadWho)
+  const [tab,    setTab]    = useState(isDisney ? 'datw' : 'food')
+  const [detail, setDetail] = useState(null)
+  const [datwData, setDatwData] = useState(() => loadDATW())
 
   const { drinkingAroundTheWorld } = FOOD_DRINKS
   const disneyWorldFood = disneyFood
 
-  const cwTotal = drinkingAroundTheWorld.countries.length
-  const cwDone  = drinkingAroundTheWorld.countries.filter(c => {
-    const w = who[c.id]
-    return w?.triedBy?.length > 0 || triedDrinks.has(c.id)
-  }).length
+  const refreshDATW = () => setDatwData(loadDATW())
+
+  // DATW stats
+  const datwDone  = drinkingAroundTheWorld.countries.filter(c => isCountryDone(c.id)).length
+  const datwTotal = drinkingAroundTheWorld.countries.length
 
   const tabs = isDisney
     ? [
-        { id: 'datw',    label: '🌍 Drink Around the World' },
-        { id: 'disney',  label: '🏰 Disney Eats' },
+        { id: 'datw', label: '🌍 DATW Challenge' },
+        { id: 'food', label: '🍽️ Disney Eats' },
       ]
-    : [{ id: 'universal', label: '🎥 Universal Eats' }]
+    : [{ id: 'food', label: '🍽️ Universal Eats' }]
 
   return (
     <div className="food-page animate-fade-in">
-      <h1 className="page-title">🍹 Food & Drinks</h1>
+      <h1 className="page-title">{isDisney ? '🍹 Food & Drinks' : '🌭 Universal Eats'}</h1>
       <p className="page-subtitle">
-        {isDisney ? 'Track every bite and sip — tap any item for details, ratings, and photos.' : 'The essential Universal Orlando eating guide.'}
+        {isDisney ? 'Track every bite and sip, and conquer the World Showcase.' : 'The essential Universal Orlando eating guide.'}
       </p>
 
-      <div className="tabs animate-float-up stagger-1">
+      <div className="tabs animate-float-up">
         {tabs.map(t => (
           <button key={t.id} className={`tab-btn${tab === t.id ? ' active' : ''}`} onClick={() => setTab(t.id)}>{t.label}</button>
         ))}
       </div>
 
-      {/* ── DATW ── */}
+      {/* ── DATW PASSPORT UI ── */}
       {tab === 'datw' && (
         <div>
-          <div className="datw-hero animate-float-up stagger-2">
-            <div className="datw-hero-title">🌍 Drinking Around the World</div>
-            <p className="datw-hero-sub">{drinkingAroundTheWorld.description}</p>
-            <div className="park-progress" style={{ maxWidth: 460, margin: '16px auto 12px', background: 'transparent', border: 'none' }}>
-              <div className="park-progress-label">
-                <span>Countries Conquered</span>
-                <span>{cwDone} / {cwTotal}</span>
-              </div>
-              <div className="progress-track">
-                <div className="progress-fill" style={{ width: `${Math.round((cwDone/cwTotal)*100)}%`, background: 'linear-gradient(to right, #00A8CC, #27AE60)' }} />
+          {/* Passport hero */}
+          <div className="datw-passport-hero">
+            <div className="datw-passport-title">
+              <span style={{ fontSize: '1.5rem' }}>🌍</span>
+              <div>
+                <div style={{ fontFamily: 'Cinzel, serif', fontSize: '1.05rem', fontWeight: 700 }}>Drink Around the World</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>World Showcase · EPCOT</div>
               </div>
             </div>
-            {/* Who's participating */}
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
-              {DATW_PEOPLE.map(person => {
-                const count = Object.values(who).filter(v => v.triedBy?.includes(person)).length
-                return (
-                  <div key={person} className="datw-person-stat">
-                    <span style={{ fontWeight: 800, color: 'var(--accent)', fontSize: '1.1rem' }}>{count}</span>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{person}</span>
-                  </div>
-                )
-              })}
+
+            {/* Progress ring + count */}
+            <div className="datw-progress-wrap">
+              <div className="datw-big-count" style={{ color: datwDone === datwTotal ? '#10b981' : 'var(--accent)' }}>
+                {datwDone}<span style={{ fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 700 }}>/{datwTotal}</span>
+              </div>
+              <div style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-muted)' }}>Countries</div>
             </div>
-            {cwDone === cwTotal && <p style={{ color: 'var(--accent)', marginTop: 8, fontWeight: 800, fontSize: '0.9rem' }}>🎉 World Showcase Champions!</p>}
           </div>
 
-          {drinkingAroundTheWorld.countries.map((c, i) => {
-            const w       = who[c.id] || {}
-            const tried   = triedDrinks.has(c.id) || (w.triedBy?.length > 0)
-            return (
-              <div
+          {/* Full-width progress bar */}
+          <div style={{ margin: '0 0 16px' }}>
+            <div className="progress-track" style={{ height: 10 }}>
+              <div className="progress-fill" style={{
+                width: `${Math.round((datwDone / datwTotal) * 100)}%`,
+                background: 'linear-gradient(to right, #06b6d4, #10b981)',
+                transition: 'width 0.8s ease',
+              }} />
+            </div>
+          </div>
+
+          {/* Per-person leaderboard */}
+          <div className="datw-leaderboard">
+            {DATW_PEOPLE.map((person, i) => {
+              const count = getPersonCount(person)
+              const col   = DATW_PERSON_COLORS[person]
+              const isWinning = count === Math.max(...DATW_PEOPLE.map(p => getPersonCount(p))) && count > 0
+              return (
+                <div key={person} className="datw-leader-card" style={{ borderColor: col.border, background: col.bg }}>
+                  {isWinning && <div className="datw-crown">👑</div>}
+                  <div className="datw-leader-avatar" style={{ color: col.color, background: `${col.color}22`, border: `2px solid ${col.color}` }}>
+                    {person.slice(0,1)}
+                  </div>
+                  <div className="datw-leader-name">{person}</div>
+                  <div className="datw-leader-count" style={{ color: col.color }}>{count}</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontWeight: 700 }}>countries</div>
+                </div>
+              )
+            })}
+          </div>
+
+          {datwDone === datwTotal && (
+            <div className="datw-champion-banner">
+              🏆 World Showcase Champions! All 11 countries conquered!
+            </div>
+          )}
+
+          {/* Passport cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {drinkingAroundTheWorld.countries.map((c, i) => (
+              <PassportCard
                 key={c.id}
-                className={`country-card${tried ? ' tried' : ''} animate-float-up`}
-                style={{ animationDelay: `${i * 0.03}s`, cursor: 'pointer' }}
-                onClick={() => setDetail({ type: 'country', item: c })}
-              >
-                <div className="country-flag">{c.flag}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 800 }}>#{i + 1}</span>
-                    <div className="country-name">{c.country}</div>
-                  </div>
-                  <div className="country-drink-name">⭐ {c.recommendedDrink}</div>
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: 4 }}>
-                    Also: {c.alternatives.join(' · ')}
-                  </div>
-                  {/* Who drank it */}
-                  {w.triedBy?.length > 0 && (
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {w.triedBy.map(p => (
-                        <span key={p} className="datw-person-drank">{p} ✓</span>
-                      ))}
-                    </div>
-                  )}
-                  {w.drink && w.drink !== c.recommendedDrink && (
-                    <div style={{ fontSize: '0.75rem', color: 'var(--accent)', marginTop: 3 }}>
-                      🥂 Had: {w.drink}
-                    </div>
-                  )}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <div className="country-check">{tried && '✓'}</div>
-                  <span style={{ fontSize: '0.65rem', color: 'var(--accent)', fontWeight: 700 }}>Tap for details</span>
-                </div>
-              </div>
-            )
-          })}
+                c={c}
+                index={i}
+                onOpen={() => setDetail({ type: 'country', item: c })}
+              />
+            ))}
+          </div>
+
+          <div style={{ marginTop: 16, padding: '14px 16px', background: 'var(--bg-card)', borderRadius: 'var(--r-lg)', border: '1px solid var(--border)' }}>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.65, margin: 0 }}>
+              {drinkingAroundTheWorld.tips}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* ── DISNEY FOOD ── */}
-      {tab === 'disney' && (
+      {/* ── FOOD TABS ── */}
+      {tab === 'food' && (
         <div>
-          {['Magic Kingdom','EPCOT','Hollywood Studios','Animal Kingdom'].map(cat => {
-            const items = disneyWorldFood.filter(f => f.category === cat)
+          {(isDisney
+            ? ['Magic Kingdom', 'EPCOT', 'Hollywood Studios', 'Animal Kingdom']
+            : ['Wizarding World', 'Springfield', 'Epic Universe']
+          ).map(cat => {
+            const items = (isDisney ? disneyWorldFood : universalFood).filter(f => f.category === cat)
             if (!items.length) return null
             return (
-              <div key={cat} style={{ marginBottom: 36 }}>
+              <div key={cat} style={{ marginBottom: 32 }}>
                 <div className="rd-section-label">{cat}</div>
                 <div className="food-grid">
-                  {items.map((f, i) => (
-                    <div
+                  {items.map(f => (
+                    <FoodCard
                       key={f.id}
-                      className={`food-card${triedFood.has(f.id) ? ' eaten' : ''} animate-float-up`}
-                      style={{ animationDelay: `${i * 0.04}s`, cursor: 'pointer' }}
-                      onClick={() => setDetail({ type: 'food', item: f })}
-                    >
-                      {triedFood.has(f.id) && <div className="food-tried-stamp">✓ Tried!</div>}
-                      <div className="food-name">{f.name}</div>
-                      <div className="food-loc">📍 {f.location}</div>
-                      <div className="food-desc">{f.description}</div>
-                      <div className="food-meta">
-                        <span className="food-price">{f.price}</span>
-                        {f.mustTry && <span className="food-must-tag">⭐ Must Try</span>}
-                      </div>
-                      <div style={{ marginTop: 10, display: 'flex', gap: 6 }}>
-                        <button
-                          className={`filter-pill${triedFood.has(f.id) ? ' on' : ''}`}
-                          style={{ fontSize: '0.72rem', padding: '4px 10px' }}
-                          onClick={e => { e.stopPropagation(); toggleFood(f.id) }}
-                        >
-                          {triedFood.has(f.id) ? '✓ Tried' : 'Mark Tried'}
-                        </button>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Tap for photos & rating</span>
-                      </div>
-                    </div>
+                      food={f}
+                      tried={triedFood.has(f.id)}
+                      onToggle={() => toggleFood(f.id, f.name)}
+                      onDetail={() => setDetail({ type: 'food', item: f })}
+                    />
                   ))}
                 </div>
               </div>
@@ -280,58 +385,15 @@ export default function FoodDrinks() {
         </div>
       )}
 
-      {/* ── UNIVERSAL FOOD ── */}
-      {tab === 'universal' && (
-        <div>
-          {['Wizarding World','Springfield','Epic Universe'].map(cat => {
-            const items = universalFood.filter(f => f.category === cat)
-            if (!items.length) return null
-            return (
-              <div key={cat} style={{ marginBottom: 36 }}>
-                <div className="rd-section-label">{cat}</div>
-                <div className="food-grid">
-                  {items.map((f, i) => (
-                    <div
-                      key={f.id}
-                      className={`food-card${triedFood.has(f.id) ? ' eaten' : ''} animate-float-up`}
-                      style={{ animationDelay: `${i * 0.04}s`, cursor: 'pointer' }}
-                      onClick={() => setDetail({ type: 'food', item: f })}
-                    >
-                      {triedFood.has(f.id) && <div className="food-tried-stamp">✓ Tried!</div>}
-                      <div className="food-name">{f.name}</div>
-                      <div className="food-loc">📍 {f.location}</div>
-                      <div className="food-desc">{f.description}</div>
-                      <div className="food-meta">
-                        <span className="food-price">{f.price}</span>
-                        {f.mustTry && <span className="food-must-tag">⭐ Must Try</span>}
-                      </div>
-                      <div style={{ marginTop: 10, display: 'flex', gap: 6 }}>
-                        <button
-                          className={`filter-pill${triedFood.has(f.id) ? ' on' : ''}`}
-                          style={{ fontSize: '0.72rem', padding: '4px 10px' }}
-                          onClick={e => { e.stopPropagation(); toggleFood(f.id) }}
-                        >
-                          {triedFood.has(f.id) ? '✓ Tried' : 'Mark Tried'}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-      {/* Detail modals */}
+      {/* Detail sheets */}
       {detail?.type === 'country' && (
-        <CountryDetail
+        <CountrySheet
           c={detail.item}
-          onClose={() => { setDetail(null); setWhoState(loadWho()) }}
+          onClose={() => { setDetail(null); refreshDATW() }}
         />
       )}
       {detail?.type === 'food' && (
-        <FoodDetail
+        <FoodDetailSheet
           food={detail.item}
           onClose={() => setDetail(null)}
         />

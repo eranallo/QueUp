@@ -6,6 +6,7 @@ import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 import PhotoManager from './PhotoManager'
 import RatingStars from './RatingStars'
+import { DARK_HISTORY } from '../darkHistory'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild Thrill', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
 
@@ -34,6 +35,46 @@ function Section({ title, children, defaultOpen = false }) {
       {open && (
         <div className="collapsible-body animate-float-up">
           {children}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Dark History Body ───────────────────────────────────────
+function DarkHistoryBody({ data }) {
+  return (
+    <div className="dh-body">
+      <div className="dh-warning">
+        ⚠️ Contains references to real accidents and deaths. All incidents are documented from public sources. Reader discretion advised.
+      </div>
+
+      {data.incidents?.length > 0 && (
+        <div className="dh-group">
+          <div className="dh-group-label">📋 Documented Incidents</div>
+          {data.incidents.map((inc, i) => (
+            <div key={i} className="dh-incident">
+              <div className="dh-incident-header">
+                <span className="dh-year">{inc.year}</span>
+                <span className={`dh-type-badge ${inc.type}`}>{inc.type === 'fact' ? '✓ Documented' : '⚠ Alleged'}</span>
+              </div>
+              <div className="dh-incident-title">{inc.title}</div>
+              <p className="dh-incident-detail">{inc.detail}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {data.legends?.length > 0 && (
+        <div className="dh-group">
+          <div className="dh-group-label">👻 Urban Legends & Rumors</div>
+          {data.legends.map((leg, i) => (
+            <div key={i} className="dh-legend">
+              <div className="dh-incident-title">{leg.title}</div>
+              <p className="dh-incident-detail">{leg.detail}</p>
+              <div className="dh-verdict">Verdict: {leg.verdict}</div>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -235,6 +276,30 @@ export default function RidePage() {
             ))}
           </div>
         </Section>
+      )}
+
+      {/* Dark History section */}
+      {DARK_HISTORY[found.id] && (
+        <div className="dark-history-section">
+          <button
+            className="dark-history-header"
+            onClick={() => {
+              const el = document.getElementById(`dh-${found.id}`)
+              el.style.display = el.style.display === 'none' ? 'block' : 'none'
+              el.previousSibling.querySelector('.dh-chevron').style.transform =
+                el.style.display === 'none' ? 'rotate(0deg)' : 'rotate(180deg)'
+            }}
+          >
+            <div className="dh-header-left">
+              <span className="dh-icon">💀</span>
+              <span className="dh-title">Dark History & Incidents</span>
+            </div>
+            <span className="dh-chevron">▾</span>
+          </button>
+          <div id={`dh-${found.id}`} style={{ display: 'none' }}>
+            <DarkHistoryBody data={DARK_HISTORY[found.id]} />
+          </div>
+        </div>
       )}
 
       <Section title="📸 My Photos">

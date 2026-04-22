@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { addEntry } from './journalUtils'
 import { checkAchievements, buildStats, ACHIEVEMENTS } from './achievementsUtils'
 import Achievements from './components/Achievements'
+import Transportation from './components/Transportation'
 import { Routes, Route } from 'react-router-dom'
 import Nav from './components/Nav'
 import ResortDashboard from './components/ResortDashboard'
@@ -147,6 +148,7 @@ export default function App() {
                 <Route path="/journal"           element={<Journal />} />
                 <Route path="/hotels"            element={<HotelsPage />} />
                 <Route path="/achievements"      element={<Achievements />} />
+                <Route path="/transportation"     element={<Transportation />} />
                 <Route path="/map/:parkId"       element={<ParkMap />} />
               </Routes>
             )}
