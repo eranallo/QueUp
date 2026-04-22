@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { addEntry } from './journalUtils'
+import { checkAchievements, buildStats, ACHIEVEMENTS } from './achievementsUtils'
+import Achievements from './components/Achievements'
 import { Routes, Route } from 'react-router-dom'
 import Nav from './components/Nav'
 import ResortDashboard from './components/ResortDashboard'
@@ -36,6 +38,29 @@ export default function App() {
   const [activeResortId,  setActiveResortId]  = useState(() => localStorage.getItem('pp_active_resort') || null)
 
   const activeResort = activeResortId ? RESORTS.find(r => r.id === activeResortId) : null
+  const [toast, setToast] = useState(null)   // { icon, name }
+
+  const fireAchievementCheck = (overrides = {}) => {
+    // Build stats snapshot from current state + overrides
+    const allParks = RESORTS.flatMap(r => r.parks)
+    const allRides = allParks.flatMap(p => p.lands.flatMap(l => l.rides))
+    const parkRideMap = {}
+    for (const park of allParks) {
+      parkRideMap[park.id] = park.lands.flatMap(l => l.rides)
+    }
+    const stats = buildStats(
+      overrides.checkedRides || checkedRides,
+      overrides.foundMickeys || foundMickeys,
+      overrides.personalMustRide || personalMustRide,
+      allRides,
+      parkRideMap
+    )
+    const newlyWon = checkAchievements(stats)
+    if (newlyWon.length) {
+      setToast(newlyWon[0])   // show the first new badge
+      setTimeout(() => setToast(null), 3500)
+    }
+  }
 
   useEffect(() => {
     document.body.className = activeResortId === 'disney-world'
@@ -53,14 +78,18 @@ export default function App() {
     const adding = !next.has(id)
     adding ? next.add(id) : next.delete(id)
     if (adding && name) addEntry({ type: 'ride', title: name, itemId: id, itemType: 'ride' })
-    saveSet('pp_checked_rides', next); return next
+    saveSet('pp_checked_rides', next)
+    setTimeout(() => fireAchievementCheck({ checkedRides: next }), 200)
+    return next
   })
   const toggleMickey = (id, name = '') => setFoundMickeys(prev => {
     const next = new Set(prev)
     const adding = !next.has(id)
     adding ? next.add(id) : next.delete(id)
     if (adding) addEntry({ type: 'mickey', title: name || 'Hidden Mickey Found', itemId: id })
-    saveSet('pp_found_mickeys', next); return next
+    saveSet('pp_found_mickeys', next)
+    setTimeout(() => fireAchievementCheck({ foundMickeys: next }), 200)
+    return next
   })
   const toggleFood = (id, name = '') => setTriedFood(prev => {
     const next = new Set(prev)
@@ -79,7 +108,9 @@ export default function App() {
   })
   const togglePersonalMust = (id) => setPersonalMustRide(prev => {
     const next = new Set(prev); next.has(id) ? next.delete(id) : next.add(id)
-    saveSet('pp_personal_must', next); return next
+    saveSet('pp_personal_must', next)
+    setTimeout(() => fireAchievementCheck({ personalMustRide: next }), 200)
+    return next
   })
 
   return (
@@ -100,7 +131,9 @@ export default function App() {
         <div className={`app-wrapper${activeResortId ? ` app-${activeResortId === 'disney-world' ? 'disney' : 'universal'}` : ''}`}>
           {activeResort && <Nav />}
           <main className={activeResort ? 'page-content animate-fade-in' : ''}>
-            {!activeResort ? (
+            {/* Achievement route wrapper — builds stats from context */}
+          {/* This is defined inline so it has access to the context values */}
+          {!activeResort ? (
               <ResortSelector />
             ) : (
               <Routes>
@@ -113,10 +146,21 @@ export default function App() {
                 <Route path="/hotel/:hotelId" element={<HotelPage />} />
                 <Route path="/journal"           element={<Journal />} />
                 <Route path="/hotels"            element={<HotelsPage />} />
+                <Route path="/achievements"      element={<Achievements />} />
                 <Route path="/map/:parkId"       element={<ParkMap />} />
               </Routes>
             )}
           </main>
+        {/* Achievement toast notification */}
+        {toast && (
+          <div className="ach-toast animate-float-up">
+            <span className="ach-toast-icon">{toast.icon}</span>
+            <div>
+              <div className="ach-toast-badge">Achievement Unlocked!</div>
+              <div className="ach-toast-name">{toast.name}</div>
+            </div>
+          </div>
+        )}
         </div>
       </LiveDataProvider>
     </AppContext.Provider>

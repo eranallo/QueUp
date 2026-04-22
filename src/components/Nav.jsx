@@ -33,6 +33,7 @@ export default function Nav() {
     { to: '/journal', icon: '📔', label: 'Trip Journal' },
     ...(isDisney ? [{ to: '/mickeys', icon: '🐭', label: 'Hidden Mickeys' }] : []),
     { to: '/food',    icon: isDisney ? '🍹' : '🌭', label: isDisney ? 'Food & Drinks' : 'Universal Eats' },
+    { to: '/achievements', icon: '🏆', label: 'Achievements' },
   ]
 
   // Park map links — one per active resort park
