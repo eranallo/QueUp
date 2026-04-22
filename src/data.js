@@ -1882,6 +1882,552 @@ export const RESORTS = [
       }
     ]
   }
+,
+  // ──────────────────────────────────────────────────────────
+  //  DISNEYLAND RESORT
+  // ──────────────────────────────────────────────────────────
+  {
+    id: 'disneyland',
+    name: 'Disneyland Resort',
+    shortName: 'Disneyland',
+    emoji: '🌟',
+    tagline: 'The Happiest Place on Earth — Where It All Began',
+    accentColor: '#1a6fd4',
+    parks: [
+      {
+        id: 'disneyland-park',
+        name: 'Disneyland Park',
+        emoji: '🌟',
+        accentColor: '#1a6fd4',
+        gradientFrom: '#0d2b6b',
+        gradientTo: '#0a0f1e',
+        description: 'The original Disney theme park — opened July 17, 1955 by Walt Disney himself. Every park that followed was built in its image.',
+        openingYear: 1955,
+        lands: [
+          {
+            id: 'dl-main-street',
+            name: 'Main Street, U.S.A.',
+            rides: [
+              {
+                id: 'dl-railroad',
+                name: 'Disneyland Railroad',
+                type: 'Train', thrillLevel: 1, heightRequirement: null, duration: '~18 min',
+                openingYear: 1955,
+                description: 'The original steam-powered railroad that circles the park. Walt rode this on opening day. The trains date to the early 1900s.',
+                history: 'Walt Disney personally oversaw the construction of the Disneyland Railroad, born from his lifelong love of trains. It is one of the few attractions that has been operating continuously since the park opened in 1955.',
+                trivia: ['Walt Disney had a private miniature railroad at his home called the Carolwood Pacific', 'The locomotives are genuine antique steam engines from the early 1900s', 'The Grand Canyon Diorama opened in 1958 — the first diorama in any Disney park'],
+                specs: { type: 'Narrow Gauge Steam Railroad', stops: 4, distance: '1.2 miles' },
+                mustDo: false, lightningLane: false, tags: ['classic', 'family', 'historical']
+              }
+            ]
+          },
+          {
+            id: 'dl-adventureland',
+            name: 'Adventureland',
+            rides: [
+              {
+                id: 'dl-jungle-cruise',
+                name: 'Jungle Cruise',
+                type: 'Boat Ride', thrillLevel: 1, heightRequirement: null, duration: '~10 min',
+                openingYear: 1955,
+                description: 'The original Jungle Cruise — every skipper pun you\'ve ever heard started here. The original that inspired every version worldwide.',
+                history: 'The original Jungle Cruise was one of Walt Disney\'s personal favorite attractions. It opened on July 17, 1955 as a serious adventure ride — Walt was disappointed that real jungle animals wouldn\'t perform on cue, leading to the animatronic animals. Over decades it evolved into a beloved pun-fest.',
+                trivia: ['One of the original five opening-day attractions in 1955', 'Walt Disney envisioned it as a genuine adventure — the comedy came later', 'The Disneyland version inspired every Jungle Cruise worldwide'],
+                specs: { type: 'Guided Boat Tour', duration: '10 min' },
+                mustDo: true, lightningLane: false, tags: ['classic', 'family', 'comedy']
+              },
+              {
+                id: 'dl-indiana-jones',
+                name: 'Indiana Jones Adventure',
+                type: 'Jeep Ride', thrillLevel: 3, heightRequirement: 46, duration: '~4 min',
+                openingYear: 1995,
+                description: 'Board a troop transport jeep through the Temple of the Forbidden Eye. The enhanced motion system makes each ride feel different. One of Disneyland\'s signature attractions.',
+                history: 'Indiana Jones Adventure opened in 1995 after years of development. It pioneered the Enhanced Motion Vehicle (EMV) system — jeeps that simulate out-of-control movement on a fixed track. The queue alone took five years to design and is considered one of the greatest queue experiences in any theme park.',
+                trivia: ['The queue contains over 30 individual interactive elements', 'The ride uses 16 different random scene combinations — you never experience the exact same ride twice', 'Harrison Ford recorded dialogue specifically for the attraction'],
+                specs: { type: 'Enhanced Motion Vehicle', capacity: 12, duration: '4 min', vehicles: 60 },
+                mustDo: true, lightningLane: true, tags: ['adventure', 'thrill', 'family']
+              },
+              {
+                id: 'dl-treehouse',
+                name: 'Tarzan\'s Treehouse',
+                type: 'Walk-Through', thrillLevel: 1, heightRequirement: null, duration: '~15 min (self-guided)',
+                openingYear: 1962,
+                description: 'A self-guided walk through a massive treehouse. Originally Swiss Family Robinson Treehouse, now themed to Tarzan.',
+                history: 'Opened in 1962 as the Swiss Family Robinson Treehouse, rethemed to Tarzan in 1999 following the film\'s release.',
+                trivia: ['The tree contains over 300,000 artificial leaves', 'The structure weighs over 150 tons'],
+                specs: { type: 'Self-Guided Walk-Through' },
+                mustDo: false, lightningLane: false, tags: ['family', 'walk-through']
+              }
+            ]
+          },
+          {
+            id: 'dl-new-orleans-square',
+            name: 'New Orleans Square',
+            rides: [
+              {
+                id: 'dl-haunted-mansion',
+                name: 'Haunted Mansion',
+                type: 'Dark Ride', thrillLevel: 2, heightRequirement: null, duration: '~9 min',
+                openingYear: 1969,
+                description: 'The original Haunted Mansion — 999 happy haunts calling it home since 1969. Slightly different than WDW\'s version with a different layout and exterior.',
+                history: 'The original Haunted Mansion opened on August 9, 1969 at Disneyland — two years before the Walt Disney World version. It uses a descending elevator (WDW uses a stretching room) because the Disneyland ride goes below ground. The two versions share most characters but differ significantly in layout.',
+                trivia: ['The Disneyland version uses an actual elevator to go below ground — WDW cannot due to the water table', 'The exterior is based on plantation houses of the American South', 'Marc Davis and Claude Coats had two competing visions for the attraction — "gag" comedy vs. genuine horror. Both visions are present in the final version'],
+                specs: { type: 'Omnimover Dark Ride', vehicles: 131, capacity: '2 per doom buggy', duration: '9 min' },
+                mustDo: true, lightningLane: false, tags: ['classic', 'family', 'dark', 'ghost']
+              },
+              {
+                id: 'dl-pirates',
+                name: 'Pirates of the Caribbean',
+                type: 'Boat Ride', thrillLevel: 1, heightRequirement: null, duration: '~16 min',
+                openingYear: 1967,
+                description: 'The original Pirates of the Caribbean — longer than WDW\'s version, with an extra battle scene and the iconic skeleton cavern approach. The ride Walt Disney supervised personally.',
+                history: 'Pirates of the Caribbean was the last attraction personally supervised by Walt Disney before his death in 1966. It opened on March 18, 1967 — the first major attraction to open after Walt\'s death. The WDW version (1971) is shorter. The Disneyland version features an additional bayou sequence at the beginning.',
+                trivia: ['Walt Disney personally oversaw much of the attraction\'s development before his death in 1966', 'The original featured actual human skeletons borrowed from UCLA medical school — most were later returned', 'The Disneyland version is longer than WDW\'s version with an additional bayou sequence', 'The film franchise was inspired by this ride — not the other way around'],
+                specs: { type: 'Boat Dark Ride', duration: '16 min', boats: '~27 boats' },
+                mustDo: true, lightningLane: false, tags: ['classic', 'family', 'adventure']
+              }
+            ]
+          },
+          {
+            id: 'dl-frontierland',
+            name: 'Frontierland',
+            rides: [
+              {
+                id: 'dl-big-thunder',
+                name: 'Big Thunder Mountain Railroad',
+                type: 'Mine Coaster', thrillLevel: 3, heightRequirement: 40, duration: '~4 min',
+                openingYear: 1979,
+                description: 'The original Big Thunder Mountain — the "wildest ride in the wilderness." Opens one year before WDW\'s version. Slightly different track layout.',
+                history: 'Disneyland\'s Big Thunder opened September 2, 1979 — a year before WDW\'s version. The original concept was Thunder Mesa, developed in the late 1970s as a massive Western-themed expansion that would have included multiple attractions. Only Big Thunder was built.',
+                trivia: ['Opened 1979 — one year before WDW\'s version', 'The original concept Thunder Mesa would have been an entire Western-themed expansion', 'The mine shaft collapse sound was recorded from an actual mine'],
+                specs: { type: 'Mine Train Coaster', heightReq: '40"', duration: '4 min' },
+                mustDo: true, lightningLane: true, tags: ['coaster', 'thrill', 'family']
+              },
+              {
+                id: 'dl-splash',
+                name: 'Splash Mountain',
+                type: 'Log Flume', thrillLevel: 3, heightRequirement: 40, duration: '~11 min',
+                openingYear: 1989,
+                description: 'The classic 5-story drop log flume. Note: This attraction is being rethemed to Tiana\'s Bayou Adventure. Check current operating status.',
+                history: 'Splash Mountain opened at Disneyland in 1989, one year before the WDW version. Based on the 1946 film Song of the South, it has been announced for rethemeing to Tiana\'s Bayou Adventure, though the transition timeline differs from WDW.',
+                trivia: ['The Disneyland version opened in 1989', 'The 52-foot final drop is one of the tallest in any Disney park', 'Rethemeing to Tiana\'s Bayou Adventure announced — check current status'],
+                specs: { type: 'Log Flume', heightReq: '40"', drop: '52 feet', duration: '11 min' },
+                mustDo: true, lightningLane: true, tags: ['flume', 'thrill', 'family', 'wet']
+              }
+            ]
+          },
+          {
+            id: 'dl-fantasyland',
+            name: 'Fantasyland',
+            rides: [
+              {
+                id: 'dl-matterhorn',
+                name: 'Matterhorn Bobsleds',
+                type: 'Mountain Coaster', thrillLevel: 3, heightRequirement: 42, duration: '~3 min',
+                openingYear: 1959,
+                description: 'One of the most iconic roller coasters in history — a twin-track bobsled coaster through a recreation of the Swiss Matterhorn. The Yeti inside is a Disneyland exclusive.',
+                history: 'The Matterhorn Bobsleds opened June 14, 1959 — becoming the first tubular steel roller coaster in the world. The Matterhorn mountain itself is 1/100th scale replica of the real Swiss mountain. The basketball court inside the mountain is one of Disneyland\'s most famous secrets.',
+                trivia: ['The first tubular steel roller coaster ever built (1959)', 'A regulation-size basketball court exists inside the mountain, used by cast members', 'The Yeti (Harold) inside the Matterhorn is a Disneyland exclusive — WDW doesn\'t have this version', 'The mountain is built at 1/100th the scale of the real Swiss Matterhorn'],
+                specs: { type: 'Steel Bobsled Coaster', heightReq: '42"', dual: 'Two separate tracks', duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['coaster', 'classic', 'thrill']
+              },
+              {
+                id: 'dl-peter-pan',
+                name: 'Peter Pan\'s Flight',
+                type: 'Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~3 min',
+                openingYear: 1955,
+                description: 'The original Peter Pan\'s Flight — one of the most beloved dark rides in history. Your pirate ship soars over London and Neverland.',
+                history: 'Peter Pan\'s Flight was one of the original attractions at Disneyland in 1955 and is considered by many to be the quintessential Disney dark ride. The suspended vehicle system — flying over London — was groundbreaking in 1955.',
+                trivia: ['Original opening-day attraction in 1955', 'Consistently one of the highest wait times in the park despite its brevity', 'The flying pirate ship mechanism was revolutionary in 1955'],
+                specs: { type: 'Suspended Dark Ride', duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['classic', 'family', 'dark ride']
+              },
+              {
+                id: 'dl-small-world',
+                name: 'it\'s a small world',
+                type: 'Boat Ride', thrillLevel: 1, heightRequirement: null, duration: '~11 min',
+                openingYear: 1966,
+                description: 'The original it\'s a small world — created for the 1964 New York World\'s Fair and brought to Disneyland in 1966. The song will never leave your head.',
+                history: 'Originally created for the UNICEF pavilion at the 1964-1965 New York World\'s Fair, it\'s a small world came to Disneyland in 1966. The WDW version (1971) is the most elaborate iteration. The Disneyland version includes Disney characters integrated into the dolls — a controversial addition in 2008.',
+                trivia: ['Originally created for the 1964 New York World\'s Fair', 'The song was composed by the Sherman Brothers and is the most performed song in history', 'Disney characters were added to the Disneyland version in 2008 — a controversial update'],
+                specs: { type: 'Slow Boat Ride', duration: '11 min', capacity: '~600 per hour' },
+                mustDo: false, lightningLane: false, tags: ['classic', 'family', 'gentle']
+              },
+              {
+                id: 'dl-matterhorn-sub',
+                name: 'Finding Nemo Submarine Voyage',
+                type: 'Submarine', thrillLevel: 1, heightRequirement: null, duration: '~15 min',
+                openingYear: 2007,
+                description: 'A submarine voyage through the underwater world of Finding Nemo. Uses the original 1959 submarine lagoon — one of Disneyland\'s most beloved former attractions.',
+                history: 'The submarine lagoon was originally home to the Submarine Voyage (1959-1998), one of the most beloved original Disneyland attractions. After nearly a decade dormant, it reopened as Finding Nemo Submarine Voyage in 2007.',
+                trivia: ['The lagoon was built for the original 1959 Submarine Voyage', 'The original yellow submarines were decommissioned in 1998', 'The lagoon sat empty for nearly 10 years before Nemo reopened it'],
+                specs: { type: 'Submarine Ride', duration: '15 min' },
+                mustDo: false, lightningLane: false, tags: ['family', 'gentle', 'Pixar']
+              }
+            ]
+          },
+          {
+            id: 'dl-tomorrowland',
+            name: 'Tomorrowland',
+            rides: [
+              {
+                id: 'dl-space-mountain',
+                name: 'Space Mountain',
+                type: 'Indoor Coaster', thrillLevel: 3, heightRequirement: 40, duration: '~3 min',
+                openingYear: 1977,
+                description: 'Disneyland\'s Space Mountain — smaller and slightly rougher than WDW\'s version, with a single track that spirals through the darkness. The classic original.',
+                history: 'Disneyland\'s Space Mountain opened May 27, 1977 — two years after WDW\'s version. It uses a single track (WDW has two) and was built to fit within Tomorrowland\'s constraints. It is noticeably rougher than the WDW version but beloved by enthusiasts for that reason.',
+                trivia: ['Opened 1977 — two years after WDW\'s version', 'Uses a single track (WDW uses two simultaneous tracks)', 'The Disneyland version is generally considered rougher and more intense than WDW\'s', 'The exterior white spires are one of Disneyland\'s most recognizable silhouettes'],
+                specs: { type: 'Indoor Steel Coaster', heightReq: '40"', tracks: 1, duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['coaster', 'classic', 'dark', 'thrill']
+              },
+              {
+                id: 'dl-buzz',
+                name: 'Buzz Lightyear Astro Blasters',
+                type: 'Interactive Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 2005,
+                description: 'Compete against other riders with your laser blasters as you help Buzz Lightyear defeat Emperor Zurg. Score tracked throughout the ride.',
+                history: 'Buzz Lightyear Astro Blasters opened in 2005, inspired by the WDW version that opened in 1998. The Disneyland version uses the same interactive shooter concept.',
+                trivia: ['The highest score targets are often hidden in surprising spots', 'Your score can be emailed to you — link appears at the end'],
+                specs: { type: 'Interactive Dark Ride', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['family', 'interactive', 'Pixar']
+              }
+            ]
+          },
+          {
+            id: 'dl-galaxys-edge',
+            name: "Star Wars: Galaxy's Edge",
+            rides: [
+              {
+                id: 'dl-millennium-falcon',
+                name: "Millennium Falcon: Smugglers Run",
+                type: 'Interactive Simulator', thrillLevel: 2, heightRequirement: 38, duration: '~5 min',
+                openingYear: 2019,
+                description: 'Pilot the Millennium Falcon on a smuggling mission. You have a role — pilot, gunner, or engineer — that actually affects the outcome.',
+                history: 'Opened at Disneyland on May 31, 2019 — a few months before the WDW version. Galaxy\'s Edge was the largest single-themed land expansion in Disneyland\'s history.',
+                trivia: ['Galaxy\'s Edge was built on the site of the former Big Thunder Ranch area', 'The land is the largest expansion in Disneyland\'s 65-year history', 'You are addressed as a "guest" not a "rider" in Galaxy\'s Edge — you\'re a citizen of Batuu'],
+                specs: { type: 'Motion Simulator', heightReq: '38"', crew: '6 per cockpit', duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['Star Wars', 'interactive', 'thrill']
+              },
+              {
+                id: 'dl-rise',
+                name: "Star Wars: Rise of the Resistance",
+                type: 'Trackless Dark Ride', thrillLevel: 2, heightRequirement: 40, duration: '~18 min',
+                openingYear: 2020,
+                description: 'The most technologically ambitious attraction ever built — a seamless immersive experience as you\'re captured by the First Order. Multiple ride systems in one attraction.',
+                history: 'Rise of the Resistance opened at Disneyland on January 17, 2020, a month after the WDW version. It is widely considered the most complex and ambitious theme park attraction ever constructed.',
+                trivia: ['Uses five different ride systems in a single continuous experience', 'The AT-AT walker is 22 feet tall — the largest audio-animatronic figure ever built', 'The total experience including all pre-shows runs approximately 18 minutes'],
+                specs: { type: 'Multi-System Dark Ride', heightReq: '40"', systems: 5, duration: '~18 min' },
+                mustDo: true, lightningLane: true, tags: ['Star Wars', 'immersive', 'thrill']
+              }
+            ]
+          },
+          {
+            id: 'dl-mickey-toontown',
+            name: "Mickey's Toontown",
+            rides: [
+              {
+                id: 'dl-mickey-minnie',
+                name: "Mickey & Minnie's Runaway Railway",
+                type: 'Trackless Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~7 min',
+                openingYear: 2023,
+                description: 'A cartoon-style adventure inside a Mickey Mouse cartoon short. The first ride-through attraction to star Mickey Mouse himself.',
+                history: 'Opened March 8, 2023 at Disneyland as part of the reimagined Mickey\'s Toontown. The WDW version opened in 2020. This is the first ride to star Mickey Mouse in any Disney park.',
+                trivia: ['The first Disney ride to star Mickey Mouse (2023)', 'Uses "2½D" technology — real sets enhanced with 2D cartoon effects', 'No height requirement — one of the most accessible attractions in the park'],
+                specs: { type: 'Trackless Dark Ride', duration: '7 min' },
+                mustDo: true, lightningLane: true, tags: ['Mickey Mouse', 'family', 'new']
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'disney-california-adventure',
+        name: 'Disney California Adventure',
+        emoji: '🎡',
+        accentColor: '#e53935',
+        gradientFrom: '#7b1a1a',
+        gradientTo: '#0a0f1e',
+        description: 'A celebration of California and the Disney/Pixar legacy. Home to Radiator Springs Racers, Incredicoaster, and the beloved Guardians of the Galaxy – Mission: BREAKOUT!',
+        openingYear: 2001,
+        lands: [
+          {
+            id: 'dca-buena-vista',
+            name: 'Buena Vista Street',
+            rides: []
+          },
+          {
+            id: 'dca-avengers',
+            name: 'Avengers Campus',
+            rides: [
+              {
+                id: 'dca-web-slingers',
+                name: 'WEB SLINGERS: A Spider-Man Adventure',
+                type: 'Interactive Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 2021,
+                description: 'Sling webs alongside Spider-Man using motion-sensing technology — no physical props required. An innovative hands-free interactive attraction.',
+                history: 'WEB SLINGERS opened with Avengers Campus on June 4, 2021. The motion-sensing web-slinging mechanic represented a new approach to interactive dark rides.',
+                trivia: ['No physical controllers — your arm movements sling webs via motion sensing', 'The attraction uses a proprietary hand-tracking system', 'Tom Holland recorded dialogue for the attraction'],
+                specs: { type: 'Interactive Dark Ride', duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['Marvel', 'interactive', 'family']
+              }
+            ]
+          },
+          {
+            id: 'dca-cars-land',
+            name: 'Cars Land',
+            rides: [
+              {
+                id: 'dca-racers',
+                name: 'Radiator Springs Racers',
+                type: 'Simulated Racing Ride', thrillLevel: 3, heightRequirement: 40, duration: '~7 min',
+                openingYear: 2012,
+                description: 'Race through Radiator Springs in a six-person car. Consistently rated one of the best theme park attractions in the world — the finale race around the track is breathtaking.',
+                history: 'Radiator Springs Racers opened June 21, 2012 as the centerpiece of Cars Land — the most expensive expansion in Disneyland Resort history at the time. The attraction uses the same ride system as Test Track at EPCOT but with dramatically superior theming.',
+                trivia: ['Consistently voted the best attraction at any Disney or Universal park by enthusiasts', 'Cars Land is a 1:1 recreation of the animated town of Radiator Springs — the buildings match the film exactly', 'The attraction features 54 audio-animatronics including all the major characters'],
+                specs: { type: 'Enhanced Motion Vehicle Racing', heightReq: '40"', capacity: 6, duration: '7 min' },
+                mustDo: true, lightningLane: true, tags: ['Pixar', 'racing', 'thrill', 'family']
+              },
+              {
+                id: 'dca-mater',
+                name: 'Mater\'s Junkyard Jamboree',
+                type: 'Spinning Ride', thrillLevel: 1, heightRequirement: null, duration: '~3 min',
+                openingYear: 2012,
+                description: 'Spin around Mater\'s barnyard dance party. Surprisingly whippy — adults enjoy it as much as kids.',
+                history: 'Opened with Cars Land in 2012.',
+                trivia: ['The spinning is more intense than it looks from outside', 'Larry the Cable Guy recorded new dialogue for the attraction'],
+                specs: { type: 'Spinning Tractor', duration: '3 min' },
+                mustDo: false, lightningLane: false, tags: ['Pixar', 'family', 'spinning']
+              }
+            ]
+          },
+          {
+            id: 'dca-pixar-pier',
+            name: 'Pixar Pier',
+            rides: [
+              {
+                id: 'dca-incredicoaster',
+                name: 'Incredicoaster',
+                type: 'Launch Coaster', thrillLevel: 4, heightRequirement: 48, duration: '~2.5 min',
+                openingYear: 2018,
+                description: 'The fastest coaster in any Disney park — the former California Screamin\' rethemed to The Incredibles. 0-55mph in 4 seconds on the beachfront.',
+                history: 'Originally opened as California Screamin\' in 2001 — a record-breaking looping coaster that launched at 55mph along the boardwalk. Rethemed to Incredicoaster in 2018 as Pixar Pier opened.',
+                trivia: ['Originally California Screamin\' (2001) — one of the longest steel coasters in the world at the time', 'The 0-55mph launch happens in under 4 seconds', 'The full loop was the first loop in any Disney-owned park'],
+                specs: { type: 'Launch Steel Coaster', heightReq: '48"', topSpeed: '55 mph', length: '6,072 ft', duration: '2.5 min' },
+                mustDo: true, lightningLane: true, tags: ['Pixar', 'coaster', 'intense', 'launch']
+              },
+              {
+                id: 'dca-toy-story',
+                name: 'Toy Story Midway Mania!',
+                type: 'Interactive Ride', thrillLevel: 1, heightRequirement: null, duration: '~6 min',
+                openingYear: 2008,
+                description: 'Shoot at 4D targets in a carnival game midway hosted by Toy Story characters. Competitive and fun for all ages.',
+                history: 'Opened in 2008 at both DCA and Hollywood Studios. Uses the same ride system at both parks.',
+                trivia: ['Your score is visible to your car-mate — competitive rides increase replay value', 'The glasses are required — targets have 3D effects'],
+                specs: { type: 'Interactive 4D Shooter', duration: '6 min' },
+                mustDo: true, lightningLane: true, tags: ['Pixar', 'interactive', 'family']
+              }
+            ]
+          },
+          {
+            id: 'dca-grizzly-peak',
+            name: 'Grizzly Peak',
+            rides: [
+              {
+                id: 'dca-grizzly-river',
+                name: 'Grizzly River Run',
+                type: 'Raft Ride', thrillLevel: 3, heightRequirement: 42, duration: '~7 min',
+                openingYear: 2001,
+                description: 'A round raft ride through Grizzly Peak — the largest of its kind in the world when it opened. You will get wet.',
+                history: 'Opened with Disney California Adventure on February 8, 2001. Claims the title of world\'s longest raft flume at opening.',
+                trivia: ['The world\'s longest raft flume when it opened', 'The circular raft spins randomly — no two rides face the same direction', 'Lockers are available at the entrance — use them'],
+                specs: { type: 'Circular Raft Ride', heightReq: '42"', duration: '7 min' },
+                mustDo: false, lightningLane: false, tags: ['wet', 'family', 'thrill']
+              },
+              {
+                id: 'dca-soarin',
+                name: 'Soarin\' Around the World',
+                type: 'Hang Gliding Simulator', thrillLevel: 1, heightRequirement: 40, duration: '~5 min',
+                openingYear: 2016,
+                description: 'Hang glide over iconic world landmarks — the Eiffel Tower, the Great Wall, the Serengeti. Scents and breezes enhance the experience.',
+                history: 'The original Soarin\' Over California was one of DCA\'s original 2001 attractions and became its most beloved. The current "Around the World" version replaced it in 2016 when new film footage was added.',
+                trivia: ['Originally Soarin\' Over California (2001) before the global version replaced it', 'The attraction adds scents at key moments — pine forests, the ocean, orange groves', 'The film footage was shot with an IMAX camera mounted on a helicopter'],
+                specs: { type: 'Hang Glider Simulator', heightReq: '40"', capacity: 87, duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['family', 'scenic', 'gentle']
+              }
+            ]
+          },
+          {
+            id: 'dca-hollywood',
+            name: 'Hollywood Land',
+            rides: [
+              {
+                id: 'dca-guardians',
+                name: 'Guardians of the Galaxy — Mission: BREAKOUT!',
+                type: 'Drop Tower', thrillLevel: 4, heightRequirement: 40, duration: '~2 min',
+                openingYear: 2017,
+                description: 'A randomized drop sequence with rock music and Guardians of the Galaxy theming. The West Coast version of Tower of Terror — many argue it\'s superior.',
+                history: 'Replaced the beloved Tower of Terror on May 27, 2017 — one of the most controversial changes in California theme park history. The building, elevator system, and general mechanics are identical to Tower of Terror. The randomized soundtrack and visual experience are new. Many fans mourned Tower of Terror; most now agree BREAKOUT is excellent.',
+                trivia: ['Replaced Tower of Terror (2004-2017) — one of the most controversial Disney decisions in California', 'The drop sequences are randomized and synced to the Guardians soundtrack', 'The building and elevator system are structurally identical to Tower of Terror', 'Vin Diesel, Chris Pratt, and the full cast recorded lines for the attraction'],
+                specs: { type: 'Randomized Drop Ride', heightReq: '40"', drops: 'Randomized', duration: '2 min' },
+                mustDo: true, lightningLane: true, tags: ['Marvel', 'thrill', 'drop', 'intense']
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  // ──────────────────────────────────────────────────────────
+  //  UNIVERSAL STUDIOS HOLLYWOOD
+  // ──────────────────────────────────────────────────────────
+  {
+    id: 'universal-hollywood',
+    name: 'Universal Studios Hollywood',
+    shortName: 'Universal Hollywood',
+    emoji: '🎬',
+    tagline: 'The Entertainment Capital of L.A.',
+    accentColor: '#ff6b35',
+    parks: [
+      {
+        id: 'universal-studios-hollywood',
+        name: 'Universal Studios Hollywood',
+        emoji: '🎬',
+        accentColor: '#ff6b35',
+        gradientFrom: '#7a2900',
+        gradientTo: '#0a0f1e',
+        description: 'The original Universal theme park — built on an active film studio lot. The Studio Tour remains its signature experience. Home to the Wizarding World, Super Nintendo World, and working soundstages.',
+        openingYear: 1964,
+        lands: [
+          {
+            id: 'ush-upper-lot',
+            name: 'Upper Lot',
+            rides: [
+              {
+                id: 'ush-mario',
+                name: 'Super Nintendo World',
+                type: 'Interactive Land', thrillLevel: 2, heightRequirement: null, duration: 'Varies',
+                openingYear: 2023,
+                description: 'Enter the world of Nintendo — Mario Kart: Bowser\'s Challenge is the centerpiece attraction. Interactive wristbands let you punch question blocks and collect coins throughout the land.',
+                history: 'Super Nintendo World opened at Universal Studios Hollywood on February 17, 2023 — the first in North America, following the Japan version in 2021. The land represents years of collaboration between Universal and Nintendo.',
+                trivia: ['The first Super Nintendo World in North America (2023)', 'Interactive wristbands connect to a smartphone app to track your score', 'The entire land is designed to feel like you\'ve been shrunk into a video game'],
+                specs: { type: 'Themed Land with Attractions', openYear: 2023 },
+                mustDo: true, lightningLane: true, tags: ['Nintendo', 'interactive', 'family', 'new']
+              },
+              {
+                id: 'ush-mario-kart',
+                name: 'Mario Kart: Bowser\'s Challenge',
+                type: 'AR Ride', thrillLevel: 2, heightRequirement: 40, duration: '~5 min',
+                openingYear: 2023,
+                description: 'Race against Bowser\'s team in a kart through Mario Kart tracks using AR glasses. Team-based competition — your whole vehicle contributes to a shared score.',
+                history: 'Opened with Super Nintendo World on February 17, 2023. Uses augmented reality glasses to overlay the Mario Kart game world onto physical sets.',
+                trivia: ['Uses AR glasses rather than screens — the physical sets are real but overlaid with digital content', 'The entire kart vehicle counts as one team — coordination with your cart-mates matters', 'Features music composed specifically for the attraction'],
+                specs: { type: 'AR Dark Ride', heightReq: '40"', capacity: 4, duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['Nintendo', 'AR', 'racing', 'family']
+              },
+              {
+                id: 'ush-transformers',
+                name: 'Transformers: The Ride-3D',
+                type: '3D Motion Simulator', thrillLevel: 3, heightRequirement: 40, duration: '~5 min',
+                openingYear: 2012,
+                description: 'Join the Autobots in a battle against the Decepticons. A 3D multi-sensory motion simulator that uses the same system as Spider-Man at Universal Orlando.',
+                history: 'Opened June 20, 2012 at Universal Studios Hollywood. Uses the same groundbreaking simulator system as The Amazing Adventures of Spider-Man at Universal Orlando.',
+                trivia: ['Uses the same ride system as Spider-Man at Universal Orlando', 'The screens cover your entire field of vision — there is no visible edge', 'Peter Cullen (original Optimus Prime) voiced the attraction'],
+                specs: { type: '3D Motion Simulator', heightReq: '40"', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['action', 'simulator', '3D']
+              },
+              {
+                id: 'ush-despicable-me',
+                name: 'Despicable Me Minion Mayhem',
+                type: 'Motion Simulator', thrillLevel: 1, heightRequirement: 40, duration: '~5 min',
+                openingYear: 2014,
+                description: 'Get transformed into a Minion and join Gru\'s family. A standing simulator that has riders literally jumping during the experience.',
+                history: 'Opened July 2, 2014 at Universal Studios Hollywood.',
+                trivia: ['The "transformation" into a Minion uses vibration seats', 'The post-show dance party is genuinely fun'],
+                specs: { type: 'Standing Motion Simulator', heightReq: '40"', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['family', 'Minions', 'simulator']
+              }
+            ]
+          },
+          {
+            id: 'ush-wizarding-world',
+            name: 'The Wizarding World of Harry Potter',
+            rides: [
+              {
+                id: 'ush-forbidden-journey',
+                name: 'Harry Potter and the Forbidden Journey',
+                type: 'Robotic Arm Ride', thrillLevel: 3, heightRequirement: 48, duration: '~5 min',
+                openingYear: 2016,
+                description: 'The KUKA robotic arm experience through Hogwarts — Quidditch, Dementors, the Whomping Willow. The Hogwarts Castle queue is as impressive as the ride itself.',
+                history: 'The Wizarding World opened at Universal Studios Hollywood on April 7, 2016. The Forbidden Journey uses the same KUKA robotic arm system as the Universal Orlando version.',
+                trivia: ['The Hogwarts Castle exterior took 3 years to build', 'The robotic arm system generates unpredictable g-forces unlike any fixed-track ride', 'The queue passes through Dumbledore\'s office, the Gryffindor common room, and more iconic HP locations'],
+                specs: { type: 'KUKA Robotic Arm Ride', heightReq: '48"', duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['Harry Potter', 'thrill', 'immersive']
+              },
+              {
+                id: 'ush-flight-hippogriff',
+                name: 'Flight of the Hippogriff',
+                type: 'Family Coaster', thrillLevel: 2, heightRequirement: 39, duration: '~1 min',
+                openingYear: 2016,
+                description: 'A family roller coaster themed to Buckbeak. Short but fun — great views of Hogsmeade and the Hogwarts Castle.',
+                history: 'Opened with the Wizarding World in 2016. Similar to the Orlando version at Islands of Adventure.',
+                trivia: ['At the top of the lift hill you can see all the way to the lower lot', 'Bow before Buckbeak in the queue — it\'s required'],
+                specs: { type: 'Family Coaster', heightReq: '39"', duration: '1 min' },
+                mustDo: false, lightningLane: false, tags: ['Harry Potter', 'coaster', 'family']
+              }
+            ]
+          },
+          {
+            id: 'ush-lower-lot',
+            name: 'Lower Lot',
+            rides: [
+              {
+                id: 'ush-jurassic-world',
+                name: 'Jurassic World — The Ride',
+                type: 'Water Ride', thrillLevel: 4, heightRequirement: 42, duration: '~8 min',
+                openingYear: 2019,
+                description: 'A river raft ride through Jurassic World that culminates in a terrifying 84-foot drop — one of the steepest water ride drops in the world.',
+                history: 'Jurassic World — The Ride replaced the beloved Jurassic Park: The Ride in 2019. The original 1996 Jurassic Park ride was a Hollywood landmark for 23 years. The new version is themed to the current film series with new animatronics and an 84-foot drop.',
+                trivia: ['Replaced the beloved original Jurassic Park: The Ride (1996-2018)', 'The 84-foot drop is one of the steepest in any water ride worldwide', 'New Indominus Rex animatronic is the centerpiece of the new version'],
+                specs: { type: 'River Raft Water Ride', heightReq: '42"', drop: '84 feet', duration: '8 min' },
+                mustDo: true, lightningLane: true, tags: ['Jurassic World', 'wet', 'thrill', 'intense']
+              },
+              {
+                id: 'ush-mummy',
+                name: 'Revenge of the Mummy — The Ride',
+                type: 'Indoor Coaster', thrillLevel: 3, heightRequirement: 48, duration: '~3 min',
+                openingYear: 2004,
+                description: 'The West Coast version of the indoor psychological coaster. Launches forward AND backward through Egyptian-themed darkness.',
+                history: 'Opened June 6, 2004 at Universal Studios Hollywood. Uses the same track layout as the Florida version but with different theming elements.',
+                trivia: ['Features both forward and backward launches', 'The fire effects at the loading area use real ignition systems', 'The psychological element — lights that suggest the ride is over — is one of the best fake-outs in theme park history'],
+                specs: { type: 'Indoor Launched Coaster', heightReq: '48"', duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['coaster', 'thrill', 'dark', 'launch']
+              }
+            ]
+          },
+          {
+            id: 'ush-studio-tour',
+            name: 'Studio Tour',
+            rides: [
+              {
+                id: 'ush-studio-tour-ride',
+                name: 'The World-Famous Studio Tour',
+                type: 'Tram Tour', thrillLevel: 2, heightRequirement: null, duration: '~60 min',
+                openingYear: 1964,
+                description: 'The original Universal attraction — a tram tour through the actual working film studio. Includes encounters with King Kong 360°, Fast & Furious — Supercharged, Skull Island: Reign of Kong, and disaster sequences. The signature Universal Hollywood experience.',
+                history: 'The Studio Tour began on June 3, 1964 — literally the first attraction Universal Studios Hollywood ever offered. For 60 years it has been the park\'s defining experience. The tour passes through actual film sets and studio infrastructure used in real productions.',
+                trivia: ['The original 1964 tour was simply buses driving through the studio for $1', 'The Bates Motel from Psycho is on the tour route — the original set', 'King Kong 360° was designed by Peter Jackson and is the largest 3D experience ever created', 'The Flash Flood sequence uses 9.5 million gallons of water per show'],
+                specs: { type: 'Guided Tram Tour', duration: '~60 min', trams: 'Multiple per hour', year: 1964 },
+                mustDo: true, lightningLane: false, tags: ['classic', 'film', 'iconic', 'studio']
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+
 ];
 
 // ============================================================

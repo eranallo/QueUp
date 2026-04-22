@@ -810,6 +810,148 @@ export const HOTELS = [
     ],
   },
 
+
+  // ══════════════════════════════════════════════════════════
+  // DISNEYLAND RESORT
+  // ══════════════════════════════════════════════════════════
+  {
+    id: 'grand-californian',
+    name: "Disney's Grand Californian Hotel & Spa",
+    shortName: 'Grand Californian',
+    emoji: '🌲',
+    resort: 'disneyland',
+    tier: 'Deluxe',
+    theme: 'Arts & Crafts movement lodge',
+    accentColor: '#92400e',
+    priceRange: '$$$$$',
+    location: 'Downtown Disney / DCA',
+    transportation: ['Walk to Disney California Adventure (private entrance)', 'Walk to Disneyland Park', 'Walk to Downtown Disney'],
+    description: 'The crown jewel of the Disneyland Resort — a stunning Arts and Crafts-style lodge that rivals the great national park hotels. The only hotel with its own gate directly into Disney California Adventure.',
+    history: 'The Grand Californian opened on February 6, 2001 alongside Disney California Adventure. Designed by Peter Dominick, the hotel draws inspiration from the Arts and Crafts movement of the early 20th century — think Ahwahnee Hotel in Yosemite and the old Craftsman bungalows of Pasadena.',
+    trivia: [
+      'The hotel has its own private gate directly into Disney California Adventure — only guests of the Grand Californian can use it',
+      'The lobby fireplace is 18 feet tall and the centerpiece of one of the most stunning hotel lobbies in California',
+      'Napa Rose is considered one of the finest restaurants in the entire Disneyland Resort',
+      'The hotel connects directly to Downtown Disney and is within a 5-minute walk of both parks',
+    ],
+    proTips: [
+      '🚪 The private DCA entrance is the Grand Californian's killer feature — skip the main park entrance entirely',
+      '🌅 The lobby is open to all guests — worth visiting even if you're not staying here',
+      '🍷 Napa Rose requires reservations 60 days in advance — book immediately after reserving the room',
+    ],
+    specs: { opened: '2001', rooms: '948 rooms', pools: '3 pools', restaurants: '4 dining locations', tier: 'Deluxe Resort' },
+    resources: [{ label: '🌲 Book Grand Californian', url: 'https://disneyland.disney.go.com/hotels/grand-californian-hotel/' }],
+  },
+  {
+    id: 'disneyland-hotel',
+    name: 'Disneyland Hotel',
+    shortName: 'Disneyland Hotel',
+    emoji: '🌟',
+    resort: 'disneyland',
+    tier: 'Deluxe',
+    theme: 'Classic Disneyland nostalgia',
+    accentColor: '#1a6fd4',
+    priceRange: '$$$$',
+    location: 'Downtown Disney Area',
+    transportation: ['Walk to Disneyland Park via Downtown Disney', 'Walk to Downtown Disney', 'Monorail access nearby'],
+    description: 'The original Disneyland hotel — open since 1955, the year Disneyland itself opened. Deeply nostalgic, with artifacts from Disneyland's history throughout and the closest hotel connection to the original Magic Kingdom.',
+    history: 'The Disneyland Hotel opened in 1955 alongside the park itself, operated initially by Jack Wrather under a long-term Disney licensing agreement. Disney acquired it in 1988. The hotel underwent a major renovation completed in 2021, modernizing the rooms while maintaining vintage Disney character.',
+    trivia: [
+      'The hotel opened the same year as Disneyland — 1955',
+      'The hotel is famous for its swimming pools themed to the Monorail — guests can swim through Monorail tracks',
+      'The Sleeping Beauty Castle-shaped headboards in the Fantasy Tower are beloved by guests',
+      'Disney acquired the hotel from the Wrather Corporation in 1988',
+    ],
+    proTips: [
+      '🏊 The Monorail pool area is worth the stay for families — kids love swimming under the Monorail track',
+      '📸 The lobby contains genuine artifacts and vintage Disney memorabilia',
+    ],
+    specs: { opened: '1955', rooms: '973 rooms', pools: '2 pools', tier: 'Deluxe Resort' },
+    resources: [{ label: '🌟 Book Disneyland Hotel', url: 'https://disneyland.disney.go.com/hotels/disneyland-hotel/' }],
+  },
+  {
+    id: 'pixar-place-hotel',
+    name: 'Pixar Place Hotel',
+    shortName: 'Pixar Place Hotel',
+    emoji: '🎨',
+    resort: 'disneyland',
+    tier: 'Moderate',
+    theme: 'Pixar Animation Studios',
+    accentColor: '#7c3aed',
+    priceRange: '$$$',
+    location: 'Downtown Disney Area',
+    transportation: ['Walk to Disneyland Park', 'Walk to Downtown Disney'],
+    description: 'The reimagined former Paradise Pier Hotel — now themed to Pixar Animation Studios. The most affordable Disney-owned hotel at the Disneyland Resort with the same proximity benefits.',
+    history: 'Formerly Paradise Pier Hotel, which opened in 1984. Rethemed to Pixar Place Hotel in 2024, featuring Pixar film character theming throughout.',
+    trivia: [
+      'Rethemed from Paradise Pier Hotel to Pixar Place Hotel in 2024',
+      'Shares the same proximity to the parks as the Disneyland Hotel — less than 10 minutes walking',
+      'The most affordable of the three official Disney hotels at the resort',
+    ],
+    proTips: [
+      '💰 Best value among Disney-owned Disneyland Resort hotels',
+      '🚶 Same walking distance to parks as the Disneyland Hotel at lower cost',
+    ],
+    specs: { opened: '1984', rooms: '481 rooms', tier: 'Moderate Resort' },
+    resources: [{ label: '🎨 Book Pixar Place Hotel', url: 'https://disneyland.disney.go.com/hotels/pixar-place-hotel/' }],
+  },
+
+  // ══════════════════════════════════════════════════════════
+  // UNIVERSAL STUDIOS HOLLYWOOD
+  // ══════════════════════════════════════════════════════════
+  {
+    id: 'sheraton-universal',
+    name: 'Sheraton Universal Hotel',
+    shortName: 'Sheraton Universal',
+    emoji: '🏨',
+    resort: 'universal-hollywood',
+    tier: 'Preferred',
+    theme: 'Contemporary Hollywood',
+    accentColor: '#0891b2',
+    priceRange: '$$$',
+    location: 'Adjacent to Universal Studios Hollywood',
+    transportation: ['Walk to Universal Studios Hollywood (10 min)', 'Free shuttle to park entrance'],
+    description: 'The closest full-service hotel to Universal Studios Hollywood — a Marriott-branded property adjacent to the park with shuttle service to the entrance and easy freeway access.',
+    history: 'The Sheraton Universal has operated adjacent to the Universal Studios Hollywood complex for decades, serving as the primary hotel option for park visitors.',
+    trivia: [
+      'The hotel sits on the Universal Studios lot itself — literally adjacent to the working film studio',
+      'Free shuttle service runs to the park entrance',
+      'Many film industry professionals stay here while working on productions at the nearby soundstages',
+    ],
+    proTips: [
+      '🚌 The free shuttle is faster than walking — use it especially in summer heat',
+      '🎬 Ask at the front desk about any celebrity sightings — the hotel is popular with production crews',
+    ],
+    specs: { opened: '1969', rooms: '462 rooms', pools: '1 pool', tier: 'Adjacent Hotel', keyPerk: 'Free shuttle + closest hotel' },
+    resources: [{ label: '🏨 Book Sheraton Universal', url: 'https://www.marriott.com/hotels/travel/laxus-sheraton-universal-hotel/' }],
+  },
+  {
+    id: 'hilton-universal',
+    name: 'Hilton Los Angeles/Universal City',
+    shortName: 'Hilton Universal City',
+    emoji: '🌆',
+    resort: 'universal-hollywood',
+    tier: 'Preferred',
+    theme: 'Modern Hollywood',
+    accentColor: '#1d4ed8',
+    priceRange: '$$$',
+    location: 'Universal City (adjacent)',
+    transportation: ['Walk to Universal Studios Hollywood (5 min)', 'Adjacent to CityWalk'],
+    description: 'A large Hilton property directly adjacent to Universal CityWalk and Universal Studios Hollywood — one of the most convenient hotel locations in Los Angeles.',
+    history: 'Long-standing hotel property in Universal City, benefiting from its prime location adjacent to the entertainment complex.',
+    trivia: [
+      'Direct walking connection to CityWalk — no shuttle needed',
+      'One of the closest hotel options to Universal Studios Hollywood',
+      'Rooftop pool with views of the Hollywood Hills',
+    ],
+    proTips: [
+      '🚶 The walking connection to CityWalk is the key advantage — skip the shuttle entirely',
+      '🌆 Request a Hollywood Hills view room for a spectacular LA backdrop',
+    ],
+    specs: { rooms: '495 rooms', pools: '1 rooftop pool', tier: 'Adjacent Hotel' },
+    resources: [{ label: '🌆 Book Hilton Universal City', url: 'https://www.hilton.com/en/hotels/laxuhhh-hilton-los-angeles-universal-city/' }],
+  },
+
 ]
 
 // Helper to get hotel by ID

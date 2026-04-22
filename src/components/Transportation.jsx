@@ -4,13 +4,21 @@ import {
   DISNEY_LOCATIONS, UNIVERSAL_LOCATIONS,
   DISNEY_ROUTES, UNIVERSAL_ROUTES,
   DISNEY_TRANSPORT_GUIDE, UNIVERSAL_TRANSPORT_GUIDE,
+  DISNEYLAND_LOCATIONS, DISNEYLAND_ROUTES, DISNEYLAND_TRANSPORT_GUIDE,
+  UNIVERSAL_HOLLYWOOD_LOCATIONS, UNIVERSAL_HOLLYWOOD_ROUTES, UNIVERSAL_HOLLYWOOD_TRANSPORT_GUIDE,
   TRANSPORT_ICONS,
 } from '../transportationData'
 
 // ── Route Finder ──────────────────────────────────────────────
-function RouteFinder({ isDisney }) {
-  const locations = isDisney ? DISNEY_LOCATIONS : UNIVERSAL_LOCATIONS
-  const routes    = isDisney ? DISNEY_ROUTES    : UNIVERSAL_ROUTES
+function RouteFinder({ activeResortId }) {
+  const locations = activeResortId === 'disney-world' ? DISNEY_LOCATIONS
+    : activeResortId === 'disneyland' ? DISNEYLAND_LOCATIONS
+    : activeResortId === 'universal-hollywood' ? UNIVERSAL_HOLLYWOOD_LOCATIONS
+    : UNIVERSAL_LOCATIONS
+  const routes = activeResortId === 'disney-world' ? DISNEY_ROUTES
+    : activeResortId === 'disneyland' ? DISNEYLAND_ROUTES
+    : activeResortId === 'universal-hollywood' ? UNIVERSAL_HOLLYWOOD_ROUTES
+    : UNIVERSAL_ROUTES
 
   const [from, setFrom] = useState('')
   const [to,   setTo]   = useState('')
@@ -178,9 +186,12 @@ function TransportCard({ transport }) {
 
 // ── Main ─────────────────────────────────────────────────────
 export default function Transportation() {
-  const { isDisney } = useApp()
+  const { isDisney, activeResortId } = useApp()
   const [tab, setTab] = useState('finder')
-  const guide = isDisney ? DISNEY_TRANSPORT_GUIDE : UNIVERSAL_TRANSPORT_GUIDE
+  const guide = activeResortId === 'disney-world' ? DISNEY_TRANSPORT_GUIDE
+    : activeResortId === 'disneyland' ? DISNEYLAND_TRANSPORT_GUIDE
+    : activeResortId === 'universal-hollywood' ? UNIVERSAL_HOLLYWOOD_TRANSPORT_GUIDE
+    : UNIVERSAL_TRANSPORT_GUIDE
 
   return (
     <div className="tp-page animate-fade-in">
@@ -189,9 +200,10 @@ export default function Transportation() {
       <div className="tp-header">
         <h1 className="tp-title">🚌 Transportation</h1>
         <p className="tp-subtitle">
-          {isDisney
-            ? 'Navigate Walt Disney World — monorails, boats, Skyliner, buses, and walking routes.'
-            : 'Navigate Universal Orlando — walking paths, water taxis, and shuttles.'}
+          {activeResortId === 'disney-world' ? 'Navigate Walt Disney World — monorails, boats, Skyliner, buses, and walking routes.'
+          : activeResortId === 'disneyland' ? 'Navigate the Disneyland Resort — walking, monorail, and shuttle options.'
+          : activeResortId === 'universal-hollywood' ? 'Navigate Universal Studios Hollywood — walking, shuttles, and parking.'
+          : 'Navigate Universal Orlando — walking paths, water taxis, and shuttles.'}
         </p>
       </div>
 
@@ -205,7 +217,7 @@ export default function Transportation() {
         </button>
       </div>
 
-      {tab === 'finder' && <RouteFinder isDisney={isDisney} />}
+      {tab === 'finder' && <RouteFinder activeResortId={activeResortId} />}
 
       {tab === 'guide' && (
         <div className="tp-guide-list">

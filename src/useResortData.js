@@ -8,7 +8,11 @@ import { RESORTS, HIDDEN_MICKEYS, FOOD_DRINKS } from './data'
 import { getHotelsByResort } from './hotelsData'
 
 export function useResortData() {
-  const { activeResortId, isDisney, isUniversal } = useApp()
+  const { activeResortId } = useApp()
+  const isDisney    = activeResortId === 'disney-world' || activeResortId === 'disneyland'
+  const isUniversal = activeResortId === 'universal-orlando' || activeResortId === 'universal-hollywood'
+  const isDisneyWorld  = activeResortId === 'disney-world'
+  const isDisneyland   = activeResortId === 'disneyland'
 
   // Parks for the active resort only
   const activeResortObj = RESORTS.find(r => r.id === activeResortId)
@@ -29,6 +33,7 @@ export function useResortData() {
   const resortFood = isDisney ? disneyFood : universalFood
 
   // Food categories relevant to active resort parks
+  // isDisney / isUniversal for food decisions
   const PARK_FOOD_CATEGORIES = {
     'magic-kingdom':             ['Magic Kingdom'],
     'epcot':                     ['EPCOT'],
@@ -81,5 +86,7 @@ export function useResortData() {
     activeResortId,
     isDisney,
     isUniversal,
+    isDisneyWorld,
+    isDisneyland,
   }
 }

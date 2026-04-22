@@ -477,3 +477,161 @@ export const UNIVERSAL_TRANSPORT_GUIDE = [
     ],
   },
 ]
+
+
+// ── DISNEYLAND RESORT LOCATIONS ──────────────────────────────
+export const DISNEYLAND_LOCATIONS = {
+  'disneyland-park':               { name: 'Disneyland Park',              emoji: '🌟', type: 'park' },
+  'disney-california-adventure':   { name: 'Disney California Adventure',  emoji: '🎡', type: 'park' },
+  'downtown-disney':               { name: 'Downtown Disney',              emoji: '🛍️', type: 'hub' },
+  'grand-californian':             { name: 'Grand Californian Hotel',      emoji: '🌲', type: 'resort' },
+  'disneyland-hotel':              { name: 'Disneyland Hotel',             emoji: '🌟', type: 'resort' },
+  'pixar-place-hotel':             { name: 'Pixar Place Hotel',            emoji: '🎨', type: 'resort' },
+}
+
+export const DISNEYLAND_ROUTES = {
+  'grand-californian→disneyland-park': {
+    time: '~8 min',
+    options: [
+      { method: 'walk', steps: ['Exit Grand Californian through the Downtown Disney exit', 'Walk through Downtown Disney to Disneyland main entrance'], time: '8 min', tip: '⭐ Or use the private DCA gate inside the hotel for California Adventure.' },
+    ],
+  },
+  'grand-californian→disney-california-adventure': {
+    time: '~2 min',
+    options: [
+      { method: 'walk', steps: ['Use the Grand Californian's private gate directly into Disney California Adventure — exclusive to hotel guests'], time: '2 min', tip: '⭐ The private DCA gate is the Grand Californian's biggest perk. Skip the main entrance entirely.' },
+    ],
+  },
+  'disneyland-park→disney-california-adventure': {
+    time: '~5 min',
+    options: [
+      { method: 'walk', steps: ['Exit Disneyland through the main entrance', 'Walk across the Esplanade to DCA entrance'], time: '5 min', tip: 'The Esplanade connects both parks — straightforward park hop.' },
+    ],
+  },
+  'disneyland-hotel→disneyland-park': {
+    time: '~10 min',
+    options: [
+      { method: 'walk', steps: ['Walk from Disneyland Hotel through Downtown Disney', 'Enter Disneyland at the main entrance on Harbor Boulevard'], time: '10 min', tip: 'A pleasant walk through Downtown Disney. The monorail from Downtown Disney can shorten the walk.' },
+    ],
+  },
+}
+
+// ── UNIVERSAL HOLLYWOOD LOCATIONS ─────────────────────────────
+export const UNIVERSAL_HOLLYWOOD_LOCATIONS = {
+  'universal-studios-hollywood': { name: 'Universal Studios Hollywood', emoji: '🎬', type: 'park' },
+  'citywalk-hollywood':          { name: 'CityWalk Hollywood',           emoji: '🏙️', type: 'hub' },
+  'sheraton-universal':          { name: 'Sheraton Universal Hotel',     emoji: '🏨', type: 'resort' },
+  'hilton-universal':            { name: 'Hilton Universal City',        emoji: '🌆', type: 'resort' },
+}
+
+export const UNIVERSAL_HOLLYWOOD_ROUTES = {
+  'sheraton-universal→universal-studios-hollywood': {
+    time: '~10 min',
+    options: [
+      { method: 'shuttle', steps: ['Board free Sheraton shuttle at hotel entrance', 'Shuttle drops at Universal Studios Hollywood entrance'], time: '10 min', tip: '⭐ Free shuttle is the recommended option — runs frequently during park hours.' },
+      { method: 'walk', steps: ['Walk from Sheraton to Universal Studios entrance (uphill path)'], time: '12 min', tip: 'Walkable but includes an uphill section. Shuttle is usually preferable.' },
+    ],
+  },
+  'hilton-universal→universal-studios-hollywood': {
+    time: '~5 min',
+    options: [
+      { method: 'walk', steps: ['Walk from Hilton directly to CityWalk', 'Enter Universal Studios Hollywood from CityWalk'], time: '5 min', tip: '⭐ The Hilton's direct walkway to CityWalk is its best feature — no shuttle needed.' },
+    ],
+  },
+}
+
+export const DISNEYLAND_TRANSPORT_GUIDE = [
+  {
+    type: 'walk',
+    icon: '🚶',
+    name: 'Walking',
+    color: '#10b981',
+    description: 'The Disneyland Resort is compact compared to Walt Disney World. Both parks, all three hotels, and Downtown Disney are within easy walking distance of each other.',
+    routes: [
+      { from: 'Grand Californian', to: 'DCA (private gate)', note: '2 min — private hotel entrance' },
+      { from: 'Grand Californian', to: 'Disneyland Park', note: '8 min via Downtown Disney' },
+      { from: 'Disneyland Hotel', to: 'Disneyland Park', note: '10 min via Downtown Disney' },
+      { from: 'Disneyland Park', to: 'DCA', note: '5 min via the Esplanade' },
+    ],
+    tips: [
+      'The Grand Californian's private DCA entrance is the best transit advantage at the resort',
+      'The Esplanade between the two parks makes park hopping easy — 5 minutes between entrances',
+      'Downtown Disney is the pedestrian connection point for all three hotels and both parks',
+    ],
+  },
+  {
+    type: 'monorail',
+    icon: '🚝',
+    name: 'Disneyland Monorail',
+    color: '#60a5fa',
+    description: 'The original theme park monorail — opened in 1959. Runs between Tomorrowland in Disneyland Park and the Downtown Disney Monorail Station. A scenic way to enter or exit the park.',
+    routes: [
+      { from: 'Downtown Disney Station', to: 'Tomorrowland (inside Disneyland)', note: 'One-way entry to park — scenic 5 min' },
+    ],
+    tips: [
+      'The Disneyland Monorail is a one-way system — it only enters the park, not exits',
+      'Using the monorail to enter requires a park ticket — it drops you inside Tomorrowland',
+      'The view from the monorail over the Matterhorn and castle is one of the best in the resort',
+    ],
+  },
+  {
+    type: 'rideshare',
+    icon: '🚕',
+    name: 'Rideshare & Parking',
+    color: '#f97316',
+    description: 'Uber and Lyft serve the Disneyland Resort. The Disneyland parking structure (Mickey & Friends) is the largest parking structure in the world. Trams connect the structure to the park.',
+    routes: [],
+    tips: [
+      'Uber/Lyft pickup zone is on Harbor Boulevard — walk there rather than waiting inside the park gates',
+      'Mickey & Friends parking structure uses a tram to the parks — add 15 minutes to your arrival plan',
+      'The Toy Story parking lot requires a shuttle bus and is furthest from the parks',
+      'Preferred parking (closer to trams) is available for a premium',
+    ],
+  },
+]
+
+export const UNIVERSAL_HOLLYWOOD_TRANSPORT_GUIDE = [
+  {
+    type: 'walk',
+    icon: '🚶',
+    name: 'Walking',
+    color: '#10b981',
+    description: 'Universal Studios Hollywood is more compact than Universal Orlando. The Hilton is directly connected to CityWalk. The Sheraton is a short shuttle or uphill walk away.',
+    routes: [
+      { from: 'Hilton Universal City', to: 'Universal Studios Hollywood', note: '5 min via CityWalk' },
+      { from: 'Sheraton Universal', to: 'Park entrance', note: '12 min (uphill) or take free shuttle' },
+    ],
+    tips: [
+      'The Hilton's CityWalk connection is the most convenient hotel-to-park transit at Universal Hollywood',
+      'The walk from the parking structure includes escalators — helpful for the hillside park layout',
+    ],
+  },
+  {
+    type: 'shuttle',
+    icon: '🚐',
+    name: 'Hotel Shuttles',
+    color: '#f59e0b',
+    description: 'The Sheraton Universal offers a free shuttle to the park entrance. Runs throughout park operating hours.',
+    routes: [
+      { from: 'Sheraton Universal', to: 'Universal Studios Hollywood', note: 'Free shuttle — 10 min' },
+    ],
+    tips: [
+      'The Sheraton shuttle is free and frequent — use it instead of walking the uphill route',
+      'Check shuttle schedule at the Sheraton concierge the night before — early morning times matter for rope drop',
+    ],
+  },
+  {
+    type: 'rideshare',
+    icon: '🚕',
+    name: 'Rideshare & Parking',
+    color: '#f97316',
+    description: 'Uber and Lyft serve Universal Studios Hollywood. The park has its own multi-level parking structure accessible from the 101 freeway.',
+    routes: [],
+    tips: [
+      'Rideshare dropoff is at the CityWalk entrance — easiest access point',
+      'The parking structure tram runs every few minutes during park hours',
+      'Valet parking is available at the park entrance for a premium',
+      'The 101 freeway Universal City exit is the primary driving route',
+    ],
+  },
+]
