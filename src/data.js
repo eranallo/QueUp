@@ -1716,22 +1716,9 @@ export const RESORTS = [
                 tags: ['thrill', 'dark', '3d', 'kong', 'scary']
               }
             ]
-          }
-        ]
-      },
-
-      {
-        id: 'seuss-landing-ioa',
-        name: 'Seuss Landing',
-        emoji: '🎩',
-        accentColor: '#ec4899',
-        gradientFrom: '#4a0a2a',
-        gradientTo: '#0a0f1e',
-        description: 'The whimsical world of Dr. Seuss brought to life — a land with no straight lines and stories around every corner.',
-        openingYear: 1999,
-        lands: [
+          },
           {
-            id: 'seuss-main',
+            id: 'seuss-landing',
             name: 'Seuss Landing',
             rides: [
               {
@@ -1782,6 +1769,7 @@ export const RESORTS = [
           }
         ]
       },
+
 
             {
         id: 'epic-universe',
