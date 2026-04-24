@@ -47,7 +47,25 @@ function Section({ title, children, defaultOpen = false }) {
 // ── Ride Layout Viewer ───────────────────────────────────────
 function RideLayoutViewer({ rideId }) {
   const layout = RIDE_LAYOUTS[rideId]
-  if (!layout) return null
+
+  // No layout available — show placeholder
+  if (!layout) return (
+    <div style={{
+      padding: '24px 16px',
+      textAlign: 'center',
+      background: 'var(--bg-deep)',
+      borderRadius: 'var(--r-lg)',
+      border: '1px dashed var(--border-mid)',
+    }}>
+      <div style={{ fontSize: '2rem', marginBottom: 8 }}>🗺️</div>
+      <div style={{ fontWeight: 700, color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 4 }}>
+        Layout Map Not Yet Available
+      </div>
+      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+        Ride layout blueprints are added as they become available. Check back soon.
+      </div>
+    </div>
+  )
 
   const [open,    setOpen]    = React.useState(false)
   const [scale,   setScale]   = React.useState(1)
@@ -504,12 +522,10 @@ export default function RidePage() {
         </div>
       )}
 
-      {/* Ride Layout Map */}
-      {RIDE_LAYOUTS[found.id] && (
-        <Section title="🗺️ Ride Layout Map">
-          <RideLayoutViewer rideId={found.id} />
-        </Section>
-      )}
+      {/* Ride Layout Map — always show, with fallback if no image */}
+      <Section title="🗺️ Ride Layout Map">
+        <RideLayoutViewer rideId={found.id} />
+      </Section>
 
       <Section title="📸 My Photos">
         <PhotoManager itemType="ride" itemId={found.id} itemName={found.name} />

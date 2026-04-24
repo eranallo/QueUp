@@ -559,28 +559,6 @@ export const RESORTS = [
                 imageUrl: '',
                 tags: ['family', 'classic', 'epcot-original']
               },
-              {
-                id: 'remys-ratatouille',
-                name: "Remy's Ratatouille Adventure",
-                type: 'Dark Ride',
-                thrillLevel: 1,
-                heightRequirement: null,
-                duration: '~4.5 min',
-                openingYear: 2021,
-                description: 'Shrink down to the size of a rat and scurry through Gusteau\'s famous Parisian restaurant alongside Remy in this delightful 4D trackless dark ride.',
-                history: 'Remy\'s Ratatouille Adventure opened in October 2021 at EPCOT, adapted from the version that opened at Disneyland Paris in 2014. It was part of EPCOT\'s massive multi-year transformation. The ride uses a trackless vehicle system, meaning cars can move in any direction and each ride experience can be slightly different.',
-                trivia: [
-                  'The original version of this ride opened at Disneyland Paris in 2014',
-                  'The ride vehicles are trackless — they can go in any direction without a fixed track',
-                  'You literally shrink to rat size — the tables and chairs are enormous',
-                  'The famous French chef Gusteau\'s restaurant is fully recreated in stunning detail'
-                ],
-                specs: { type: 'Trackless Dark Ride', system: 'Trackless (no fixed rail)', duration: '4.5 min' },
-                mustDo: true,
-                lightningLane: true,
-                imageUrl: '',
-                tags: ['family', 'new', 'pixar', 'france']
-              }
             ]
           },
           {
@@ -1485,29 +1463,6 @@ export const RESORTS = [
               {
                 id: 'forbidden-journey',
                 name: "Harry Potter and the Forbidden Journey",
-                type: 'Dark Ride',
-                thrillLevel: 3,
-                heightRequirement: 48,
-                duration: '~5 min',
-                openingYear: 2010,
-                description: 'Soar over Hogwarts on a broomstick alongside Harry, Ron, and Hermione — fighting Dementors and navigating a Quidditch match in this groundbreaking KUKA arm ride.',
-                history: 'Harry Potter and the Forbidden Journey opened June 18, 2010 and revolutionized theme park attraction design. The ride uses KUKA robot arms mounted on a moving base, creating completely fluid motion impossible to replicate with traditional coaster or simulator technology. Guests tour actual sets of Hogwarts castle before boarding.',
-                trivia: [
-                  'The queue goes through actual Hogwarts interiors — greenhouses, Dumbledore\'s office, Defense Against Dark Arts classroom',
-                  'The ride vehicle is mounted on a KUKA industrial robot arm — same technology used in car factories',
-                  'The Marauder\'s Map in the queue actually moves and shows guest names',
-                  'The Whomping Willow physically moves and strikes your vehicle',
-                  'Emma Watson was famously motion sick filming her parts for this attraction'
-                ],
-                specs: { type: 'KUKA Arm Dark Ride', heightRequirement: '48 inches', mechanism: 'Industrial KUKA robot arm', duration: '5 min', sets: 'Actual Hogwarts interiors in queue' },
-                mustDo: true,
-                lightningLane: false,
-                imageUrl: '',
-                tags: ['thrill', 'harry-potter', 'must-do', 'immersive']
-              },
-              {
-                id: 'forbidden-journey',
-                name: "Harry Potter and the Forbidden Journey",
                 type: 'Robotic Arm Ride', thrillLevel: 3, heightRequirement: 48, duration: '~5 min',
                 openingYear: 2010,
                 description: 'The original Harry Potter ride — fly with Harry through Hogwarts, face Dementors, and dodge the Whomping Willow. The Hogwarts Castle queue is as magnificent as the ride itself.',
@@ -1898,42 +1853,21 @@ export const RESORTS = [
                   'The physical sets are incredibly detailed — you drive through Bowser\'s Castle, Rainbow Road, and more',
                   'Power-up bands from the land sync with the ride to give you bonuses'
                 ],
-                specs: { type: 'AR Interactive Ride', heightRequirement: '40 inches', technology: 'Augmented Reality headsets', scoring: 'Team-based', opening: 'May 2025' },
+                specs: { type: 'AR Dark Ride', manufacturer: 'Dynamic Attractions', heightRequirement: '40 inches', technology: 'Augmented Reality headsets', scoring: 'Team-based', opening: 'May 2025' },
                 mustDo: true,
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['interactive', 'mario', 'ar', 'family', 'new']
               },
               {
-                id: 'yoshi-adventure-eu',
-                name: "Yoshi's Adventure",
-                type: 'Dark Ride',
-                thrillLevel: 1,
-                heightRequirement: null,
-                duration: '~5 min',
-                openingYear: 2025,
-                description: 'Ride on Yoshi\'s back through the Mushroom Kingdom on a gentle egg-hunt adventure perfect for the whole family.',
-                history: 'A version of this ride first opened in Japan in 2021. The Epic Universe version opened in May 2025.',
-                trivia: [
-                  'The vehicle is shaped like Yoshi himself — you sit on his back',
-                  'You can look around to find hidden items throughout the ride',
-                  'A family-friendly complement to Mario Kart next door'
-                ],
-                specs: { type: 'Dark Ride', capacity: 'Family-friendly, no height minimum', duration: '5 min', opening: 'May 2025' },
-                mustDo: false,
-                lightningLane: false,
-                imageUrl: '',
-                tags: ['family', 'mario', 'kids', 'gentle']
-              },
-              {
                 id: 'yoshis-adventure-eu',
                 name: "Yoshi's Adventure",
                 type: 'Omnimover Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
                 openingYear: 2025,
-                description: 'Gentle omnimover ride through the Super Mario world on the back of Yoshi. Search for colored eggs hidden throughout the landscape.',
-                history: 'Opened with Super Nintendo World in Epic Universe 2025.',
-                trivia: ['Omnimover system — continuous vehicles like Haunted Mansion', 'Hidden eggs scattered throughout for guests to spot', 'No height requirement — accessible to all guests'],
-                specs: { type: 'Omnimover Dark Ride', duration: '5 min' },
+                description: 'Gentle omnimover ride through Super Mario Land on the back of Yoshi. Search for colored eggs hidden throughout the landscape — a family-friendly complement to Mario Kart.',
+                history: 'Opened with Super Nintendo World at Epic Universe on May 22, 2025. Manufactured by Sansei Technologies. A version also operates at Universal Studios Japan.',
+                trivia: ['Manufactured by Sansei Technologies', 'Omnimover system — continuous vehicles like Haunted Mansion', 'Hidden eggs scattered throughout for guests to spot', 'No height requirement — one of the most accessible rides in the park'],
+                specs: { type: 'Sansei Technologies Omnimover', manufacturer: 'Sansei Technologies', duration: '5 min' },
                 mustDo: false, lightningLane: false, tags: ['Nintendo', 'family', 'gentle', 'Mario']
               },
               {
@@ -1946,6 +1880,17 @@ export const RESORTS = [
                 trivia: ['The first ever "Boom Coaster" — a new ride category', 'Set in Donkey Kong Country — first DK-themed ride in the US', 'The bouncing mine cart motion is unlike any other coaster'],
                 specs: { type: 'Setpoint Boom Coaster', heightReq: '40"', duration: '3 min' },
                 mustDo: true, lightningLane: true, tags: ['Nintendo', 'Donkey Kong', 'coaster', 'new']
+              },
+              {
+                id: 'bowser-jr-showdown',
+                name: "Bowser Jr. Shadow Showdown",
+                type: 'VR Experience', thrillLevel: 2, heightRequirement: null, duration: '~5 min',
+                openingYear: 2025,
+                description: 'A secret VR experience unlocked by completing 3 Super Nintendo World challenges with a Power-Up Band. Physically dodge, jump, and battle Bowser Jr. to reclaim the Golden Mushroom.',
+                history: 'Opened with Super Nintendo World at Epic Universe in May 2025. Only accessible to guests who complete the Power-Up Band challenge system.',
+                trivia: ['Only accessible after completing 3 Power-Up Band challenges throughout SNW', 'The Power-Up Band tracks coins and challenges throughout the land', 'Guests physically move their bodies to dodge and attack in the VR space'],
+                specs: { type: 'VR Experience', access: 'Power-Up Band challenge completion required', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['Nintendo', 'VR', 'interactive', 'secret']
               }
             ]
           },
@@ -1956,7 +1901,7 @@ export const RESORTS = [
               {
                 id: 'battle-at-ministry',
                 name: 'Harry Potter and the Battle at the Ministry',
-                type: 'Dark Ride',
+                type: 'Elevator Dark Ride',
                 thrillLevel: 3,
                 heightRequirement: 40,
                 duration: '~5 min',
@@ -1981,27 +1926,6 @@ export const RESORTS = [
             id: 'how-to-train-your-dragon',
             name: 'How to Train Your Dragon — Isle of Berk',
             rides: [
-              {
-                id: 'hiccups-wing-gliders',
-                name: "Hiccup's Wing Gliders",
-                type: 'Aerial Ride',
-                thrillLevel: 1,
-                heightRequirement: null,
-                duration: '~2.5 min',
-                openingYear: 2025,
-                description: 'Soar above the Isle of Berk on your very own Viking dragon in this family-friendly aerial ride.',
-                history: 'Hiccup\'s Wing Gliders opened with Epic Universe in May 2025, themed to the hit DreamWorks animated franchise How to Train Your Dragon.',
-                trivia: [
-                  'Riders sit in Viking-style dragon-shaped vehicles',
-                  'You can see the full Isle of Berk village as you fly above it',
-                  'The dragon vehicles are designed to look like Toothless and other Night Fury species'
-                ],
-                specs: { type: 'Aerial Ride', capacity: 'Family-friendly', duration: '2.5 min', opening: 'May 2025' },
-                mustDo: false,
-                lightningLane: false,
-                imageUrl: '',
-                tags: ['family', 'aerial', 'dragons', 'gentle']
-              },
               {
                 id: 'untrainable-dragon',
                 name: "The Untrainable Dragon",
