@@ -776,6 +776,17 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['family', 'relaxing', 'mexico', 'cultural']
+              },
+              {
+                id: 'remys-ratatouille',
+                name: "Remy's Ratatouille Adventure",
+                type: 'Trackless Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 2021,
+                description: 'Shrink to the size of a rat and scurry through Gusteau restaurant alongside Remy. Charming trackless ride with stunning forced-perspective effects in the France Pavilion.',
+                history: 'Opened October 1, 2021 as part of EPCOT 50th anniversary. A version opened at Walt Disney Studios Paris in 2014.',
+                trivia: ['Uses forced perspective to make you feel genuinely rat-sized', 'Originally opened at Paris in 2014 before coming to EPCOT', 'One of the few rides located in World Showcase rather than Future World'],
+                specs: { type: 'Trackless Dark Ride', duration: '5 min', location: 'France Pavilion, World Showcase' },
+                mustDo: true, lightningLane: true, tags: ['Pixar', 'family', 'trackless', 'gentle']
               }
             ]
           }
@@ -2238,6 +2249,17 @@ export const RESORTS = [
                 mustDo: true, lightningLane: true, tags: ['coaster', 'classic', 'thrill']
               },
               {
+                id: 'dl-alice',
+                name: "Alice in Wonderland",
+                type: 'Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~4 min',
+                openingYear: 1958,
+                description: 'Ride through the topsy-turvy world of Alice in Wonderland in a caterpillar car. A two-level dark ride unique to Disneyland.',
+                history: 'Opened June 14, 1958, three years after Disneyland. One of the few Disney dark rides with two floors.',
+                trivia: ['One of the only two-level dark rides at any Disney park', 'Unique to Disneyland — no WDW version exists', 'The White Rabbit outside is one of the most photographed spots in the park'],
+                specs: { type: 'Caterpillar Dark Ride', levels: 2, duration: '4 min' },
+                mustDo: true, lightningLane: false, tags: ['classic', 'family', 'dark ride', 'Disneyland exclusive']
+              },
+              {
                 id: 'dl-peter-pan',
                 name: 'Peter Pan\'s Flight',
                 type: 'Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~3 min',
@@ -2288,6 +2310,17 @@ export const RESORTS = [
                 mustDo: true, lightningLane: true, tags: ['coaster', 'classic', 'dark', 'thrill']
               },
               {
+                id: 'tron-lightcycle-run',
+                name: 'TRON Lightcycle / Run',
+                type: 'Launch Coaster', thrillLevel: 4, heightRequirement: 48, duration: '~2 min',
+                openingYear: 2023,
+                description: 'The fastest coaster at any Disney World park — launch at 60mph on a lightcycle through the TRON Grid. A canopy coaster unlike anything else at Walt Disney World.',
+                history: 'Opened April 4, 2023 after years of construction delays. A version has operated at Shanghai Disneyland since 2016. The attraction uses a unique motorcycle-style ride position.',
+                trivia: ['The fastest roller coaster at any Walt Disney World park — 60mph launch', 'Riders sit on motorcycle-style lightcycles rather than traditional coaster seats', 'The canopy structure is one of the largest single structures ever built at Walt Disney World', 'Shanghai Disneyland had its version since 2016 — WDW guests waited 7 years'],
+                specs: { type: 'Launched Canopy Coaster', heightReq: '48"', topSpeed: '60 mph', duration: '2 min' },
+                mustDo: true, lightningLane: true, tags: ['coaster', 'launch', 'thrill', 'new']
+              },
+              {
                 id: 'dl-buzz',
                 name: 'Buzz Lightyear Astro Blasters',
                 type: 'Interactive Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
@@ -2332,6 +2365,17 @@ export const RESORTS = [
             id: 'dl-mickey-toontown',
             name: "Mickey's Toontown",
             rides: [
+              {
+                id: 'dl-roger-rabbit',
+                name: "Roger Rabbit's Car Toon Spin",
+                type: 'Spinning Dark Ride', thrillLevel: 2, heightRequirement: null, duration: '~4 min',
+                openingYear: 1994,
+                description: 'Spin through Toontown in a taxi cab helping Roger Rabbit escape Weasels. Riders control the spin using a steering wheel — one of the few rides where you can customize your experience.',
+                history: 'Opened January 26, 1994 as one of Toontown original attractions. The interactive steering wheel spin mechanic was innovative for its time.',
+                trivia: ['Riders control the spin direction and intensity via a center steering wheel', 'One of the original opening attractions of Mickey Toontown in 1994', 'The ride is filled with hidden details from the 1988 film Who Framed Roger Rabbit'],
+                specs: { type: 'Spinning Taxi Dark Ride', duration: '4 min', interactive: 'Spin controlled by rider' },
+                mustDo: false, lightningLane: false, tags: ['classic', 'family', 'spinning', 'interactive']
+              },
               {
                 id: 'dl-mickey-minnie',
                 name: "Mickey & Minnie's Runaway Railway",

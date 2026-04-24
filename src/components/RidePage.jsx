@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { RESORTS } from '../data'
 import { RIDE_ENHANCEMENTS } from '../rideEnhancements'
@@ -8,6 +8,7 @@ import PhotoManager from './PhotoManager'
 import RatingStars from './RatingStars'
 import { DARK_HISTORY } from '../darkHistory'
 import { RIDE_HISTORY } from '../rideHistory'
+import { RIDE_LAYOUTS } from '../rideLayouts'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild Thrill', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
 
@@ -39,6 +40,137 @@ function Section({ title, children, defaultOpen = false }) {
         </div>
       )}
     </div>
+  )
+}
+
+
+// ── Ride Layout Viewer ───────────────────────────────────────
+function RideLayoutViewer({ rideId }) {
+  const layout = RIDE_LAYOUTS[rideId]
+  if (!layout) return null
+
+  const [open,    setOpen]    = React.useState(false)
+  const [scale,   setScale]   = React.useState(1)
+  const [pos,     setPos]     = React.useState({ x: 0, y: 0 })
+  const [dragging, setDragging] = React.useState(false)
+  const [dragStart, setDragStart] = React.useState({ x: 0, y: 0 })
+  const [lastPinchDist, setLastPinchDist] = React.useState(null)
+  const imgRef = React.useRef()
+
+  const reset = () => { setScale(1); setPos({ x: 0, y: 0 }) }
+  const close = () => { setOpen(false); reset() }
+
+  // Mouse drag
+  const onMouseDown = e => {
+    if (scale <= 1) return
+    setDragging(true)
+    setDragStart({ x: e.clientX - pos.x, y: e.clientY - pos.y })
+  }
+  const onMouseMove = e => {
+    if (!dragging) return
+    setPos({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y })
+  }
+  const onMouseUp = () => setDragging(false)
+
+  // Touch pinch-to-zoom
+  const onTouchStart = e => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      setLastPinchDist(Math.sqrt(dx*dx + dy*dy))
+    } else if (e.touches.length === 1 && scale > 1) {
+      setDragging(true)
+      setDragStart({ x: e.touches[0].clientX - pos.x, y: e.touches[0].clientY - pos.y })
+    }
+  }
+  const onTouchMove = e => {
+    if (e.touches.length === 2 && lastPinchDist) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      const dist = Math.sqrt(dx*dx + dy*dy)
+      const newScale = Math.min(5, Math.max(1, scale * (dist / lastPinchDist)))
+      setScale(newScale)
+      if (newScale <= 1) setPos({ x: 0, y: 0 })
+      setLastPinchDist(dist)
+      e.preventDefault()
+    } else if (e.touches.length === 1 && dragging) {
+      setPos({ x: e.touches[0].clientX - dragStart.x, y: e.touches[0].clientY - dragStart.y })
+    }
+  }
+  const onTouchEnd = () => { setDragging(false); setLastPinchDist(null) }
+
+  // Double tap to zoom
+  const lastTap = React.useRef(0)
+  const onDoubleTap = e => {
+    const now = Date.now()
+    if (now - lastTap.current < 300) {
+      if (scale > 1) { reset() } else { setScale(2.5) }
+    }
+    lastTap.current = now
+  }
+
+  return (
+    <>
+      {/* Thumbnail preview */}
+      <div className="rl-preview" onClick={() => setOpen(true)}>
+        <img src={layout.src} alt="Ride layout map" className="rl-thumb" />
+        <div className="rl-preview-overlay">
+          <span className="rl-zoom-hint">🔍 Tap to view full layout</span>
+        </div>
+        <div className="rl-credit">© {layout.credit} · {layout.parks}</div>
+      </div>
+
+      {/* Fullscreen lightbox */}
+      {open && (
+        <div className="rl-lightbox" onClick={e => { if (e.target === e.currentTarget) close() }}>
+          <div className="rl-lightbox-toolbar">
+            <span className="rl-lightbox-title">Ride Layout</span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="rl-toolbar-btn" onClick={reset}>↺ Reset</button>
+              <button className="rl-toolbar-btn" onClick={() => setScale(s => Math.min(5, s + 0.5))}>＋</button>
+              <button className="rl-toolbar-btn" onClick={() => setScale(s => Math.max(1, s - 0.5))}>－</button>
+              <button className="rl-toolbar-btn close" onClick={close}>✕</button>
+            </div>
+          </div>
+
+          <div
+            className="rl-lightbox-stage"
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onClick={onDoubleTap}
+            style={{ cursor: scale > 1 ? (dragging ? 'grabbing' : 'grab') : 'default' }}
+          >
+            <img
+              ref={imgRef}
+              src={layout.src}
+              alt="Ride layout"
+              className="rl-lightbox-img"
+              style={{
+                transform: `scale(${scale}) translate(${pos.x / scale}px, ${pos.y / scale}px)`,
+                transition: dragging || lastPinchDist ? 'none' : 'transform 0.2s ease',
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
+              }}
+              draggable={false}
+            />
+          </div>
+
+          <div className="rl-lightbox-hint">
+            {scale <= 1
+              ? 'Pinch or double-tap to zoom · Tap outside to close'
+              : 'Drag to pan · Double-tap to reset · Tap outside to close'}
+          </div>
+          <div className="rl-credit" style={{ position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)' }}>
+            © {layout.credit} · {layout.parks}
+          </div>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -370,6 +502,13 @@ export default function RidePage() {
             <DarkHistoryBody data={DARK_HISTORY[found.id]} />
           </div>
         </div>
+      )}
+
+      {/* Ride Layout Map */}
+      {RIDE_LAYOUTS[found.id] && (
+        <Section title="🗺️ Ride Layout Map">
+          <RideLayoutViewer rideId={found.id} />
+        </Section>
       )}
 
       <Section title="📸 My Photos">
