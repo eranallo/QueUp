@@ -1427,8 +1427,7 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['show', 'stunt', 'action', 'impressive']
-              }
-            ,
+              },
               {
                 id: 'et-adventure',
                 name: 'E.T. Adventure',
@@ -1452,71 +1451,10 @@ export const RESORTS = [
                 mustDo: true, lightningLane: false, tags: ['classic', 'show', 'comedy', 'horror']
               }
             ]
-          }          },
-          {
-            id: 'minion-land',
-            name: 'Minion Land',
-            rides: [
-              {
-                id: 'despicable-me',
-                name: 'Despicable Me Minion Mayhem',
-                type: 'Motion Simulator', thrillLevel: 1, heightRequirement: 40, duration: '~5 min',
-                openingYear: 2012,
-                description: 'Get transformed into a Minion and join Gru on a chaotic adventure. Fun simulator for all ages with a post-show dance party.',
-                history: 'Opened 2012, replacing the Jimmy Neutron attraction.',
-                trivia: ['The Minion-izer pre-show uses a moving platform', 'Post-show dance party is a hit with kids', 'Steve Carell recorded new dialogue for the ride'],
-                specs: { type: 'Standing Motion Simulator', heightReq: '40"', duration: '5 min' },
-                mustDo: false, lightningLane: false, tags: ['Minions', 'family', 'simulator']
-              },
-              {
-                id: 'villain-con-blast',
-                name: "Illumination's Villain-Con Minion Blast",
-                type: 'Interactive Shooter', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
-                openingYear: 2023,
-                description: 'Unique moving walkway shooter at a Villain Convention. Walk through on a moving path while blasting targets — no ride vehicles.',
-                history: 'Opened 2023 as part of Minion Land. First major attraction using a moving walkway instead of vehicles.',
-                trivia: ['Only major attraction using a moving walkway instead of ride vehicles', 'Players compete on a global leaderboard', 'Set at Villain-Con — a convention for Minions universe villains'],
-                specs: { type: 'Moving Walkway Shooter', duration: '5 min' },
-                mustDo: false, lightningLane: false, tags: ['Minions', 'interactive', 'shooter']
-              }
-            ]
-          },
-          {
-            id: 'production-central',
-            name: 'Production Central',
-            rides: [
-              {
-                id: 'transformers-usf',
-                name: 'Transformers: The Ride-3D',
-                type: '3D Motion Simulator', thrillLevel: 3, heightRequirement: 40, duration: '~5 min',
-                openingYear: 2013,
-                description: 'Battle Decepticons with the Autobots. 3D screens cover your entire field of vision with no visible edges.',
-                history: 'Opened 2013 using the same groundbreaking system as Spider-Man at IOA.',
-                trivia: ['Same ride system as Spider-Man at IOA', 'Peter Cullen (original Optimus Prime) recorded lines', 'Screens completely surround riders with no visible edge'],
-                specs: { type: '3D Motion Simulator', heightReq: '40"', duration: '5 min' },
-                mustDo: false, lightningLane: false, tags: ['action', 'simulator', '3D', 'Transformers']
-              }
-            ]
-          },
-          {
-            id: 'dreamworks-land',
-            name: 'DreamWorks Land',
-            rides: [
-              {
-                id: 'trolls-coaster',
-                name: 'Trolls Trollercoaster',
-                type: 'Junior Coaster', thrillLevel: 2, heightRequirement: null, duration: '~2 min',
-                openingYear: 2024,
-                description: 'Colorful junior coaster through Trolls Village with vibrant theming and no height requirement.',
-                history: 'Opened 2024 as part of DreamWorks Land replacing the former KidZone.',
-                trivia: ['No height requirement — accessible to all guests', 'Features Trolls film music throughout', 'One of the most colorful coasters in any theme park'],
-                specs: { type: 'Vekoma Junior Coaster', duration: '2 min' },
-                mustDo: false, lightningLane: false, tags: ['Trolls', 'family', 'coaster', 'DreamWorks']
-              }
-            ]
           }
         ]
       },
+
 
       {
         id: 'islands-of-adventure',
@@ -1722,8 +1660,7 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'water', 'dinosaurs', 'drop']
-              }
-            ,
+              },
               {
                 id: 'pteranodon-flyers',
                 name: 'Pteranodon Flyers',
@@ -1915,8 +1852,7 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'coaster', 'new', 'dueling']
-              }
-            ,
+              },
               {
                 id: 'constellation-carousel',
                 name: 'Constellation Carousel',
@@ -1977,8 +1913,7 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['family', 'mario', 'kids', 'gentle']
-              }
-            ,
+              },
               {
                 id: 'yoshis-adventure-eu',
                 name: "Yoshi's Adventure",
@@ -2076,8 +2011,7 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'coaster', 'dragons', 'new']
-              }
-            ,
+              },
               {
                 id: 'hiccups-wing-gliders',
                 name: "Hiccup's Wing Gliders",
@@ -2137,8 +2071,7 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'horror', 'monsters', 'dark']
-              }
-            ,
+              },
               {
                 id: 'curse-of-werewolf',
                 name: 'Curse of the Werewolf',
