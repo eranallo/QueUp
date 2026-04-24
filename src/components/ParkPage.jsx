@@ -5,6 +5,7 @@ import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 import { ParkHoursFull } from './ParkHours'
 import { PARK_HISTORY } from '../parkHistory'
+import { PARK_LOGOS } from '../parkLogos'
 import { getHotelById } from '../hotelsData'
 
 const THRILL = ['', '😌 Gentle', '🌊 Mild', '🌀 Moderate', '🔥 Thrilling', '💀 Intense']
@@ -307,10 +308,20 @@ export default function ParkPage() {
 
       {/* ── Park Hero ── */}
       <div className="pp-hero" style={{ '--park-accent': park.accentColor, background: `linear-gradient(135deg, ${park.accentColor}22 0%, var(--bg-card) 100%)` }}>
+        {/* Official park logo if available */}
+        {PARK_LOGOS[park.id] && (
+          <div className="pp-hero-logo-wrap">
+            <img
+              src={PARK_LOGOS[park.id]}
+              alt={`${park.name} logo`}
+              className="pp-hero-logo"
+            />
+          </div>
+        )}
         <div className="pp-hero-top">
-          <span className="pp-hero-emoji">{park.emoji}</span>
+          {!PARK_LOGOS[park.id] && <span className="pp-hero-emoji">{park.emoji}</span>}
           <div className="pp-hero-text">
-            <h1 className="pp-hero-name">{park.name}</h1>
+            {!PARK_LOGOS[park.id] && <h1 className="pp-hero-name">{park.name}</h1>}
             <p className="pp-hero-desc">{park.description}</p>
           </div>
         </div>

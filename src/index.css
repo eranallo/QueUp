@@ -5243,3 +5243,34 @@ h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; line-height
   flex-shrink: 0;
   letter-spacing: 0.03em;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PARK LOGOS
+═══════════════════════════════════════════════════════════ */
+
+/* Park page hero logo */
+.pp-hero-logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 4px;
+}
+.pp-hero-logo {
+  max-height: 90px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  transition: filter var(--t-fast);
+}
+.pp-hero-logo:hover {
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.7)) brightness(1.05);
+}
+
+/* Resort dashboard park card logo */
+.rd-park-logo {
+  max-height: 44px;
+  max-width: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  flex-shrink: 0;
+}

@@ -75,9 +75,17 @@ function ParkCard({ park, index, checkedRides, personalMustRide }) {
         <div className="rd-park-color-strip" style={{ background: park.accentColor }} />
         <div className="rd-park-card-header-inner">
           <div className="rd-park-header-left">
-            <span className="rd-park-emoji">{park.emoji}</span>
+            {PARK_LOGOS[park.id] ? (
+              <img
+                src={PARK_LOGOS[park.id]}
+                alt={park.name}
+                className="rd-park-logo"
+              />
+            ) : (
+              <span className="rd-park-emoji">{park.emoji}</span>
+            )}
             <div>
-              <div className="rd-park-name">{park.name}</div>
+              {!PARK_LOGOS[park.id] && <div className="rd-park-name">{park.name}</div>}
               <div className="rd-park-meta">
                 {rideableRides.length} rides
                 {refurbCount > 0 && <span style={{ color: 'var(--warning)', marginLeft: 4 }}>· 🚧 {refurbCount} refurb</span>}
