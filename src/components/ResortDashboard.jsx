@@ -5,6 +5,7 @@ import { useApp } from '../App'
 import { useLiveData } from '../context/LiveDataContext'
 import { useResortData } from '../useResortData'
 import { ParkHoursCompact } from './ParkHours'
+import { PARK_LOGOS } from '../parkLogos'
 
 // ── Animated count-up number ──────────────────────────────────
 function CountUp({ target, duration = 1000 }) {
