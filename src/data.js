@@ -1388,6 +1388,17 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['interactive', 'shooter', 'competitive', 'sci-fi']
+              },
+              {
+                id: 'kang-kodos',
+                name: "Kang & Kodos' Twirl 'n' Hurl",
+                type: 'Aerial Spinner', thrillLevel: 1, heightRequirement: null, duration: '~2 min',
+                openingYear: 2013,
+                description: 'Spin around in flying saucers controlled by Kang and Kodos from The Simpsons. A fun mild spinner with Treehouse of Horror theming.',
+                history: 'Opened in 2013 as part of the Springfield expansion.',
+                trivia: ['Kang and Kodos narrate via overhead speakers with Simpsons humor', 'Based on Treehouse of Horror episodes'],
+                specs: { type: 'Aerial Carousel Spinner', duration: '2 min' },
+                mustDo: false, lightningLane: false, tags: ['Simpsons', 'family', 'spinner']
               }
             ]
           },
@@ -1416,6 +1427,91 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['show', 'stunt', 'action', 'impressive']
+              }
+            ,
+              {
+                id: 'et-adventure',
+                name: 'E.T. Adventure',
+                type: 'Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 1990,
+                description: 'Fly with E.T. on a bicycle through the forest and into space to save his home planet. One of the last remaining original 1990 opening-day attractions.',
+                history: 'E.T. Adventure opened with Universal Studios Florida on June 7, 1990 and is one of the last surviving opening-day attractions. Designed with input from Steven Spielberg.',
+                trivia: ['One of the only original 1990 opening-day attractions still operating', 'E.T. says your name at the end — you register it at the boarding area', 'Designed with direct input from Steven Spielberg'],
+                specs: { type: 'Bicycle Dark Ride', duration: '5 min' },
+                mustDo: true, lightningLane: false, tags: ['classic', 'family', 'Spielberg', 'gentle']
+              },
+              {
+                id: 'horror-makeup-show',
+                name: "Universal Orlando's Horror Make-Up Show",
+                type: 'Live Show', thrillLevel: 1, heightRequirement: null, duration: '~25 min',
+                openingYear: 1990,
+                description: 'A hilarious live comedy show revealing secrets of Hollywood horror makeup. Audience volunteers get the full treatment.',
+                history: 'One of the original 1990 opening-day experiences — still running after 35+ years.',
+                trivia: ['One of the longest-running shows at any theme park', 'Audience volunteers are chosen at the start — arrive early', 'Reveals actual techniques used in major horror films'],
+                specs: { type: 'Live Comedy Show', duration: '25 min' },
+                mustDo: true, lightningLane: false, tags: ['classic', 'show', 'comedy', 'horror']
+              }
+            ]
+          }          },
+          {
+            id: 'minion-land',
+            name: 'Minion Land',
+            rides: [
+              {
+                id: 'despicable-me',
+                name: 'Despicable Me Minion Mayhem',
+                type: 'Motion Simulator', thrillLevel: 1, heightRequirement: 40, duration: '~5 min',
+                openingYear: 2012,
+                description: 'Get transformed into a Minion and join Gru on a chaotic adventure. Fun simulator for all ages with a post-show dance party.',
+                history: 'Opened 2012, replacing the Jimmy Neutron attraction.',
+                trivia: ['The Minion-izer pre-show uses a moving platform', 'Post-show dance party is a hit with kids', 'Steve Carell recorded new dialogue for the ride'],
+                specs: { type: 'Standing Motion Simulator', heightReq: '40"', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['Minions', 'family', 'simulator']
+              },
+              {
+                id: 'villain-con-blast',
+                name: "Illumination's Villain-Con Minion Blast",
+                type: 'Interactive Shooter', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 2023,
+                description: 'Unique moving walkway shooter at a Villain Convention. Walk through on a moving path while blasting targets — no ride vehicles.',
+                history: 'Opened 2023 as part of Minion Land. First major attraction using a moving walkway instead of vehicles.',
+                trivia: ['Only major attraction using a moving walkway instead of ride vehicles', 'Players compete on a global leaderboard', 'Set at Villain-Con — a convention for Minions universe villains'],
+                specs: { type: 'Moving Walkway Shooter', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['Minions', 'interactive', 'shooter']
+              }
+            ]
+          },
+          {
+            id: 'production-central',
+            name: 'Production Central',
+            rides: [
+              {
+                id: 'transformers-usf',
+                name: 'Transformers: The Ride-3D',
+                type: '3D Motion Simulator', thrillLevel: 3, heightRequirement: 40, duration: '~5 min',
+                openingYear: 2013,
+                description: 'Battle Decepticons with the Autobots. 3D screens cover your entire field of vision with no visible edges.',
+                history: 'Opened 2013 using the same groundbreaking system as Spider-Man at IOA.',
+                trivia: ['Same ride system as Spider-Man at IOA', 'Peter Cullen (original Optimus Prime) recorded lines', 'Screens completely surround riders with no visible edge'],
+                specs: { type: '3D Motion Simulator', heightReq: '40"', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['action', 'simulator', '3D', 'Transformers']
+              }
+            ]
+          },
+          {
+            id: 'dreamworks-land',
+            name: 'DreamWorks Land',
+            rides: [
+              {
+                id: 'trolls-coaster',
+                name: 'Trolls Trollercoaster',
+                type: 'Junior Coaster', thrillLevel: 2, heightRequirement: null, duration: '~2 min',
+                openingYear: 2024,
+                description: 'Colorful junior coaster through Trolls Village with vibrant theming and no height requirement.',
+                history: 'Opened 2024 as part of DreamWorks Land replacing the former KidZone.',
+                trivia: ['No height requirement — accessible to all guests', 'Features Trolls film music throughout', 'One of the most colorful coasters in any theme park'],
+                specs: { type: 'Vekoma Junior Coaster', duration: '2 min' },
+                mustDo: false, lightningLane: false, tags: ['Trolls', 'family', 'coaster', 'DreamWorks']
               }
             ]
           }
@@ -1459,6 +1555,28 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'harry-potter', 'must-do', 'immersive']
+              },
+              {
+                id: 'forbidden-journey',
+                name: "Harry Potter and the Forbidden Journey",
+                type: 'Robotic Arm Ride', thrillLevel: 3, heightRequirement: 48, duration: '~5 min',
+                openingYear: 2010,
+                description: 'The original Harry Potter ride — fly with Harry through Hogwarts, face Dementors, and dodge the Whomping Willow. The Hogwarts Castle queue is as magnificent as the ride itself.',
+                history: 'Opened June 18, 2010 as the centerpiece of the original Wizarding World. The KUKA robotic arm system was revolutionary — vehicles move freely through multiple domed screen rooms.',
+                trivia: ['The queue winds through actual Hogwarts locations including Dumbledore office, Gryffindor common room, and Defense Against the Dark Arts classroom', 'The KUKA arm generates unpredictable g-forces unlike any fixed-track ride', 'Hermione, Ron, and Harry appear as life-size animated figures in the attraction'],
+                specs: { type: 'KUKA Robotic Arm Ride', heightReq: '48"', duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['Harry Potter', 'thrill', 'immersive', 'classic']
+              },
+              {
+                id: 'hagrids-motorbike',
+                name: "Hagrid's Magical Creatures Motorbike Adventure",
+                type: 'Motorbike Coaster', thrillLevel: 3, heightRequirement: 48, duration: '~5 min',
+                openingYear: 2019,
+                description: 'Journey through the Forbidden Forest on a motorbike with Hagrid. Widely regarded as the greatest theme park attraction ever built — a seamless blend of practical sets, live animals, and genuine coaster thrills.',
+                history: 'Opened June 13, 2019 after the demolition of Dragon Challenge. Immediately upon opening received universal acclaim as one of the best attractions in theme park history. Wait times regularly exceeded 4-5 hours in its first year.',
+                trivia: ['Universally ranked among the top 3 theme park attractions in the world by enthusiasts', 'Features 17 separate scene encounters including live animals and hydraulic launch segments', 'The ride vehicles are actual motorcycle and sidecar designs — you sit like a passenger on a real bike', 'A vertical drop section was added that drops the train backward — most guests don't see it coming'],
+                specs: { type: 'Launched Motorbike Coaster', heightReq: '48"', scenes: 17, duration: '5 min' },
+                mustDo: true, lightningLane: true, tags: ['Harry Potter', 'thrill', 'immersive', 'masterpiece']
               },
               {
                 id: 'flight-of-hippogriff',
@@ -1605,6 +1723,18 @@ export const RESORTS = [
                 imageUrl: '',
                 tags: ['thrill', 'water', 'dinosaurs', 'drop']
               }
+            ,
+              {
+                id: 'pteranodon-flyers',
+                name: 'Pteranodon Flyers',
+                type: 'Suspended Coaster', thrillLevel: 1, heightRequirement: null, duration: '~1 min',
+                openingYear: 1999,
+                description: 'Soar over Jurassic Park in a hang glider-style coaster. Calm and scenic — notoriously one of the longest waits for its short duration.',
+                history: 'Original 1999 IOA opening-day attraction. Has a maximum weight limit rather than a height minimum — unusual for any theme park ride.',
+                trivia: ['Has a weight limit rather than a height requirement', 'One of the longest waits relative to ride duration in any theme park', 'Flies directly over Camp Jurassic — look down for great views'],
+                specs: { type: 'Suspended Wing Coaster', duration: '1 min', restriction: 'Weight limit applies' },
+                mustDo: false, lightningLane: false, tags: ['Jurassic', 'family', 'gentle', 'views']
+              }
             ]
           },
           {
@@ -1688,6 +1818,69 @@ export const RESORTS = [
       },
 
       {
+        id: 'seuss-landing-ioa',
+        name: 'Seuss Landing',
+        emoji: '🎩',
+        accentColor: '#ec4899',
+        gradientFrom: '#4a0a2a',
+        gradientTo: '#0a0f1e',
+        description: 'The whimsical world of Dr. Seuss brought to life — a land with no straight lines and stories around every corner.',
+        openingYear: 1999,
+        lands: [
+          {
+            id: 'seuss-main',
+            name: 'Seuss Landing',
+            rides: [
+              {
+                id: 'cat-in-the-hat',
+                name: 'The Cat in the Hat',
+                type: 'Dark Ride', thrillLevel: 1, heightRequirement: null, duration: '~4 min',
+                openingYear: 1999,
+                description: 'Ride through the beloved Dr. Seuss story on a spinning couch while Thing 1 and Thing 2 wreak havoc.',
+                history: 'One of the original 1999 IOA attractions. No height requirement makes it accessible to all ages.',
+                trivia: ['No height requirement — one of the most accessible rides in any Universal park', 'The couch spins 360 degrees multiple times', 'Every element follows Seuss rules — no straight lines exist in Seuss Landing'],
+                specs: { type: 'Spinning Dark Ride', duration: '4 min' },
+                mustDo: false, lightningLane: false, tags: ['Dr. Seuss', 'family', 'gentle']
+              },
+              {
+                id: 'high-in-sky-seuss',
+                name: 'The High in the Sky Seuss Trolley Train Ride!',
+                type: 'Aerial Train', thrillLevel: 1, heightRequirement: null, duration: '~4 min',
+                openingYear: 1999,
+                description: 'An elevated train weaving through Seuss Landing with character narration. Two separate tracks with different stories.',
+                history: 'Original 1999 IOA attraction. The track weaves between buildings for overhead perspectives.',
+                trivia: ['Two separate track paths — ride both for different narration', 'The track passes through Seuss Landing buildings', 'Great views of the entire land from altitude'],
+                specs: { type: 'Elevated Train', duration: '4 min' },
+                mustDo: false, lightningLane: false, tags: ['Dr. Seuss', 'family', 'gentle']
+              },
+              {
+                id: 'one-fish-two-fish',
+                name: 'One Fish, Two Fish, Red Fish, Blue Fish',
+                type: 'Aerial Spinner', thrillLevel: 1, heightRequirement: null, duration: '~2 min',
+                openingYear: 1999,
+                description: 'Gentle aerial spinner on Seuss fish. A rhyming song gives instructions to avoid water squirts — most guests get wet anyway.',
+                history: 'Original 1999 IOA opening-day attraction.',
+                trivia: ['Instructions tell you exactly when to raise your fish to avoid water', 'Most guests get wet regardless', 'Based directly on the Dr. Seuss book'],
+                specs: { type: 'Aerial Carousel', duration: '2 min' },
+                mustDo: false, lightningLane: false, tags: ['Dr. Seuss', 'family', 'wet']
+              },
+              {
+                id: 'caro-seuss-el',
+                name: 'Caro-Seuss-el',
+                type: 'Carousel', thrillLevel: 1, heightRequirement: null, duration: '~2 min',
+                openingYear: 1999,
+                description: 'A Dr. Seuss carousel with interactive animals from various books instead of traditional horses.',
+                history: 'Original 1999 IOA attraction.',
+                trivia: ['Each animal is from a different Dr. Seuss book', 'Animals have interactive tails, ears, and eyes', 'One of the most elaborately themed carousels in any theme park'],
+                specs: { type: 'Interactive Carousel', duration: '2 min' },
+                mustDo: false, lightningLane: false, tags: ['Dr. Seuss', 'family', 'gentle']
+              }
+            ]
+          }
+        ]
+      },
+
+            {
         id: 'epic-universe',
         name: 'Universal Epic Universe',
         emoji: '✨',
@@ -1703,8 +1896,8 @@ export const RESORTS = [
             name: 'Celestial Park',
             rides: [
               {
-                id: 'starfall-racers',
-                name: 'Starfall Racers',
+                id: 'stardust-racers',
+                name: 'Stardust Racers',
                 type: 'Roller Coaster',
                 thrillLevel: 4,
                 heightRequirement: 48,
@@ -1722,6 +1915,18 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'coaster', 'new', 'dueling']
+              }
+            ,
+              {
+                id: 'constellation-carousel',
+                name: 'Constellation Carousel',
+                type: 'Carousel', thrillLevel: 1, heightRequirement: null, duration: '~2 min',
+                openingYear: 2025,
+                description: 'A carousel themed to star signs and constellations. Each figure is designed around a different zodiac constellation with LED lighting effects.',
+                history: 'Opened with Epic Universe 2025 as a family centerpiece for Celestial Park.',
+                trivia: ['Each carousel figure represents a different star sign', 'LED lighting shifts through nebula color spectrums', 'The canopy displays actual constellation maps'],
+                specs: { type: 'Themed Carousel', duration: '2 min' },
+                mustDo: false, lightningLane: false, tags: ['family', 'gentle', 'carousel', 'Epic Universe']
               }
             ]
           },
@@ -1772,6 +1977,29 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['family', 'mario', 'kids', 'gentle']
+              }
+            ,
+              {
+                id: 'yoshis-adventure-eu',
+                name: "Yoshi's Adventure",
+                type: 'Omnimover Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 2025,
+                description: 'Gentle omnimover ride through the Super Mario world on the back of Yoshi. Search for colored eggs hidden throughout the landscape.',
+                history: 'Opened with Super Nintendo World in Epic Universe 2025.',
+                trivia: ['Omnimover system — continuous vehicles like Haunted Mansion', 'Hidden eggs scattered throughout for guests to spot', 'No height requirement — accessible to all guests'],
+                specs: { type: 'Omnimover Dark Ride', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['Nintendo', 'family', 'gentle', 'Mario']
+              },
+              {
+                id: 'mine-cart-madness',
+                name: 'Mine-Cart Madness',
+                type: 'Boom Coaster', thrillLevel: 3, heightRequirement: 40, duration: '~3 min',
+                openingYear: 2025,
+                description: 'A unique "Boom Coaster" through Donkey Kong Country. Mine carts launch and bounce through DK environments in a completely new ride category.',
+                history: 'Opened with Epic Universe 2025. The Boom Coaster system by Setpoint was invented specifically for this attraction.',
+                trivia: ['The first ever "Boom Coaster" — a new ride category', 'Set in Donkey Kong Country — first DK-themed ride in the US', 'The bouncing mine cart motion is unlike any other coaster'],
+                specs: { type: 'Setpoint Boom Coaster', heightReq: '40"', duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['Nintendo', 'Donkey Kong', 'coaster', 'new']
               }
             ]
           },
@@ -1849,6 +2077,40 @@ export const RESORTS = [
                 imageUrl: '',
                 tags: ['thrill', 'coaster', 'dragons', 'new']
               }
+            ,
+              {
+                id: 'hiccups-wing-gliders',
+                name: "Hiccup's Wing Gliders",
+                type: 'Launch Coaster', thrillLevel: 3, heightRequirement: 48, duration: '~3 min',
+                openingYear: 2025,
+                description: 'Family launch coaster simulating dragon flight through Isle of Berk. Multiple launches through sweeping turns themed to riding Toothless.',
+                history: 'Opened with Epic Universe 2025. Manufactured by Intamin — same company as VelociCoaster and Hagrid's.',
+                trivia: ['Manufactured by Intamin — same as VelociCoaster and Hagrid's', 'Simulates the sensation of riding Toothless through Berk', 'Multiple launches simulate a dragon gathering speed to fly'],
+                specs: { type: 'Intamin Launch Coaster', heightReq: '48"', duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['HTTYD', 'coaster', 'launch', 'Epic Universe']
+              },
+              {
+                id: 'dragon-racers-rally',
+                name: "Dragon Racer's Rally",
+                type: 'Sky Fly Ride', thrillLevel: 2, heightRequirement: null, duration: '~3 min',
+                openingYear: 2025,
+                description: 'Dueling Gerstlauer Sky Fly rides where riders control their dragon orientation. Pilot your own dragon through Berk.',
+                history: 'Opened with Epic Universe 2025. The Sky Fly system gives riders control over vehicle orientation.',
+                trivia: ['Riders control how much their vehicle flips and rotates', 'Two dueling arms over the center of Isle of Berk', 'One of the few rides where rider skill meaningfully changes the experience'],
+                specs: { type: 'Gerstlauer Sky Fly', duration: '3 min' },
+                mustDo: false, lightningLane: false, tags: ['HTTYD', 'thrill', 'flying', 'Epic Universe']
+              },
+              {
+                id: 'fyre-drill',
+                name: 'Fyre Drill',
+                type: 'Interactive Boat Ride', thrillLevel: 1, heightRequirement: null, duration: '~5 min',
+                openingYear: 2025,
+                description: 'Interactive boat ride through Isle of Berk. Help train dragons using fire-breathing targets in this team-based water experience.',
+                history: 'Opened with Epic Universe 2025 as the family water experience in Isle of Berk.',
+                trivia: ['Guests interact with dragon targets throughout the boat journey', 'The boat floats through an actual water channel', 'Based on dragon training scenes from the How to Train Your Dragon films'],
+                specs: { type: 'Interactive Boat Ride', duration: '5 min' },
+                mustDo: false, lightningLane: false, tags: ['HTTYD', 'family', 'interactive', 'water']
+              }
             ]
           },
           {
@@ -1875,6 +2137,18 @@ export const RESORTS = [
                 lightningLane: false,
                 imageUrl: '',
                 tags: ['thrill', 'horror', 'monsters', 'dark']
+              }
+            ,
+              {
+                id: 'curse-of-werewolf',
+                name: 'Curse of the Werewolf',
+                type: 'Spinning Coaster', thrillLevel: 3, heightRequirement: 48, duration: '~3 min',
+                openingYear: 2025,
+                description: 'A spinning roller coaster through Dark Universe themed to the 1941 Wolf Man. Each car spins freely through the cursed forest.',
+                history: 'Opened with Epic Universe 2025. Manufactured by Mack Rides.',
+                trivia: ['Based on the 1941 Universal Monsters film The Wolf Man', 'Spinning is uncontrolled — each ride differs based on weight distribution', 'Dark Universe is themed to the classic Universal Monsters franchise'],
+                specs: { type: 'Mack Spinning Coaster', heightReq: '48"', duration: '3 min' },
+                mustDo: true, lightningLane: true, tags: ['horror', 'coaster', 'spinning', 'Epic Universe']
               }
             ]
           }
@@ -2271,6 +2545,17 @@ export const RESORTS = [
                 trivia: ['Replaced Tower of Terror (2004-2017) — one of the most controversial Disney decisions in California', 'The drop sequences are randomized and synced to the Guardians soundtrack', 'The building and elevator system are structurally identical to Tower of Terror', 'Vin Diesel, Chris Pratt, and the full cast recorded lines for the attraction'],
                 specs: { type: 'Randomized Drop Ride', heightReq: '40"', drops: 'Randomized', duration: '2 min' },
                 mustDo: true, lightningLane: true, tags: ['Marvel', 'thrill', 'drop', 'intense']
+              },
+              {
+                id: 'storm-force-accelatron',
+                name: 'Storm Force Accelatron',
+                type: 'Spinning Ride', thrillLevel: 1, heightRequirement: null, duration: '~2 min',
+                openingYear: 2000,
+                description: 'A teacups-style spinning ride themed to the X-Men character Storm. Fun and mild — a palate cleanser between the bigger Marvel thrills.',
+                history: 'Opened in 2000 as part of Marvel Super Hero Island.',
+                trivia: ['One of the few Marvel attractions themed to Storm specifically', 'Guests control spinning speed by turning the center wheel', 'Themed to Storm channeling lightning into the spinning vehicles'],
+                specs: { type: 'Spinning Teacups', duration: '2 min' },
+                mustDo: false, lightningLane: false, tags: ['Marvel', 'family', 'spinner', 'gentle']
               }
             ]
           }
