@@ -284,7 +284,7 @@ export const RESORTS = [
               },
               {
                 id: 'its-a-small-world',
-                name: "it's a small world",
+                name: "it is a small world",
                 type: 'Boat Ride',
                 thrillLevel: 1,
                 heightRequirement: null,
@@ -1574,7 +1574,7 @@ export const RESORTS = [
                 openingYear: 2019,
                 description: 'Journey through the Forbidden Forest on a motorbike with Hagrid. Widely regarded as the greatest theme park attraction ever built — a seamless blend of practical sets, live animals, and genuine coaster thrills.',
                 history: 'Opened June 13, 2019 after the demolition of Dragon Challenge. Immediately upon opening received universal acclaim as one of the best attractions in theme park history. Wait times regularly exceeded 4-5 hours in its first year.',
-                trivia: ['Universally ranked among the top 3 theme park attractions in the world by enthusiasts', 'Features 17 separate scene encounters including live animals and hydraulic launch segments', 'The ride vehicles are actual motorcycle and sidecar designs — you sit like a passenger on a real bike', 'A vertical drop section was added that drops the train backward — most guests don't see it coming'],
+                trivia: ['Universally ranked among the top 3 theme park attractions in the world by enthusiasts', 'Features 17 separate scene encounters including live animals and hydraulic launch segments', 'The ride vehicles are actual motorcycle and sidecar designs — you sit like a passenger on a real bike', 'A vertical drop section was added that drops the train backward — most guests do not see it coming'],
                 specs: { type: 'Launched Motorbike Coaster', heightReq: '48"', scenes: 17, duration: '5 min' },
                 mustDo: true, lightningLane: true, tags: ['Harry Potter', 'thrill', 'immersive', 'masterpiece']
               },
@@ -2084,8 +2084,8 @@ export const RESORTS = [
                 type: 'Launch Coaster', thrillLevel: 3, heightRequirement: 48, duration: '~3 min',
                 openingYear: 2025,
                 description: 'Family launch coaster simulating dragon flight through Isle of Berk. Multiple launches through sweeping turns themed to riding Toothless.',
-                history: 'Opened with Epic Universe 2025. Manufactured by Intamin — same company as VelociCoaster and Hagrid's.',
-                trivia: ['Manufactured by Intamin — same as VelociCoaster and Hagrid's', 'Simulates the sensation of riding Toothless through Berk', 'Multiple launches simulate a dragon gathering speed to fly'],
+                history: 'Opened with Epic Universe 2025. Manufactured by Intamin — same company as VelociCoaster and Hagrid motorbike.',
+                trivia: ['Manufactured by Intamin — same company as VelociCoaster and Hagrid motorbike', 'Simulates the sensation of riding Toothless through Berk', 'Multiple launches simulate a dragon gathering speed to fly'],
                 specs: { type: 'Intamin Launch Coaster', heightReq: '48"', duration: '3 min' },
                 mustDo: true, lightningLane: true, tags: ['HTTYD', 'coaster', 'launch', 'Epic Universe']
               },
